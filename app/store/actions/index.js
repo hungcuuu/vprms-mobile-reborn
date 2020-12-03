@@ -1,1 +1,7 @@
-export { loginRequest, loginSuccess, loginFailed } from './auth';
+export {
+  loginRequest,
+  loginSuccess,
+  loginFailed,
+  logoutRequest,
+  logout,
+} from './auth';

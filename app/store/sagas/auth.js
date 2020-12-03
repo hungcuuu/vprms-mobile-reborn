@@ -1,4 +1,4 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as actionTypes from '../actions/actionTypes';
@@ -21,6 +21,12 @@ function* login(action) {
   }
 }
 
+function* logout(action) {
+  yield call([AsyncStorage, 'removeItem'], 'token');
+  yield put(actions.logout());
+}
+
 export default function* authSagas() {
   yield takeEvery(actionTypes.LOGIN_REQUEST, login);
+  yield takeEvery(actionTypes.LOGOUT_REQUEST, logout);
 }

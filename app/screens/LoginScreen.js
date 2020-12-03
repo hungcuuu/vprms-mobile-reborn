@@ -7,7 +7,7 @@ import * as actions from '../store/actions';
 import { Colors } from '../constants';
 import { connect } from 'react-redux';
 
-const LoginScreen = ({ error, navigation, onLogin, ...rest }) => {
+const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
   const [phoneInput, setPhoneInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
 
@@ -57,6 +57,7 @@ const LoginScreen = ({ error, navigation, onLogin, ...rest }) => {
             alignSelf: 'center',
             borderRadius: 15,
           }}
+          loading={loading}
           onPress={loginHandler}
           title="Login"
         />

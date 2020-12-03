@@ -22,3 +22,15 @@ export const loginFailed = (error) => {
     error,
   };
 };
+
+export const logoutRequest = () => {
+  return {
+    type: actionTypes.LOGOUT_REQUEST,
+  };
+};
+
+export const logout = () => {
+  return {
+    type: actionTypes.LOGOUT,
+  };
+};
