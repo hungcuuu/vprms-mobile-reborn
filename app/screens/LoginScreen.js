@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Text, Input, Button } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import * as actions from '../store/actions';
 import { Colors } from '../constants';
+import { connect } from 'react-redux';
 
-export default function LoginScreen({ navigation, ...rest }) {
-  React.useEffect(() => {
+const LoginScreen = ({ error, navigation, onLogin, ...rest }) => {
+  const [phoneInput, setPhoneInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+
+  const loginHandler = () => {
+    onLogin(phoneInput, passwordInput);
+  };
+
+  useEffect(() => {
     navigation.setOptions({ title: 'Login' });
   }, []);
 
@@ -21,19 +30,24 @@ export default function LoginScreen({ navigation, ...rest }) {
       <View style={{ alignSelf: 'center', marginBottom: 16 }}>
         <Ionicons size={120} name="ios-car" />
       </View>
+      {error ? (
+        <View style={{ alignSelf: 'center', marginBottom: 16 }}>
+          <Text style={{ color: 'red', fontSize: 18 }}>{error.message}</Text>
+        </View>
+      ) : null}
       <View>
         <Input
           keyboardType="phone-pad"
           placeholder="Phone Number"
           inputContainerStyle={styles.input}
           leftIcon={{ type: 'font-awesome', name: 'phone' }}
-          onChangeText={(value) => {}}
+          onChangeText={(value) => setPhoneInput(value)}
         />
         <Input
           placeholder="Password"
           inputContainerStyle={styles.input}
           leftIcon={{ type: 'font-awesome', name: 'lock' }}
-          onChangeText={(value) => {}}
+          onChangeText={(value) => setPasswordInput(value)}
         />
         <Button
           buttonStyle={{
@@ -43,7 +57,7 @@ export default function LoginScreen({ navigation, ...rest }) {
             alignSelf: 'center',
             borderRadius: 15,
           }}
-          onPress={() => {}}
+          onPress={loginHandler}
           title="Login"
         />
         <Button
@@ -60,6 +74,22 @@ export default function LoginScreen({ navigation, ...rest }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({});
+
+const mapStateToProps = (state) => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLogin: (phoneNumber, password) =>
+      dispatch(actions.loginRequest(phoneNumber, password)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
