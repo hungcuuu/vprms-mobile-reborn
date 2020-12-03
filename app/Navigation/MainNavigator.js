@@ -1,22 +1,18 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import MainNavigator from './MainNavigator';
+import LoginScreen from '../screens/LoginScreen';
 
-import Login from '../Screen/Login';
-const Stack = createStackNavigator();
+const AuthStackNavigator = createStackNavigator();
 
-function MainStack() {
+export const AuthNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen
-        options={{ tabBarBadge: 3, title: 'Con cac' }}
+    <AuthStackNavigator.Navigator>
+      <AuthStackNavigator.Screen
         name="Login"
-        component={Login}
+        component={LoginScreen}
+        options={{ headerShown: false }}
       />
-      <Stack.Screen name="Home" component={MainNavigator} />
-    </Stack.Navigator>
+    </AuthStackNavigator.Navigator>
   );
-}
-
-export default MainStack;
+};
