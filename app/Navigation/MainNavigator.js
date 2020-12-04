@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import ServicesScreen from '../screens/ServicesScreen';
+import VehiclesScreen from '../screens/VehiclesScreen';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -33,6 +34,7 @@ export const HomeNavigator = () => {
         <HomeTabNavigator.Navigator>
             <HomeTabNavigator.Screen name="Profile" component={ProfileScreen} />
             <HomeTabNavigator.Screen name="Service" component={ServicesScreen} />
+            <HomeTabNavigator.Screen name="Vehicle" component={VehiclesScreen} />
         </HomeTabNavigator.Navigator>
     );
 };
