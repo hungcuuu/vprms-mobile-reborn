@@ -1,22 +1,40 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import MainNavigator from './MainNavigator';
+import LoginScreen from '../screens/LoginScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ServicesScreen from '../screens/ServicesScreen';
+import VehiclesScreen from '../screens/VehiclesScreen';
 
-import Login from '../Screen/Login';
-const Stack = createStackNavigator();
+const AuthStackNavigator = createStackNavigator();
 
-function MainStack() {
-  return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen
-        options={{ tabBarBadge: 3, title: 'Con cac' }}
-        name="Login"
-        component={Login}
-      />
-      <Stack.Screen name="Home" component={MainNavigator} />
-    </Stack.Navigator>
-  );
-}
+export const AuthNavigator = () => {
+    return (
+        <AuthStackNavigator.Navigator>
+            <AuthStackNavigator.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{ headerShown: false }}
+            />
+            <AuthStackNavigator.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{ headerShown: false }}
+            />
+        </AuthStackNavigator.Navigator>
+    );
+};
 
-export default MainStack;
+const HomeTabNavigator = createBottomTabNavigator();
+
+export const HomeNavigator = () => {
+    return (
+        <HomeTabNavigator.Navigator>
+            <HomeTabNavigator.Screen name="Profile" component={ProfileScreen} />
+            <HomeTabNavigator.Screen name="Service" component={ServicesScreen} />
+            <HomeTabNavigator.Screen name="Vehicle" component={VehiclesScreen} />
+        </HomeTabNavigator.Navigator>
+    );
+};
