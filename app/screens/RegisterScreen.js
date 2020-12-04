@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, StatusBar } from 'react-native';
-import { Text, Input, Button } from 'react-native-elements';
+import React, { useState } from 'react';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Text, Input, Button } from 'react-native-elements';
+import { useDispatch } from 'react-redux';
 
-import * as actions from '../store/actions';
 import { Colors } from '../constants';
-import { connect } from 'react-redux';
-
-const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
+import * as actions from '../store/actions';
+const RegisterScreen = ({ navigation, ...rest }) => {
+    const dispatch = useDispatch();
     const [phoneInput, setPhoneInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
+    const [fullnameInput, setFullnameInput] = useState('');
 
-    const loginHandler = () => {
-        onLogin(phoneInput, passwordInput);
+    const registerHandler = () => {
+        dispatch(actions.registerRequest(phoneInput, passwordInput, fullnameInput));
     };
-
-    useEffect(() => {
-        navigation.setOptions({ title: 'Login' });
-    }, []);
 
     return (
         <View
@@ -30,11 +27,7 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
             <View style={{ alignSelf: 'center', marginBottom: 16 }}>
                 <Ionicons size={120} name="ios-car" />
             </View>
-            {error ? (
-                <View style={{ alignSelf: 'center', marginBottom: 16 }}>
-                    <Text style={{ color: 'red', fontSize: 18 }}>{error.message}</Text>
-                </View>
-            ) : null}
+
             <View>
                 <Input
                     keyboardType="phone-pad"
@@ -43,23 +36,18 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
                     leftIcon={{ type: 'font-awesome', name: 'phone' }}
                     onChangeText={(value) => setPhoneInput(value)}
                 />
+
                 <Input
                     placeholder="Password"
                     inputContainerStyle={styles.input}
                     leftIcon={{ type: 'font-awesome', name: 'lock' }}
                     onChangeText={(value) => setPasswordInput(value)}
                 />
-                <Button
-                    buttonStyle={{
-                        backgroundColor: Colors.primary,
-                        marginTop: 16,
-                        width: '60%',
-                        alignSelf: 'center',
-                        borderRadius: 15,
-                    }}
-                    loading={loading}
-                    onPress={loginHandler}
-                    title="Login"
+                <Input
+                    placeholder="Fullname"
+                    inputContainerStyle={styles.input}
+                    // leftIcon={{ type: 'font-awesome', name: 'lock' }}
+                    onChangeText={(value) => setFullnameInput(value)}
                 />
                 <Button
                     buttonStyle={{
@@ -69,9 +57,21 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
                         alignSelf: 'center',
                         borderRadius: 15,
                     }}
-                    title="Register"
+                    // loading={loading}
+                    onPress={registerHandler}
+                    title="Registers"
+                />
+                <Button
+                    buttonStyle={{
+                        backgroundColor: Colors.primary,
+                        marginTop: 16,
+                        width: '60%',
+                        alignSelf: 'center',
+                        borderRadius: 15,
+                    }}
+                    title="Back to Login"
                     onPress={() => {
-                        navigation.navigate('Register');
+                        navigation.goBack();
                     }}
                 />
             </View>
@@ -79,19 +79,6 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
     );
 };
 
+export default RegisterScreen;
+
 const styles = StyleSheet.create({});
-
-const mapStateToProps = (state) => {
-    return {
-        loading: state.auth.loading,
-        error: state.auth.error,
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onLogin: (phoneNumber, password) => dispatch(actions.loginRequest(phoneNumber, password)),
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
