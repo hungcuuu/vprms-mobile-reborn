@@ -17,7 +17,9 @@ const VehiclesScreen = ({ navigation }) => {
                 ? vehicles.map((vehicleItem) => (
                       <TouchableNativeFeedback
                           key={vehicleItem.id}
-                          onPress={() => navigation.navigate('VehicleDetail')}>
+                          onPress={() =>
+                              navigation.navigate('VehicleDetail', vehicleItem)
+                          }>
                           <Text>
                               {vehicleItem.name} | {vehicleItem.licensePlateNumber}
                           </Text>
