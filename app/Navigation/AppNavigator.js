@@ -5,13 +5,13 @@ import { useSelector } from 'react-redux';
 import { AuthNavigator, HomeNavigator } from './MainNavigator';
 
 const AppNavigator = (props) => {
-  const isAuth = useSelector((state) => !!state.auth.token);
+    const isAuth = useSelector((state) => !!state.auth.token);
 
-  return (
-    <NavigationContainer>
-      {isAuth ? <HomeNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <HomeNavigator />
+        </NavigationContainer>
+    );
 };
 
 export default AppNavigator;
