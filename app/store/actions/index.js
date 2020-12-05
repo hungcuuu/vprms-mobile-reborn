@@ -9,4 +9,9 @@ export {
 
 export { fetchServices, fetchServicesSuccess } from './services';
 
-export { fetchVehicles, fetchVehiclesSuccess } from './vehicles';
+export {
+    fetchVehicles,
+    fetchVehiclesSuccess,
+    createVehicle,
+    createVehicleSuccess,
+} from './vehicles';

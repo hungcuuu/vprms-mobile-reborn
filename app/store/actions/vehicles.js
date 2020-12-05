@@ -12,3 +12,17 @@ export const fetchVehiclesSuccess = (vehicles) => {
         vehicles,
     };
 };
+
+export const createVehicle = (vehicle) => {
+    return {
+        type: actionTypes.CREATE_VEHICLE,
+        vehicle,
+    };
+};
+
+export const createVehicleSuccess = (vehicle) => {
+    return {
+        vehicle,
+        type: actionTypes.CREATE_VEHICLE_SUCCESS,
+    };
+};
