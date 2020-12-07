@@ -1,8 +1,11 @@
+/* eslint-disable react-native/no-unused-styles */
 import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, View } from 'react-native';
+import { Alert, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-community/picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import * as actions from '../../store/actions';
 
 const VehicleDetailScreen = ({ route, navigation }) => {
@@ -43,15 +46,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             <Modal visible={isVisible} animationType="fade">
                 <Card>
                     <Text>Biển số xe</Text>
-                    <Input
-                    // value={vehicle.name}
-                    // onChangeText={(value) =>
-                    //     setCurrentVehicle((cur) => ({
-                    //         ...cur,
-                    //         plateNumber: value,
-                    //     }))
-                    // }
-                    />
+
                     <Card.Divider />
                     <Text>Name</Text>
                     <Input
@@ -66,26 +61,6 @@ const VehicleDetailScreen = ({ route, navigation }) => {
 
                     <Card.Divider />
                     <Text>Màu xe</Text>
-                    {/* <Picker
-                        mode="dropdown"
-                        selectedValue={currentVehicle.color}
-                        style={{ height: 50 }}
-                        onValueChange={(itemValue, itemIndex) =>
-                            setCurrentVehicle((cur) => ({
-                                ...cur,
-                                color: itemValue.toString(),
-                            }))
-                        }>
-                        <Picker.Item label="Đỏ" value="Đỏ" />
-                        <Picker.Item label="Xanh Dương" value="Xanh Dương" />
-                        <Picker.Item label="Xanh Lá" value="Xanh Lá" />
-                        <Picker.Item label="Vàng" value="Vàng" />
-                        <Picker.Item label="Cam" value="Cam" />
-                        <Picker.Item label="Đen" value="Đen" />
-                        <Picker.Item label="Xám" value="Xám" />
-                        <Picker.Item label="Bạc" value="Bạc" />
-                        <Picker.Item label="Trắng" value="Trắng" />
-                    </Picker> */}
                 </Card>
                 <View>
                     <Button title="Cancel" onPress={() => cancelUpdateHandler()} />
@@ -107,23 +82,86 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         });
     }, []);
     return (
-        <View>
-            <View>
-                <Text>Detail</Text>
-            </View>
-            <View>
-                <View>
-                    <Text>{currentVehicle.name}</Text>
+        <View style={styles.container}>
+            <ScrollView
+                nestedScrollEnabled
+                // refreshControl={
+                //     <RefreshControl
+                //         refreshing={refreshing}
+                //         onRefresh={onRefresh}
+                //     />
+                // }
+                style={{ flex: 1 }}>
+                <View
+                    style={{
+                        padding: 8,
+                        // borderRadius: 100,
+                    }}>
+                    <View
+                        style={{
+                            padding: 8,
+                            flexDirection: 'row',
+                            // height: 150,
+                            // alignItems: "center",
+                            // justifyContent: "space-between",
+                        }}>
+                        <View
+                            style={{
+                                // alignItems: "center",
+                                width: '30%',
+                                // alignContent: "center",
+                                alignSelf: 'center',
+                            }}>
+                            <View
+                                style={{
+                                    backgroundColor: '#aaa',
+                                    borderRadius: 40,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    alignSelf: 'center',
+                                    width: 80,
+                                    height: 80,
+                                }}>
+                                <Ionicons name="md-car" size={50} />
+                            </View>
+                        </View>
+
+                        <View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.label}>Name: </Text>
+                                <Text style={styles.textInput}>
+                                    {currentVehicle.name}
+                                </Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.label}>VIN: </Text>
+                                <Text style={styles.textInput}>{currentVehicle.VIN}</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View>
+                        <Button
+                            title="Update Information"
+                            onPress={() => setIsVisible(true)}
+                        />
+                    </View>
                 </View>
-            </View>
-            <View>
-                <Button title="Update Information" onPress={() => setIsVisible(true)} />
-            </View>
-            <View>{modalUpdate()}</View>
+
+                <View>{modalUpdate()}</View>
+            </ScrollView>
         </View>
     );
 };
 
 export default VehicleDetailScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    container: {
+        // flex: 1,
+        //marginTop: Constants.statusBarHeight,
+        flexDirection: 'column',
+        height: '100%',
+    },
+});
