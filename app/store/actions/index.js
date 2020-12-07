@@ -14,4 +14,10 @@ export {
     fetchVehiclesSuccess,
     createVehicle,
     createVehicleSuccess,
+    deleteVehicle,
+    deleteVehicleSuccess,
+    deleteVehicleFail,
+    updateVehicle,
+    updateVehicleSuccess,
+    updateVehicleFail,
 } from './vehicles';

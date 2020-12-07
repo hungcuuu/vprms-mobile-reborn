@@ -11,6 +11,14 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     const error = useSelector((state) => state.vehicles.error);
     const [currentVehicle, setCurrentVehicle] = useState(vehicle);
     const [isVisible, setIsVisible] = useState(false);
+    const cancelUpdateHandler = () => {
+        setIsVisible(false);
+        setCurrentVehicle(vehicle);
+    };
+    const updateVehicleHandler = (vehicle) => {
+        dispatch(actions.updateVehicle(vehicle));
+        setIsVisible(false);
+    };
 
     if (error) Alert.alert(error);
 
@@ -36,24 +44,24 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 <Card>
                     <Text>Biển số xe</Text>
                     <Input
-                        value={vehicle.name}
-                        onChangeText={(value) =>
-                            setCurrentVehicle((cur) => ({
-                                ...cur,
-                                plateNumber: value,
-                            }))
-                        }
+                    // value={vehicle.name}
+                    // onChangeText={(value) =>
+                    //     setCurrentVehicle((cur) => ({
+                    //         ...cur,
+                    //         plateNumber: value,
+                    //     }))
+                    // }
                     />
                     <Card.Divider />
                     <Text>Name</Text>
                     <Input
-                    // value={currentVehicle.vinNumber}
-                    // onChangeText={(value) =>
-                    //     setCurrentVehicle((cur) => ({
-                    //         ...cur,
-                    //         vinNumber: value,
-                    //     }))
-                    // }
+                        value={currentVehicle.name}
+                        onChangeText={(value) =>
+                            setCurrentVehicle((cur) => ({
+                                ...cur,
+                                name: value,
+                            }))
+                        }
                     />
 
                     <Card.Divider />
@@ -80,8 +88,11 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     </Picker> */}
                 </Card>
                 <View>
-                    <Button title="Cancel" onPress={() => setIsVisible(false)} />
-                    <Button title="OK" onPress={() => updateVehicleFunc()} />
+                    <Button title="Cancel" onPress={() => cancelUpdateHandler()} />
+                    <Button
+                        title="OK"
+                        onPress={() => updateVehicleHandler(currentVehicle)}
+                    />
                 </View>
             </Modal>
         );
@@ -102,7 +113,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             </View>
             <View>
                 <View>
-                    <Text>{vehicle.name}</Text>
+                    <Text>{currentVehicle.name}</Text>
                 </View>
             </View>
             <View>
