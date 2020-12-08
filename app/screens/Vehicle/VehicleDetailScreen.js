@@ -76,7 +76,11 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     React.useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <Button onPress={() => deleteVehicle(vehicle.id)} title="Delete" />
+                <Button
+                    onPress={() => deleteVehicle(vehicle.id)}
+                    title="Delete"
+                    buttonStyle={{ backgroundColor: 'red' }}
+                />
             ),
             headerTitle: vehicle.name,
         });
