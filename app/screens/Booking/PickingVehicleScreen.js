@@ -13,13 +13,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
-const VehiclesScreen = ({ navigation }) => {
+const PickingVehicleScreen = ({ navigation }) => {
+    navigation.setOptions({ tabBarVisible: true });
     const dispatch = useDispatch();
     const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
+
+    const pickingVehicleHandler = () => {
+        navigation.navigate('PickingServiceType');
+    };
     const renderVehicleItem = (itemData) => (
         <TouchableOpacity
             // useForeground
-            onPress={() => navigation.navigate('VehicleDetail', itemData.item)}>
+            onPress={() => pickingVehicleHandler()}>
             <View style={styles.renderItemContainer}>
                 <View style={styles.icon}>
                     <Ionicons name="md-car" size={50} />
@@ -43,6 +48,9 @@ const VehiclesScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {/* <Text>Vehicle Screen</Text> */}
+            <View>
+                <Text>Please choose car</Text>
+            </View>
             <FlatList
                 data={vehicles}
                 keyExtractor={(item, index) => item.id.toString()}
@@ -52,12 +60,11 @@ const VehiclesScreen = ({ navigation }) => {
                 title="ADD VEHICLE"
                 onPress={() => navigation.navigate('CreateVehicle')}
             />
-            <Button title="Booking" onPress={() => navigation.navigate('Booking')} />
         </View>
     );
 };
 
-export default VehiclesScreen;
+export default PickingVehicleScreen;
 
 const styles = StyleSheet.create({
     container: {
