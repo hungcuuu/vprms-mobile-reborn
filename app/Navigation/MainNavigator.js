@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabBar, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -84,11 +85,25 @@ const HomeTabNavigator = createBottomTabNavigator();
 export const HomeNavigator = () => {
     return (
         <HomeTabNavigator.Navigator screenOptions={{ unmountOnBlur: true }}>
+            <HomeTabNavigator.Screen name="Booking" component={BookingNavigator} />
+
             <HomeTabNavigator.Screen name="Vehicle" component={VehicleNavigator} />
 
             <HomeTabNavigator.Screen name="Profile" component={ProfileScreen} />
             <HomeTabNavigator.Screen name="Service" component={ServicesScreen} />
-            <HomeTabNavigator.Screen name="Booking" component={BookingNavigator} />
         </HomeTabNavigator.Navigator>
     );
 };
+const Drawer = createDrawerNavigator();
+export function SideDrawer() {
+    return (
+        <Drawer.Navigator
+            initialRouteName="Booking"
+            screenOptions={{ unmountOnBlur: true }}>
+            <Drawer.Screen name="Vehicle" component={VehicleNavigator} />
+            <Drawer.Screen name="Service" component={ServicesScreen} />
+
+            <Drawer.Screen name="Booking" component={BookingNavigator} />
+        </Drawer.Navigator>
+    );
+}
