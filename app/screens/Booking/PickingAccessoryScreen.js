@@ -8,7 +8,7 @@ import {
     View,
 } from 'react-native';
 
-import { ACCESSORIES } from '../../data/accessories';
+import { ACCESSORY_TYPE } from '../../data/accessory-type';
 
 const PickingAccessoryScreen = ({ navigation, route }) => {
     const accessoryType = route.params;
@@ -24,7 +24,9 @@ const PickingAccessoryScreen = ({ navigation, route }) => {
         <View style={styles.container}>
             <View style={styles.itemsContainer}>
                 <FlatList
-                    data={ACCESSORIES.filter((typeId) => typeId.TYPEID === accessoryType)}
+                    data={ACCESSORY_TYPE.filter(
+                        (typeId) => typeId.TYPEID === accessoryType,
+                    )}
                     keyExtractor={(item, index) => item.ID.toString()}
                     renderItem={renderAccessoryTypeList}
                 />

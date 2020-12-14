@@ -2,7 +2,7 @@ import React from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { ACCESSORY_TYPE } from '../../data/accessory-type';
+import { CATALOG } from '../../data/catalog';
 const PickingAccessoryTypeScreen = ({ navigation }) => {
     const renderAccessoryTypeList = (itemData) => (
         <View style={styles.items}>
@@ -17,7 +17,7 @@ const PickingAccessoryTypeScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.itemsContainer}>
                 <FlatList
-                    data={ACCESSORY_TYPE}
+                    data={CATALOG}
                     keyExtractor={(item, index) => item.ID.toString()}
                     renderItem={renderAccessoryTypeList}
                 />

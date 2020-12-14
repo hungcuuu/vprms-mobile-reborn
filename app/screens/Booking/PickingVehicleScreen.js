@@ -14,7 +14,6 @@ import { Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
 const PickingVehicleScreen = ({ navigation }) => {
-    navigation.setOptions({ tabBarVisible: true });
     const dispatch = useDispatch();
     const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
 
