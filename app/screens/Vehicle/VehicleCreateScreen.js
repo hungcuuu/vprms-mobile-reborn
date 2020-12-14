@@ -9,7 +9,7 @@ const VehicleCreateScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [name, setName] = useState('');
     const [licensePlateNum, setLicensePlateNum] = useState('');
-
+    // const userId = dispatch(actions.)
     const createVehicleHandler = (name, licensePlateNumber) => {
         dispatch(actions.createVehicle({ name, licensePlateNumber }));
         navigation.pop();
@@ -23,6 +23,15 @@ const VehicleCreateScreen = ({ navigation }) => {
                     placeholder="License plate number"
                     onChangeText={(value) => setLicensePlateNum(value)}
                 />
+            </View>
+            <View>
+                <Input placeholder="Name" onChangeText={(value) => setName(value)} />
+            </View>
+            <View>
+                <Input placeholder="Name" onChangeText={(value) => setName(value)} />
+            </View>
+            <View>
+                <Input placeholder="Name" onChangeText={(value) => setName(value)} />
             </View>
             <View>
                 <Input placeholder="Name" onChangeText={(value) => setName(value)} />
