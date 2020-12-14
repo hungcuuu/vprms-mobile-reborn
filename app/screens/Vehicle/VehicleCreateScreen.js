@@ -28,13 +28,13 @@ const VehicleCreateScreen = ({ navigation }) => {
                 <Input placeholder="Name" onChangeText={(value) => setName(value)} />
             </View>
             <View>
-                <Input placeholder="Name" onChangeText={(value) => setName(value)} />
+                <Input placeholder="A" onChangeText={(value) => setName(value)} />
             </View>
             <View>
-                <Input placeholder="Name" onChangeText={(value) => setName(value)} />
+                <Input placeholder="B" onChangeText={(value) => setName(value)} />
             </View>
             <View>
-                <Input placeholder="Name" onChangeText={(value) => setName(value)} />
+                <Input placeholder="C" onChangeText={(value) => setName(value)} />
             </View>
             <View>
                 <Button
