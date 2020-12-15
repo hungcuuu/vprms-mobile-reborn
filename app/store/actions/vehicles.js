@@ -1,8 +1,9 @@
 import * as actionTypes from './actionTypes';
 
-export const fetchVehicles = () => {
+export const fetchVehicles = (id) => {
     return {
         type: actionTypes.FETCH_VEHICLE,
+        id,
     };
 };
 

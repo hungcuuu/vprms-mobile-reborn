@@ -7,7 +7,15 @@ import axios from '../../axios';
 
 function* fetchVehicles(action) {
     try {
-        yield put(actions.fetchVehiclesSuccess([...VEHICLES]));
+        let data = yield axios
+            .get('vehicles/users/' + action.id, {
+                headers: {
+                    'Content-Type': 'application/json ; charset=UTF-8',
+                    Accept: 'application/json',
+                },
+            })
+            .then((rs) => rs.data);
+        yield put(actions.fetchVehiclesSuccess(data));
     } catch (error) {
         console.log(error);
     }
