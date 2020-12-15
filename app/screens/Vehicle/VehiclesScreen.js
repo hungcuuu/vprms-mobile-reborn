@@ -29,16 +29,14 @@ const VehiclesScreen = ({ navigation }) => {
                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                         {itemData.item.name}
                     </Text>
-                    <Text style={{ fontSize: 16 }}>
-                        {itemData.item.licensePlateNumber}
-                    </Text>
-                    <Text style={{ fontSize: 16 }}>{itemData.item.VIN}</Text>
+                    <Text style={{ fontSize: 16 }}>{itemData.item.model.name}</Text>
+                    <Text style={{ fontSize: 16 }}>{itemData.item.vinNumber}</Text>
                 </View>
             </View>
         </TouchableOpacity>
     );
     useEffect(() => {
-        dispatch(actions.fetchVehicles());
+        // dispatch(actions.fetchVehicles());
     }, []);
     return (
         <View style={styles.container}>

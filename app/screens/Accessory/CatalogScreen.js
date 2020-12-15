@@ -8,6 +8,7 @@ import {
     View,
     TouchableOpacity,
 } from 'react-native';
+import { Button } from 'react-native-elements';
 
 import axios from '../../axios';
 import { CATALOG } from '../../data/catalog';
@@ -15,7 +16,7 @@ const CatalogScreen = ({ navigation }) => {
     const [Catalog, setCatalog] = useState([]);
     // let Catalog = [];
     const getCatalog = () => {
-        return axios.get('service-type-details', {
+        return axios.get('service-type-details/sections', {
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -89,6 +90,9 @@ const CatalogScreen = ({ navigation }) => {
     }, []);
     return (
         <View style={styles.container}>
+            <View>
+                <Button title="pick car" onPress={() => {}} />
+            </View>
             <View style={{ width: '100%', height: 150 }}>
                 <Image
                     resizeMethod="resize"

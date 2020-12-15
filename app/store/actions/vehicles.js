@@ -13,10 +13,11 @@ export const fetchVehiclesSuccess = (vehicles) => {
     };
 };
 
-export const createVehicle = (vehicle) => {
+export const createVehicle = (vehicle, callBack) => {
     return {
         type: actionTypes.CREATE_VEHICLE,
         vehicle,
+        callBack,
     };
 };
 
@@ -24,6 +25,13 @@ export const createVehicleSuccess = (vehicle) => {
     return {
         vehicle,
         type: actionTypes.CREATE_VEHICLE_SUCCESS,
+    };
+};
+
+export const createVehicleFail = (error) => {
+    return {
+        error,
+        type: actionTypes.CREATE_VEHICLE_FAIL,
     };
 };
 

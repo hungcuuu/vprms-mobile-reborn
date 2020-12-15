@@ -73,7 +73,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         );
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <Button

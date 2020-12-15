@@ -3,6 +3,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import * as actions from '../actions';
 import { VEHICLES } from '../../data/dummy-data';
+import axios from '../../axios';
 
 function* fetchVehicles(action) {
     try {
@@ -13,8 +14,19 @@ function* fetchVehicles(action) {
 }
 function* createVehicle(action) {
     try {
-        yield put(actions.createVehicleSuccess(action.vehicle));
+        let data = yield axios
+            .post('vehicles/', action.vehicle, {
+                headers: {
+                    'Content-Type': 'application/json ; charset=UTF-8',
+                    Accept: 'application/json',
+                },
+            })
+            .then((rs) => rs.data);
+
+        yield put(actions.createVehicleSuccess(data));
+        action.callBack();
     } catch (error) {
+        // put(actions.createVehicleFail(error));
         console.log(error);
     }
 }
