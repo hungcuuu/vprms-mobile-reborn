@@ -2,7 +2,7 @@ import { updateObject } from '../../utils';
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-    vehicles: null,
+    vehicles: [],
     loading: false,
     error: null,
 };
@@ -31,8 +31,15 @@ const createVehicle = (state, action) => {
 const createVehicleSuccess = (state, action) => {
     return updateObject(state, {
         loading: false,
-        vehicles: state.vehicles.concat({ id: Math.random(), ...action.vehicle }),
+        vehicles: state.vehicles.concat({ ...action.vehicle }),
         error: null,
+    });
+};
+
+const createVehicleFail = (state, action) => {
+    return updateObject(state, {
+        error: action.error,
+        loading: false,
     });
 };
 
@@ -89,6 +96,8 @@ const reducer = (state = initialState, action) => {
             return createVehicle(state, action);
         case actionTypes.CREATE_VEHICLE_SUCCESS:
             return createVehicleSuccess(state, action);
+        case actionTypes.CREATE_VEHICLE_FAIL:
+            return createVehicleFail(state, action);
         case actionTypes.DELETE_VEHICLE:
             return deleteVehicle(state, action);
         case actionTypes.DELETE_VEHICLE_SUCCESS:

@@ -14,6 +14,7 @@ export {
     fetchVehiclesSuccess,
     createVehicle,
     createVehicleSuccess,
+    createVehicleFail,
     deleteVehicle,
     deleteVehicleSuccess,
     deleteVehicleFail,

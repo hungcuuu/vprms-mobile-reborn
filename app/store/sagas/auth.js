@@ -14,8 +14,9 @@ function* login(action) {
         // const { jwtToken } = response;
         const jwtToken = 'abc123';
         yield AsyncStorage.setItem('AUTH_TOKEN', jwtToken);
-        const user = { phoneNumber, fullName: 'Test Login', role: 'ADMIN' };
+        const user = { userId: 1, phoneNumber, fullName: 'Test Login', role: 'ADMIN' };
         yield put(actions.loginSuccess(user, jwtToken));
+        yield put(actions.fetchVehicles(user.userId));
     } catch (error) {
         console.log('Error: ', error);
         yield put(actions.loginFailed(error));

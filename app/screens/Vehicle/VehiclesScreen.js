@@ -17,28 +17,38 @@ const VehiclesScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
     const renderVehicleItem = (itemData) => (
-        <TouchableOpacity
-            // useForeground
-            onPress={() => navigation.navigate('VehicleDetail', itemData.item)}>
-            <View style={styles.renderItemContainer}>
-                <View style={styles.icon}>
-                    <Ionicons name="md-car" size={50} />
-                </View>
+        <View style={{}}>
+            <View style={{ flex: 1 }}>
+                <TouchableOpacity
+                    // useForeground
+                    onPress={() => navigation.navigate('VehicleDetail', itemData.item)}>
+                    <View style={styles.renderItemContainer}>
+                        <View style={styles.icon}>
+                            <Ionicons name="md-car" size={50} />
+                        </View>
 
-                <View style={{ flex: 1, paddingLeft: 16, display: 'flex' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                        {itemData.item.name}
-                    </Text>
-                    <Text style={{ fontSize: 16 }}>
-                        {itemData.item.licensePlateNumber}
-                    </Text>
-                    <Text style={{ fontSize: 16 }}>{itemData.item.VIN}</Text>
-                </View>
+                        <View style={{ flex: 1, paddingLeft: 16, display: 'flex' }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+                                {itemData.item.name}
+                            </Text>
+                            <Text style={{ fontSize: 16 }}>
+                                {itemData.item.model.name}
+                            </Text>
+                            <Text style={{ fontSize: 16 }}>
+                                {itemData.item.vinNumber}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
             </View>
-        </TouchableOpacity>
+
+            {/* <View style={{ width: 50 }}>
+                <Button title="A" />
+            </View> */}
+        </View>
     );
     useEffect(() => {
-        dispatch(actions.fetchVehicles());
+        // dispatch(actions.fetchVehicles());
     }, []);
     return (
         <View style={styles.container}>
@@ -75,11 +85,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginVertical: 12,
         borderRadius: 30,
-        // shadowColor: 'black',
-        // shadowOpacity: 0.26,
-        // shadowOffset: { width: 0, height: 2 },
-        // shadowRadius: 8,
-        // elevation: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.26,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 8,
+        // elevation: 0,
     },
     icon: {
         backgroundColor: '#aaa',

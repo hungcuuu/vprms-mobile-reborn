@@ -1,8 +1,9 @@
 import * as actionTypes from './actionTypes';
 
-export const fetchVehicles = () => {
+export const fetchVehicles = (id) => {
     return {
         type: actionTypes.FETCH_VEHICLE,
+        id,
     };
 };
 
@@ -13,10 +14,11 @@ export const fetchVehiclesSuccess = (vehicles) => {
     };
 };
 
-export const createVehicle = (vehicle) => {
+export const createVehicle = (vehicle, callBack) => {
     return {
         type: actionTypes.CREATE_VEHICLE,
         vehicle,
+        callBack,
     };
 };
 
@@ -27,10 +29,18 @@ export const createVehicleSuccess = (vehicle) => {
     };
 };
 
-export const deleteVehicle = (id) => {
+export const createVehicleFail = (error) => {
+    return {
+        error,
+        type: actionTypes.CREATE_VEHICLE_FAIL,
+    };
+};
+
+export const deleteVehicle = (id, callBack) => {
     return {
         type: actionTypes.DELETE_VEHICLE,
         id,
+        callBack,
     };
 };
 
@@ -48,10 +58,11 @@ export const deleteVehicleFail = (error) => {
     };
 };
 
-export const updateVehicle = (vehicle) => {
+export const updateVehicle = (vehicle, callBack) => {
     return {
         type: actionTypes.UPDATE_VEHICLE,
         vehicle,
+        callBack,
     };
 };
 export const updateVehicleSuccess = (vehicle) => {

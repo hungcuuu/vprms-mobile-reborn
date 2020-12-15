@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-unused-styles */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,18 +15,18 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     const [currentVehicle, setCurrentVehicle] = useState(vehicle);
     const [isVisible, setIsVisible] = useState(false);
     const cancelUpdateHandler = () => {
-        setIsVisible(false);
         setCurrentVehicle(vehicle);
+
+        setIsVisible(false);
     };
     const updateVehicleHandler = (vehicle) => {
-        dispatch(actions.updateVehicle(vehicle));
-        setIsVisible(false);
+        dispatch(actions.updateVehicle(vehicle, () => setIsVisible(false)));
     };
 
     if (error) Alert.alert(error);
 
     const deleteVehicle = (id) => {
-        Alert.alert('', 'Do u want to Cancel this Vehicle?', [
+        Alert.alert('', 'Do u want to Delete this Vehicle?', [
             {
                 text: 'Cancel',
                 style: 'cancel',
@@ -34,8 +34,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             {
                 text: 'OK',
                 onPress: () => {
-                    dispatch(actions.deleteVehicle(id));
-                    navigation.pop();
+                    dispatch(actions.deleteVehicle(id, () => navigation.pop()));
                 },
             },
         ]);
@@ -45,16 +44,24 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         return (
             <Modal visible={isVisible} animationType="fade">
                 <Card>
-                    <Text>Biển số xe</Text>
-
-                    <Card.Divider />
-                    <Text>Name</Text>
+                    <Text>Plate Number</Text>
                     <Input
-                        value={currentVehicle.name}
+                        value={currentVehicle.plateNumber}
                         onChangeText={(value) =>
                             setCurrentVehicle((cur) => ({
                                 ...cur,
-                                name: value,
+                                plateNumber: value,
+                            }))
+                        }
+                    />
+                    <Card.Divider />
+                    <Text>VIN</Text>
+                    <Input
+                        value={currentVehicle.vinNumber}
+                        onChangeText={(value) =>
+                            setCurrentVehicle((cur) => ({
+                                ...cur,
+                                vinNumber: value,
                             }))
                         }
                     />
@@ -73,7 +80,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         );
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <Button
@@ -82,7 +89,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     buttonStyle={{ backgroundColor: 'red' }}
                 />
             ),
-            headerTitle: vehicle.name,
+            headerTitle: vehicle.model.name,
         });
     }, []);
     return (
@@ -99,21 +106,16 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 <View
                     style={{
                         padding: 8,
-                        // borderRadius: 100,
                     }}>
                     <View
                         style={{
                             padding: 8,
                             flexDirection: 'row',
-                            // height: 150,
-                            // alignItems: "center",
-                            // justifyContent: "space-between",
                         }}>
                         <View
                             style={{
-                                // alignItems: "center",
                                 width: '30%',
-                                // alignContent: "center",
+
                                 alignSelf: 'center',
                             }}>
                             <View
@@ -134,13 +136,15 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.label}>Name: </Text>
                                 <Text style={styles.textInput}>
-                                    {currentVehicle.name}
+                                    {currentVehicle.model.name}
                                 </Text>
                             </View>
 
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.label}>VIN: </Text>
-                                <Text style={styles.textInput}>{currentVehicle.VIN}</Text>
+                                <Text style={styles.textInput}>
+                                    {currentVehicle.vinNumber}
+                                </Text>
                             </View>
                         </View>
                     </View>
