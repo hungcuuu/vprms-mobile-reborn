@@ -58,10 +58,11 @@ export const deleteVehicleFail = (error) => {
     };
 };
 
-export const updateVehicle = (vehicle) => {
+export const updateVehicle = (vehicle, callBack) => {
     return {
         type: actionTypes.UPDATE_VEHICLE,
         vehicle,
+        callBack,
     };
 };
 export const updateVehicleSuccess = (vehicle) => {

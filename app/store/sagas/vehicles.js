@@ -60,7 +60,26 @@ function* deleteVehicle(action) {
 }
 function* updateVehicle(action) {
     try {
-        yield put(actions.updateVehicleSuccess(action.vehicle));
+        let data = yield axios
+            .post(
+                'vehicles/' + action.vehicle.id,
+                {
+                    boughtDate: action.vehicle.boughtDate,
+                    color: action.vehicle.color,
+                    modelId: action.vehicle.model.id,
+                    plateNumber: action.vehicle.plateNumber,
+                    vinNumber: action.vehicle.vinNumber,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json ; charset=UTF-8',
+                        Accept: 'application/json',
+                    },
+                },
+            )
+            .then((rs) => rs.data);
+        yield put(actions.updateVehicleSuccess(data));
+        action.callBack();
     } catch (error) {
         yield put(actions.updateVehicleFail(error));
     }
