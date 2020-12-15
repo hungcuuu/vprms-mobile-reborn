@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-unused-styles */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,8 +34,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             {
                 text: 'OK',
                 onPress: () => {
-                    dispatch(actions.deleteVehicle(id));
-                    navigation.pop();
+                    dispatch(actions.deleteVehicle(id, () => navigation.pop()));
                 },
             },
         ]);
@@ -50,10 +49,10 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     <Card.Divider />
                     <Text>Name</Text>
                     <Input
-                        value={currentVehicle.name}
+                        value={currentVehicle.model.name}
                         onChangeText={(value) =>
                             setCurrentVehicle((cur) => ({
-                                ...cur,
+                                ...cur.model,
                                 name: value,
                             }))
                         }
@@ -82,7 +81,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     buttonStyle={{ backgroundColor: 'red' }}
                 />
             ),
-            headerTitle: vehicle.name,
+            headerTitle: vehicle.model.name,
         });
     }, []);
     return (
@@ -134,13 +133,15 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.label}>Name: </Text>
                                 <Text style={styles.textInput}>
-                                    {currentVehicle.name}
+                                    {currentVehicle.model.name}
                                 </Text>
                             </View>
 
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.label}>VIN: </Text>
-                                <Text style={styles.textInput}>{currentVehicle.VIN}</Text>
+                                <Text style={styles.textInput}>
+                                    {currentVehicle.vinNumber}
+                                </Text>
                             </View>
                         </View>
                     </View>

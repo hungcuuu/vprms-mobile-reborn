@@ -35,10 +35,11 @@ export const createVehicleFail = (error) => {
     };
 };
 
-export const deleteVehicle = (id) => {
+export const deleteVehicle = (id, callBack) => {
     return {
         type: actionTypes.DELETE_VEHICLE,
         id,
+        callBack,
     };
 };
 

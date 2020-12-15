@@ -32,11 +32,22 @@ function* createVehicle(action) {
 }
 function* deleteVehicle(action) {
     try {
+        yield axios.delete('vehicles/' + action.id, {
+            headers: {
+                'Content-Type': 'application/json ; charset=UTF-8',
+                Accept: 'application/json',
+            },
+        });
+
         yield put(actions.deleteVehicleSuccess(action.id));
+        action.callBack();
+
+        // else yield put(actions.deleteVehicleFail("error"));
+
         // throw 'Error';
     } catch (error) {
-        // console.log(error);
-        yield put(actions.deleteVehicleFail(error));
+        console.log(error);
+        // yield put(actions.deleteVehicleFail(error));
     }
 }
 function* updateVehicle(action) {
