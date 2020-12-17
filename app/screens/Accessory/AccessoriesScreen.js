@@ -31,22 +31,14 @@ const AccessoriesScreen = ({ navigation, route }) => {
     };
 
     const getAllAccessories = () => {
-        return axios.post(
-            'providers/part-categories',
-            {
-                categoryIds: [accessoryType],
-                currentPos: {
-                    latitude: 0,
-                    longitude: 0,
-                },
-                modelId: vehicles.model.id,
+        return axios.post('providers/part-categories', {
+            categoryIds: [accessoryType],
+            currentPos: {
+                latitude: 0,
+                longitude: 0,
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-            },
-        );
+            modelId: vehicles.model.id,
+        });
     };
     const renderParts = (part, provider) => {
         return (
@@ -118,24 +110,6 @@ const AccessoriesScreen = ({ navigation, route }) => {
     const renderGarageList = (itemData) => {
         return (
             <View style={styles.items}>
-                {/* <View
-                style={{
-                    borderWidth: 1,
-                    // flex: 1,
-                    height: 80,
-                    width: '100%',
-                }}>
-                <Image
-                    resizeMethod="resize"
-                    resizeMode="cover"
-                    source={{
-                        uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
-                        height: '100%',
-                        width: '100%',
-                    }}
-                    style={{ width: '100%', height: '100%' }}
-                />
-            </View> */}
                 <View>
                     <Text
                         style={{
@@ -173,60 +147,11 @@ const AccessoriesScreen = ({ navigation, route }) => {
             </View>
         );
     };
-    const renderAccessoryDetail = (
-        <Modal
-            style={{ width: '100%', borderWidth: 1 }}
-            animationType="slide"
-            onSwipeComplete={() => closeModal()}
-            swipeThreshold={100}
-            transparent={true}
-            // swipeDirection={('up', 'down')}
-
-            visible={modalVisible}>
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    {/* <Text style={styles.modalText}>Detail</Text> */}
-                    <View
-                        style={{
-                            borderWidth: 1,
-                            // flex: 1,
-                            height: 80,
-                            width: '100%',
-                        }}>
-                        <Image
-                            resizeMethod="resize"
-                            resizeMode="cover"
-                            source={{
-                                uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
-                                height: '100%',
-                                width: '100%',
-                            }}
-                            style={{ width: '100%', height: '100%' }}
-                        />
-                    </View>
-                    <Button
-                        title="Book now"
-                        onPress={() => {
-                            closeModal(), navigation.navigate('ProviderAccessories');
-                        }}
-                    />
-                    <Button
-                        title="close"
-                        style={{
-                            ...styles.openButton,
-                            backgroundColor: '#2196F3',
-                        }}
-                        onPress={() => {
-                            closeModal();
-                        }}
-                    />
-                </View>
-            </View>
-        </Modal>
-    );
 
     useEffect(() => {
-        getAllAccessories().then((rs) => setGarageList(rs.data));
+        getAllAccessories().then((rs) => {
+            setGarageList(rs.data);
+        });
     }, []);
     return (
         <View style={styles.container}>
@@ -237,10 +162,8 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     data={garageList}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderGarageList}
-                    // numColumns={2}
                 />
             </View>
-            {/* {renderAccessoryDetail} */}
         </View>
     );
 };
@@ -280,31 +203,7 @@ const styles = StyleSheet.create({
         // borderWidth: 2,
         borderColor: 'red',
     },
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-        // height: 500,
-        // width: '100%',
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        height: '100%',
-        width: '100%',
-    },
+
     separator: {
         marginVertical: 10,
         marginBottom: 5,

@@ -23,7 +23,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
         return (
             <View style={{ borderWidth: 1, padding: 16 }}>
                 <View>
-                    <View>
+                    <View style={{ alignItems: 'flex-start' }}>
                         {/* <Text>{part.part.id}</Text> */}
                         <Text>{part.part.name}</Text>
 
@@ -57,9 +57,9 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        // console.log(selections);
+        console.log('selection', selections);
         let categories = [...new Set(selections.map((item) => item.categoryId))];
-
+        console.log('cate', categories);
         axios
             .post(
                 'services/providers/' +
@@ -69,21 +69,36 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 categories,
             )
             .then((rs) => {
-                const partList = Object.keys(rs.data)
+                console.log('data', rs.data);
+                // const partList = Object.keys(rs.data)
+                //     .reduce(
+                //         (curr, key) => [
+                //             ...curr,
+                //             {
+                //                 part: selections.find(
+                //                     (p) => p.categoryId.toString() === key.toString(),
+                //                 ),
+                //                 category: key,
+                //                 ...rs.data[key],
+                //             },
+                //         ],
+                //         [],
+                //     )
+                //     .map((part) => ({ ...part, checked: true }));
+                const partList = selections
                     .reduce(
-                        (curr, key) => [
+                        (curr, part) => [
                             ...curr,
                             {
-                                part: selections.find(
-                                    (p) => p.categoryId.toString() === key.toString(),
-                                ),
-                                category: key,
-                                ...rs.data[key],
+                                part: part,
+                                category: part.categoryId,
+                                ...rs.data[part.categoryId],
                             },
                         ],
                         [],
                     )
                     .map((part) => ({ ...part, checked: true }));
+                console.log('Screen', partList);
                 setPartList(partList);
                 // setSelected(
                 //     partList.map((part) => ({ serviceId: part.serviceId, partId: 0 })),
@@ -98,18 +113,22 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
     }, []);
 
     return (
-        <View>
-            <View>
-                <FlatList
-                    data={partList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item: part }) => renderParts(part)}
-                />
-            </View>
+        <View
+            style={{
+                flex: 1,
+                width: '100%',
+                paddingVertical: 16,
+                paddingHorizontal: 16,
+                borderWidth: 1,
+            }}>
+            <FlatList
+                data={partList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item: part }) => renderParts(part)}
+                showsVerticalScrollIndicator={false}
+            />
 
-            <View></View>
-
-            <View>
+            <View style={{}}>
                 <Button
                     title="Next"
                     onPress={() =>

@@ -1,13 +1,12 @@
-import { formatMoney } from 'accounting';
+// import { formatMoney } from '';
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
+import { formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
     let partList = route.params.partList ?? [];
-    console.log('detail', detail);
-    console.log('partList', partList);
     const renderParts = (part) => {
         return (
             <View style={{ borderWidth: 1 }}>

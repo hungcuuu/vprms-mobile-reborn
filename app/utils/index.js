@@ -3,7 +3,12 @@ import accounting from 'accounting';
 export const updateObject = (oldState, newProps) => {
     return { ...oldState, ...newProps };
 };
-
+export const secondToMiliSecond = (value) => {
+    return value * 1000;
+};
+export const toTimeString = (value) => {
+    return new Date(secondToMiliSecond(value)).toLocaleTimeString();
+};
 export const normalizeString = (value) => {
     return value
         .toUpperCase()
