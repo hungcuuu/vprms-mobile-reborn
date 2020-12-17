@@ -1,31 +1,59 @@
+import { formatMoney } from 'accounting';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
 const ReviewScreen = ({ navigation, route }) => {
+    let detail = route.params.detail ?? [];
+    let partList = route.params.partList ?? [];
+    console.log('detail', detail);
+    console.log('partList', partList);
+    const renderParts = (part) => {
+        return (
+            <View style={{ borderWidth: 1 }}>
+                <View>
+                    <Text>{part.serviceName}</Text>
+                </View>
+                <View>
+                    <Text>{part.part.name}</Text>
+                </View>
+                <View>
+                    <Text>
+                        {formatMoney(
+                            (part.part.price * part.part.quantity ?? 0) + part.price,
+                        )}
+                    </Text>
+                </View>
+            </View>
+        );
+    };
     return (
         <View>
             <View>
                 <View>
-                    <Text>Garage Hung</Text>
+                    <Text>{detail.provider.name}</Text>
                 </View>
                 <View>
-                    <Text>Address: A33/33</Text>
+                    <Text>{detail.provider.address}</Text>
                 </View>
             </View>
             <View>
-                <View>
-                    <View>
-                        <Text>SERVICE 1</Text>
-                    </View>
-                    <View>
-                        <Text>Tên phụ tùng</Text>
-                        <Text>Tên phụ tùng</Text>
-                    </View>
-                </View>
+                <FlatList
+                    data={partList}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: part }) => renderParts(part)}
+                />
             </View>
             <View>
-                <Button title="Next" onPress={() => navigation.navigate('Schedule')} />
+                <Button
+                    title="Next"
+                    onPress={() =>
+                        navigation.navigate('Schedule', {
+                            detail: detail,
+                            partList: partList,
+                        })
+                    }
+                />
             </View>
         </View>
     );

@@ -4,19 +4,20 @@ import { Button } from 'react-native-elements';
 
 const AccessoryDetailScreen = ({ navigation, route }) => {
     const detail = route.params;
+    // console.log(detail);
 
     return (
         <View>
             <View>
-                <Text>{detail.ID}</Text>
+                <Text>{detail.provider.name}</Text>
             </View>
             <View>
-                <Text>{detail.NAME}</Text>
+                <Text>{detail.part.name}</Text>
             </View>
             <View>
                 <Button
                     title="Book now"
-                    onPress={() => navigation.navigate('ProviderAccessories')}
+                    onPress={() => navigation.navigate('ProviderAccessories', detail)}
                 />
             </View>
         </View>

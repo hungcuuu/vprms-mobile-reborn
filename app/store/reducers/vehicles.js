@@ -5,8 +5,20 @@ const initialState = {
     vehicles: [],
     loading: false,
     error: null,
+    currentVehicle: {},
 };
 
+const updateCurrentVehicle = (state, action) => {
+    return updateObject(state, {
+        loading: true,
+    });
+};
+const updateCurrentVehicleSuccess = (state, action) => {
+    return updateObject(state, {
+        currentVehicle: action.vehicle,
+        loading: false,
+    });
+};
 const fetchVehicles = (state, action) => {
     return updateObject(state, {
         loading: true,
@@ -19,6 +31,7 @@ const fetchVehiclesSuccess = (state, action) => {
         loading: false,
         vehicles: action.vehicles,
         error: null,
+        currentVehicle: action.vehicles[0],
     });
 };
 const createVehicle = (state, action) => {
@@ -110,6 +123,10 @@ const reducer = (state = initialState, action) => {
             return updateVehicleSuccess(state, action);
         case actionTypes.UPDATE_VEHICLE_FAIL:
             return updateVehicleFail(state, action);
+        case actionTypes.UPDATE_CURRENT_VEHICLE:
+            return updateCurrentVehicle(state, action);
+        case actionTypes.UPDATE_CURRENT_VEHICLE_SUCCESS:
+            return updateCurrentVehicleSuccess(state, action);
         default:
             return state;
     }

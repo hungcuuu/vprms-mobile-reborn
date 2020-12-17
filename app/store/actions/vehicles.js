@@ -1,5 +1,18 @@
 import * as actionTypes from './actionTypes';
 
+export const updateCurrentVehicle = (vehicle) => {
+    return {
+        type: actionTypes.UPDATE_CURRENT_VEHICLE,
+        vehicle,
+    };
+};
+export const updateCurrentVehicleSuccess = (vehicle) => {
+    return {
+        type: actionTypes.UPDATE_CURRENT_VEHICLE_SUCCESS,
+        vehicle,
+    };
+};
+
 export const fetchVehicles = (id) => {
     return {
         type: actionTypes.FETCH_VEHICLE,

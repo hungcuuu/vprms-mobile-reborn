@@ -7,12 +7,30 @@ import {
     Text,
     View,
     TouchableOpacity,
+    Modal,
 } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Card, CheckBox } from 'react-native-elements';
+import { Picker } from '@react-native-community/picker';
+
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../store/actions';
 
 import axios from '../../axios';
 import { CATALOG } from '../../data/catalog';
 const CatalogScreen = ({ navigation }) => {
+    const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
+    const dispatch = useDispatch();
+
+    // console.log(useSelector((state) => state.vehicles.currentVehicle));
+    const [isVisible, setIsVisible] = useState(false);
+    // const [currentVehicle, setCurrentVehicle] = useState();
+    const currentVehicle = useSelector((state) => state.vehicles.currentVehicle ?? {});
+
+    // useSelector((state) => state.vehicles?.vehicles[0]),
+    const [currentManu, setCurrentManu] = useState(1);
+    const [manufactureList, setManufactureList] = useState();
+    const [vehicleTypeList, setVehicleTypeList] = useState([]);
+    const [currentType, setCurrentType] = useState(2);
     const [Catalog, setCatalog] = useState([]);
     // let Catalog = [];
     const getCatalog = () => {
@@ -22,6 +40,147 @@ const CatalogScreen = ({ navigation }) => {
             },
         });
     };
+    const getManufactures = async () => {
+        await axios
+            .get('manufacturers/', {
+                headers: {
+                    'Content-Type': 'application/json ; charset=UTF-8',
+                    Accept: 'application/json',
+                },
+            })
+            .then((rs) => setManufactureList(rs.data))
+            .catch((err) => Alert.alert(err));
+    };
+    const getVehicleTypeList = (id) => {
+        return axios
+            .get('models/manufacturers/' + id, {
+                headers: {
+                    'Content-Type': 'application/json ; charset=UTF-8',
+                    Accept: 'application/json',
+                },
+            })
+            .then((rs) => {
+                setVehicleTypeList(rs.data);
+            })
+            .catch((er) => Alert.alert(er));
+    };
+    const changeVehicle = (vehicle) => {
+        // console.log(vehicle);
+        dispatch(actions.updateCurrentVehicle(vehicle));
+        // console.log('1');
+    };
+    const renderOtherPicker = () => (
+        <View style={{ width: '100%' }}>
+            <View>
+                <Picker
+                    mode="dropdown"
+                    selectedValue={currentManu}
+                    style={{ height: 50 }}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setCurrentManu(itemValue), getVehicleTypeList(itemValue);
+
+                        // changeVehicle({
+                        //     ...currentVehicle,
+                        //     id: 'other',
+                        // });
+                        // setCurrentType(1);
+                    }}>
+                    {/* <Picker.Item key={0} label={'None'} value={0} /> */}
+
+                    {manufactureList
+                        ? manufactureList.map((m) => (
+                              <Picker.Item key={m.id} label={m.name} value={m.id} />
+                          ))
+                        : null}
+                </Picker>
+            </View>
+            <View>
+                {vehicleTypeList !== undefined ? (
+                    <View>
+                        <Picker
+                            mode="dropdown"
+                            selectedValue={+currentType}
+                            style={{ height: 50 }}
+                            onValueChange={(itemValue, itemIndex) => {
+                                changeVehicle({
+                                    ...currentVehicle,
+                                    model: {
+                                        id: itemValue?.toString(),
+                                        name: vehicleTypeList.find(
+                                            (vehicle) => vehicle.id === itemValue,
+                                        ).name,
+                                        year: vehicleTypeList.find(
+                                            (vehicle) => vehicle.id === itemValue,
+                                        ).year,
+                                    },
+                                    id: 'other',
+                                });
+                                setCurrentType(itemValue);
+                            }}>
+                            {vehicleTypeList.map((t) => (
+                                <Picker.Item
+                                    key={t.id}
+                                    label={t.name + ' ' + t.year}
+                                    value={t.id}
+                                />
+                            ))}
+                        </Picker>
+                    </View>
+                ) : (
+                    <Text>cac</Text>
+                )}
+            </View>
+        </View>
+    );
+    const modalPickVehicle = () => {
+        return (
+            <Modal visible={isVisible} animationType="fade">
+                <View>
+                    <FlatList
+                        data={vehicles}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderVehicleList}
+                    />
+                </View>
+                <View style={{ justifyContent: 'center', margin: 20 }}>
+                    <CheckBox
+                        key={'other'}
+                        checkedIcon="dot-circle-o"
+                        uncheckedIcon="circle-o"
+                        checkedColor="red"
+                        title="Other"
+                        checked={currentVehicle?.id === 'other'}
+                        onPress={() => {
+                            changeVehicle({ ...currentVehicle, id: 'other' });
+                            // console.log(currentVehicle);
+                        }}
+                    />
+                    {renderOtherPicker()}
+                </View>
+                <View>
+                    <Button title="done" onPress={() => setIsVisible(false)} />
+                </View>
+            </Modal>
+        );
+    };
+    const renderVehicleList = (itemData) => (
+        <CheckBox
+            key={'' + itemData.item.id}
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            checkedColor="red"
+            title={
+                <View>
+                    <Text>Type: {itemData.item.model.name}</Text>
+                    <Text>plateNumber: {itemData.item.plateNumber}</Text>
+                </View>
+            }
+            checked={currentVehicle?.id === itemData.item.id}
+            onPress={() => {
+                changeVehicle(itemData.item);
+            }}
+        />
+    );
 
     const renderAccessoryTypeList = (itemData) => (
         <View style={styles.items}>
@@ -72,8 +231,9 @@ const CatalogScreen = ({ navigation }) => {
     );
 
     useEffect(() => {
-        // const abortController = new AbortController();
-        // const signal = abortController.signal;
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+        getManufactures();
         getCatalog().then((rs) => {
             if (rs.status === 200) {
                 setCatalog(
@@ -83,15 +243,25 @@ const CatalogScreen = ({ navigation }) => {
                 );
             }
         });
-        console.log('Effect');
-        // return function cleanup() {
-        //     abortController.abort();
-        // };
+        return function cleanup() {
+            abortController.abort();
+        };
     }, []);
     return (
         <View style={styles.container}>
             <View>
-                <Button title="pick car" onPress={() => {}} />
+                <View>
+                    <Button
+                        title={
+                            currentVehicle
+                                ? currentVehicle.model?.name +
+                                  ' ' +
+                                  currentVehicle.model?.year
+                                : 'You dont have car'
+                        }
+                        onPress={() => setIsVisible(true)}
+                    />
+                </View>
             </View>
             <View style={{ width: '100%', height: 150 }}>
                 <Image
@@ -114,6 +284,7 @@ const CatalogScreen = ({ navigation }) => {
                     numColumns={3}
                 />
             </View>
+            <View>{modalPickVehicle()}</View>
         </View>
     );
 };

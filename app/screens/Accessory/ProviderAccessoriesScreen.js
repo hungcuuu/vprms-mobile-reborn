@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button, CheckBox, SearchBar } from 'react-native-elements';
+
+import axios from '../../axios';
 import { ACCESSORIES } from '../../data/accessories';
 
 import { normalizeString } from '../../utils';
 const ProviderAccessoriesScreen = ({ navigation, route }) => {
-    const [accessories, setAccessories] = useState(ACCESSORIES);
-    const [filteredAccessories, setFilteredAccessories] = useState(ACCESSORIES);
+    const detail = route.params;
+
+    const [selections, setSelections] = useState([]);
+    const [accessories, setAccessories] = useState([]);
+    const [filteredAccessories, setFilteredAccessories] = useState([]);
     const [searchText, setSearchText] = useState('');
-    const [selectedAccessories, setSelectedAccessories] = useState([]);
+
     const searchHandler = (text) => {
         setSearchText(text);
         if (!text || text === '') {
@@ -16,28 +21,77 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
         }
 
         const updatedAccessories = accessories.filter((ser) =>
-            normalizeString(ser.NAME).match(normalizeString(text)),
+            normalizeString(ser.name).match(normalizeString(text)),
         );
         setFilteredAccessories(updatedAccessories);
     };
-    const onSelectAccessoriesChecked = (obj) => {
-        setSelectedAccessories((curr) => {
-            if (curr.findIndex((item) => item.ID === obj.ID) === -1) {
-                return [...curr, obj];
-            }
-            return curr.filter((item) => item.ID !== obj.ID);
-        });
+
+    const onAddPart = (itemId, price, categoryId, name) => {
+        const updatedSelections = [...selections];
+        const index = selections.findIndex((item) => item.id === itemId);
+        if (index >= 0) {
+            // Update quantity
+            updatedSelections[index].quantity++;
+        } else {
+            // Add to list
+            updatedSelections.push({
+                id: itemId,
+                name: name,
+                price: price,
+                quantity: 1,
+                categoryId: categoryId,
+            });
+        }
+        setSelections(updatedSelections);
     };
-    const renderAccessoryTypeList = (itemData) => (
-        <CheckBox
-            key={itemData.item.ID}
-            checkedIcon="check"
-            checkedColor="red"
-            title={itemData.item.NAME}
-            checked={selectedAccessories.findIndex((s) => s.ID === itemData.item.ID) > -1}
-            onPress={() => onSelectAccessoriesChecked(itemData.item)}
-        />
-    );
+
+    const onRemovePart = (itemId) => {
+        let updatedSelections = [...selections];
+        const index = selections.findIndex((item) => item.id === itemId);
+        if (index >= 0) {
+            if (updatedSelections[index].quantity >= 1) {
+                updatedSelections[index].quantity--;
+            } else {
+                updatedSelections = updatedSelections.splice(index, 1);
+            }
+        } else {
+            return;
+        }
+        setSelections(updatedSelections);
+    };
+    const renderAccessoryList = (itemData) => {
+        const quantity =
+            selections.find((item) => item.id === itemData.item.id)?.quantity ?? 0;
+
+        return (
+            <View>
+                <Text>{itemData.item.name}</Text>
+                <Button title="-" onPress={() => onRemovePart(itemData.item.id)} />
+                <Text>{quantity}</Text>
+                <Button
+                    title="+"
+                    onPress={() =>
+                        onAddPart(
+                            itemData.item.id,
+                            itemData.item.price,
+                            itemData.item.categoryId,
+                            itemData.item.name,
+                        )
+                    }
+                />
+            </View>
+        );
+    };
+
+    useEffect(() => {
+        axios.get(`/parts/1`).then((res) => {
+            setAccessories(res.data);
+            setFilteredAccessories(res.data);
+        });
+    }, []);
+
+    // console.log(accessories);
+
     return (
         <View style={styles.container}>
             <View>
@@ -63,14 +117,19 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
             </View>
             <FlatList
                 data={filteredAccessories}
-                keyExtractor={(item, index) => item.ID.toString()}
-                renderItem={renderAccessoryTypeList}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderAccessoryList}
             />
 
             <View>
                 <Button
                     title="Next"
-                    onPress={() => navigation.navigate('AccessoryServices')}
+                    onPress={() =>
+                        navigation.navigate('AccessoryServices', {
+                            selections: selections,
+                            detail: detail,
+                        })
+                    }
                 />
             </View>
         </View>

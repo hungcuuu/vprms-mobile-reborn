@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import axios from '../../axios';
 
 const ScheduleScreen = () => {
+    let detail = route.params.detail ?? [];
+    let partList = route.params.partList ?? [];
     const [currentDay, setCurrentDay] = useState(new Date().toISOString().split('T')[0]);
 
     const onDayPick = (value) => {
@@ -10,6 +13,12 @@ const ScheduleScreen = () => {
         // getTimeTable(providerId, Math.floor(new Date(value).getTime() / 1000));
         setCurrentDay(value);
     };
+    // useEffect(() => {
+    //     axios.
+    //     return () => {
+    //         cleanup
+    //     }
+    // }, [input])
     return (
         <View>
             <View>
