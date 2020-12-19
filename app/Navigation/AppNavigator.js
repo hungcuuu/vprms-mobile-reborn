@@ -8,7 +8,7 @@ import * as actions from '../store/actions';
 const AppNavigator = (props) => {
     const isAuth = useSelector((state) => !!state.auth.token);
     const dispatch = useDispatch();
-    dispatch(actions.fetchVehicles('1'));
+    dispatch(actions.fetchVehicles('24'));
 
     return (
         <NavigationContainer>

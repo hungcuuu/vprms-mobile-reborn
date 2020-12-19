@@ -8,6 +8,7 @@ export {
 } from './auth';
 
 export { fetchServices, fetchServicesSuccess } from './services';
+export {} from './requests';
 
 export {
     fetchVehicles,
@@ -21,4 +22,6 @@ export {
     updateVehicle,
     updateVehicleSuccess,
     updateVehicleFail,
+    updateCurrentVehicle,
+    updateCurrentVehicleSuccess,
 } from './vehicles';

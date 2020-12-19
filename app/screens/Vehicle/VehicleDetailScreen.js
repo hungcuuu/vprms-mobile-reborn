@@ -94,15 +94,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     }, []);
     return (
         <View style={styles.container}>
-            <ScrollView
-                nestedScrollEnabled
-                // refreshControl={
-                //     <RefreshControl
-                //         refreshing={refreshing}
-                //         onRefresh={onRefresh}
-                //     />
-                // }
-                style={{ flex: 1 }}>
+            <ScrollView nestedScrollEnabled style={{ flex: 1 }}>
                 <View
                     style={{
                         padding: 8,

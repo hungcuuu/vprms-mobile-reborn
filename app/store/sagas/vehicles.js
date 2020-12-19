@@ -5,6 +5,13 @@ import * as actions from '../actions';
 import { VEHICLES } from '../../data/dummy-data';
 import axios from '../../axios';
 
+function* updateCurrentVehicle(action) {
+    try {
+        yield put(actions.updateCurrentVehicleSuccess(action.vehicle));
+    } catch (error) {
+        console.log(error);
+    }
+}
 function* fetchVehicles(action) {
     try {
         let data = yield axios
@@ -89,4 +96,5 @@ export default function* vehiclesSagas() {
     yield takeEvery(actionTypes.CREATE_VEHICLE, createVehicle);
     yield takeEvery(actionTypes.DELETE_VEHICLE, deleteVehicle);
     yield takeEvery(actionTypes.UPDATE_VEHICLE, updateVehicle);
+    yield takeEvery(actionTypes.UPDATE_CURRENT_VEHICLE, updateCurrentVehicle);
 }

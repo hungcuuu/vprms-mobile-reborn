@@ -14,7 +14,7 @@ const VehicleCreateScreen = ({ navigation }) => {
 
     const [VIN, setVIN] = useState('');
     const [boughtDate, setBoughtDate] = useState(new Date());
-
+    const [currentManu, setCurrentManu] = useState(1);
     const [licensePlateNum, setLicensePlateNum] = useState('');
     const [manufactureList, setManufactureList] = useState();
     const [vehicleTypeList, setVehicleTypeList] = useState([]);
@@ -101,11 +101,11 @@ const VehicleCreateScreen = ({ navigation }) => {
                 <Text>manufacturers</Text>
                 <Picker
                     mode="dropdown"
-                    selectedValue={1}
+                    selectedValue={currentManu}
                     style={{ height: 50 }}
-                    onValueChange={(itemValue, itemIndex) =>
-                        getVehicleTypeList(itemValue)
-                    }>
+                    onValueChange={(itemValue, itemIndex) => {
+                        setCurrentManu(itemValue), getVehicleTypeList(itemValue);
+                    }}>
                     {manufactureList
                         ? manufactureList.map((m) => (
                               <Picker.Item key={m.id} label={m.name} value={m.id} />

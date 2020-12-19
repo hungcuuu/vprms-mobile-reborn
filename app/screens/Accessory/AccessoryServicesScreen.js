@@ -1,43 +1,123 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
+import { useSelector } from 'react-redux';
+import axios from '../../axios';
 
 const AccessoryServicesScreen = ({ navigation, route }) => {
+    const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
+    const selections = route.params.selections ?? [];
+
+    let detail = route.params.detail ?? [];
+    const [partList, setPartList] = useState([]);
+    // const [categoryList, setCategoryList] = useState([]);
+
+    const serviceChangedHandler = (partId, checked) => {
+        const updatedPartList = [...partList];
+        const index = updatedPartList.findIndex((part) => part.part.id === partId);
+        updatedPartList[index].checked = checked;
+        setPartList(updatedPartList);
+    };
+
+    const renderParts = (part) => {
+        return (
+            <View style={{ borderWidth: 1, padding: 16 }}>
+                <View>
+                    <View style={{ alignItems: 'flex-start' }}>
+                        {/* <Text>{part.part.id}</Text> */}
+                        <Text>{part.part.name}</Text>
+
+                        {/* <Text>{part.part.name}</Text> */}
+                        <CheckBox
+                            center
+                            title={`${part.serviceName}`}
+                            checkedIcon="dot-circle-o"
+                            uncheckedIcon="circle-o"
+                            checked={part.checked}
+                            onPress={() => serviceChangedHandler(part.part.id, true)}
+                        />
+                        <CheckBox
+                            center
+                            title="None"
+                            checkedIcon="dot-circle-o"
+                            uncheckedIcon="circle-o"
+                            checked={!part.checked}
+                            onPress={() => serviceChangedHandler(part.part.id, false)}
+                            // onPress={() => setSelected(1)}
+                            // checked={selected === 1}
+                        />
+
+                        {/* <Text>{part.serviceName}</Text>
+                        <Text>{part.price}</Text> */}
+                        {/* <Text>{part.serviceId}</Text> */}
+                    </View>
+                    <View></View>
+                </View>
+            </View>
+        );
+    };
+
+    useEffect(() => {
+        let categories = [...new Set(selections.map((item) => item.categoryId))];
+
+        axios
+            .post(
+                'services/providers/' +
+                    detail.provider.id +
+                    '/models/' +
+                    vehicles.model.id,
+                categories,
+            )
+            .then((rs) => {
+                const partList = selections
+                    .reduce(
+                        (curr, part) => [
+                            ...curr,
+                            {
+                                part: part,
+                                category: part.categoryId,
+                                ...rs.data[part.categoryId],
+                            },
+                        ],
+                        [],
+                    )
+                    .map((part) => ({ ...part, checked: true }));
+
+                setPartList(partList);
+            });
+        // console.log(selections, categoryList);
+        // console.log(selections.find((p) => p.categoryId.toString() === '7'));
+
+        // console.log(output);
+        // (output);
+    }, []);
+
     return (
-        <View>
-            <View>
-                <View>
-                    <Text>ITEM 1</Text>
-                </View>
-                <View>
-                    <CheckBox
-                        // key={itemData.item.ID}
-                        checkedIcon="dot-circle-o"
-                        uncheckedIcon="circle-o"
-                        title={'SERVICE 1'}
-                        // checked={
-                        //     selectedAccessories.findIndex(
-                        //         (s) => s.ID === itemData.item.ID,
-                        //     ) > -1
-                        // }
+        <View
+            style={{
+                flex: 1,
+                width: '100%',
+                paddingVertical: 16,
+                paddingHorizontal: 16,
+                borderWidth: 1,
+            }}>
+            <FlatList
+                data={partList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item: part }) => renderParts(part)}
+                showsVerticalScrollIndicator={false}
+            />
 
-                        // onPress={() => onSelectAccessoriesChecked(itemData.item)}
-                    />
-                </View>
-            </View>
-
-            <View>
-                <View>
-                    <Text>ITEM 2</Text>
-                </View>
-                <View>
-                    <Text>SERVICE 3</Text>
-                    <Text>SERVICE 4</Text>
-                </View>
-            </View>
-
-            <View>
-                <Button title="Next" onPress={() => navigation.navigate('Review')} />
+            <View style={{}}>
+                <Button
+                    title="Next"
+                    onPress={() =>
+                        navigation.navigate('Review', {
+                            partList: partList,
+                            detail: detail,
+                        })
+                    }
+                />
             </View>
         </View>
     );

@@ -94,7 +94,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
         </TouchableOpacity>
     );
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} nestedScrollEnabled>
             <View
                 style={{
                     width: '100%',
@@ -113,8 +113,9 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.itemsContainer}>
                 <FlatList
+                    nestedScrollEnabled
                     data={accessoryType}
-                    keyExtractor={(item, index) => index}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={renderAccessoryTypeList}
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -123,9 +124,11 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
             <View style={{ flex: 1 }}>
                 <View style={styles.accessoriesContainer}>
                     <FlatList
+                        // nestedScrollEnabled
+                        scrollEnabled={false}
                         showsVerticalScrollIndicator={false}
                         data={ACCESSORIES}
-                        keyExtractor={(item, index) => index}
+                        keyExtractor={(item, index) => index.toString()}
                         renderItem={renderAccessoriesList}
                         numColumns={2}
                     />
