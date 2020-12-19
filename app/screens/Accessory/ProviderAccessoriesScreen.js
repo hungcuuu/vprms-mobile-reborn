@@ -52,15 +52,14 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
         }
         setSelections(updatedSelections);
     };
-
     const onRemovePart = (itemId) => {
         let updatedSelections = [...selections];
-        const index = selections.findIndex((item) => item.id === itemId);
+        let index = selections.findIndex((item) => +item.id === +itemId);
         if (index >= 0) {
-            if (updatedSelections[index].quantity >= 1) {
+            if (updatedSelections[index].quantity > 1) {
                 updatedSelections[index].quantity--;
             } else {
-                updatedSelections = updatedSelections.splice(index, 1);
+                updatedSelections.splice(index, 1);
             }
         } else {
             return;
@@ -162,6 +161,7 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
             setFilteredAccessories(res.data);
             let list = res.data ?? [];
             let a = list.find((item) => item.id === detail.part.id);
+            // console.log('1');
             setSelections([
                 {
                     id: a.id,

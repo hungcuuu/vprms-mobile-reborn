@@ -50,7 +50,11 @@ const ScheduleScreen = ({ navigation, route }) => {
                     })
                     .then((rs) => {
                         Alert.alert('Success');
-                        console.log('booking', rs.data);
+                        // console.log('booking', rs.data);
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Accessory' }],
+                        });
                     });
             } catch (error) {
                 Alert.alert('Fail');

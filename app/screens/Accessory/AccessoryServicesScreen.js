@@ -56,10 +56,10 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
             </View>
         );
     };
+
     useEffect(() => {
-        console.log('selection', selections);
         let categories = [...new Set(selections.map((item) => item.categoryId))];
-        console.log('cate', categories);
+
         axios
             .post(
                 'services/providers/' +
@@ -69,22 +69,6 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 categories,
             )
             .then((rs) => {
-                console.log('data', rs.data);
-                // const partList = Object.keys(rs.data)
-                //     .reduce(
-                //         (curr, key) => [
-                //             ...curr,
-                //             {
-                //                 part: selections.find(
-                //                     (p) => p.categoryId.toString() === key.toString(),
-                //                 ),
-                //                 category: key,
-                //                 ...rs.data[key],
-                //             },
-                //         ],
-                //         [],
-                //     )
-                //     .map((part) => ({ ...part, checked: true }));
                 const partList = selections
                     .reduce(
                         (curr, part) => [
@@ -98,12 +82,8 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                         [],
                     )
                     .map((part) => ({ ...part, checked: true }));
-                console.log('Screen', partList);
+
                 setPartList(partList);
-                // setSelected(
-                //     partList.map((part) => ({ serviceId: part.serviceId, partId: 0 })),
-                // );
-                // setCategoryList(rs.data);
             });
         // console.log(selections, categoryList);
         // console.log(selections.find((p) => p.categoryId.toString() === '7'));
