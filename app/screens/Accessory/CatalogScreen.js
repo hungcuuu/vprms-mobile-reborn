@@ -17,6 +17,10 @@ import * as actions from '../../store/actions';
 
 import axios from '../../axios';
 import { CATALOG } from '../../data/catalog';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native';
+import { VirtualizedList } from 'react-native';
+import { LogBox } from 'react-native';
 const CatalogScreen = ({ navigation }) => {
     const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
     const dispatch = useDispatch();
@@ -187,7 +191,9 @@ const CatalogScreen = ({ navigation }) => {
             {/* <Text>{Object.keys(itemData.item)}</Text> */}
 
             <TouchableOpacity
-                onPress={() => navigation.navigate('AccessoryType', itemData.item.value)}
+                onPress={() =>
+                    navigation.navigate('AccessoryType', itemData.item.sectionId)
+                }
                 style={{
                     // justifyContent: 'center',
                     // alignContent: 'center',
@@ -223,32 +229,43 @@ const CatalogScreen = ({ navigation }) => {
                 <View>
                     <Text style={{ textAlign: 'center', fontSize: 14 }}>
                         {' '}
-                        {itemData.item.name}{' '}
+                        {itemData.item.sectionName}{' '}
                     </Text>
                 </View>
             </TouchableOpacity>
         </View>
     );
-
+    // useEffect(() => {
+    //     navigation.setOptions({
+    //         headerRight: () => (
+    //             <Button
+    //                 onPress={() => navigation.navigate('ServiceType')}
+    //                 title="Booking"
+    //             />
+    //         ),
+    //     });
+    // }, []);
+    useEffect(() => {
+        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    }, []);
     useEffect(() => {
         const abortController = new AbortController();
         const signal = abortController.signal;
         getManufactures();
         getCatalog().then((rs) => {
-            if (rs.status === 200) {
-                setCatalog(
-                    Object.keys(rs.data).map((key) => {
-                        return { name: key, value: rs.data[key] };
-                    }),
-                );
-            }
+            setCatalog(
+                // Object.keys(rs.data).map((key) => {
+                //     return { name: key, value: rs.data[key] };
+                // }),
+                rs.data,
+            );
         });
         return function cleanup() {
             abortController.abort();
         };
     }, []);
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} nestedScrollEnabled={true}>
             <View>
                 <View>
                     <Button
@@ -278,14 +295,16 @@ const CatalogScreen = ({ navigation }) => {
             <View style={styles.itemsContainer}>
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    data={Catalog}
+                    data={Catalog.filter((cat) => cat.typeName === 'Thay thế và lắp ráp')}
                     keyExtractor={(item, index) => index}
                     renderItem={renderAccessoryTypeList}
                     numColumns={3}
+                    scrollEnabled={false}
+                    nestedScrollEnabled={true}
                 />
             </View>
             <View>{modalPickVehicle()}</View>
-        </View>
+        </ScrollView>
     );
 };
 

@@ -47,9 +47,7 @@ const VehiclesScreen = ({ navigation }) => {
             </View> */}
         </View>
     );
-    useEffect(() => {
-        // dispatch(actions.fetchVehicles());
-    }, []);
+    useEffect(() => {}, []);
     return (
         <View style={styles.container}>
             {/* <Text>Vehicle Screen</Text> */}

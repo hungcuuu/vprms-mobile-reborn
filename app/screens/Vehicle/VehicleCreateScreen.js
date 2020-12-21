@@ -23,14 +23,13 @@ const VehicleCreateScreen = ({ navigation }) => {
         color: 'red',
         modelId: 1,
         plateNumber: '',
-        userId: 1,
+        userId: 24,
         vinNumber: '',
     });
-    // const userId = dispatch(actions.)
     const createVehicleHandler = () => {
         dispatch(
             actions.createVehicle(currentVehicle, () => {
-                navigation.pop();
+                navigation.goBack();
             }),
         );
         // , () => {

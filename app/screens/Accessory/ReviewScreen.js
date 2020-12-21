@@ -7,6 +7,7 @@ import { formatMoney } from '../../utils';
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
     let partList = route.params.partList ?? [];
+    console.log(partList);
     const renderParts = (part) => {
         return (
             <View style={{ borderWidth: 1 }}>
@@ -19,7 +20,8 @@ const ReviewScreen = ({ navigation, route }) => {
                 <View>
                     <Text>
                         {formatMoney(
-                            (part.part.price * part.part.quantity ?? 0) + part.price,
+                            (part.part.price * part.part.quantity ?? 0) +
+                                (part.price ?? 0),
                         )}
                     </Text>
                 </View>

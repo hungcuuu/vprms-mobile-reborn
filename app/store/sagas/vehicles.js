@@ -8,6 +8,7 @@ import axios from '../../axios';
 function* updateCurrentVehicle(action) {
     try {
         yield put(actions.updateCurrentVehicleSuccess(action.vehicle));
+        action.callBack();
     } catch (error) {
         console.log(error);
     }

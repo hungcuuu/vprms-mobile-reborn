@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Dimensions,
     FlatList,
@@ -9,18 +9,19 @@ import {
     Image,
     ScrollView,
 } from 'react-native';
+import axios from '../../axios';
 
-import { ACCESSORY_TYPE } from '../../data/accessory-type';
 import { ACCESSORIES } from '../../data/accessories';
 
 const AccessoryTypeScreen = ({ navigation, route }) => {
-    const accessoryType = route.params;
+    const sectionId = route.params ?? 0;
+    const [categories, setCategories] = useState([]);
+
     const renderAccessoriesList = (itemData) => (
         <TouchableOpacity onPress={() => openModal()} style={styles.accessoryItems}>
             <View
                 style={{
                     borderWidth: 1,
-                    // flex: 1,
                     height: '70%',
                     width: '80%',
                 }}>
@@ -93,6 +94,12 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
             </View>
         </TouchableOpacity>
     );
+
+    useEffect(() => {
+        axios
+            .get('service-type-details/categories/sections/' + sectionId)
+            .then((rs) => setCategories(rs.data));
+    }, []);
     return (
         <ScrollView contentContainerStyle={styles.container} nestedScrollEnabled>
             <View
@@ -114,7 +121,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
             <View style={styles.itemsContainer}>
                 <FlatList
                     nestedScrollEnabled
-                    data={accessoryType}
+                    data={categories}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderAccessoryTypeList}
                     horizontal

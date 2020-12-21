@@ -28,6 +28,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                         <Text>{part.part.name}</Text>
 
                         {/* <Text>{part.part.name}</Text> */}
+
                         <CheckBox
                             center
                             title={`${part.serviceName}`}
@@ -58,8 +59,9 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
+        console.log('selec', selections);
         let categories = [...new Set(selections.map((item) => item.categoryId))];
-
+        console.log('cate', categories);
         axios
             .post(
                 'services/providers/' +
