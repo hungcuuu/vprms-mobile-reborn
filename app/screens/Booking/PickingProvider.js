@@ -45,7 +45,7 @@ const PickingProvider = ({ navigation, route }) => {
                     borderRadius: 24,
                 }}
                 onPress={() =>
-                    navigation.navigate('Accessory', { screen: 'AccessoryOverview' })
+                    navigation.navigate('ProviderServices', { provider: provider })
                 }>
                 <View
                     style={{
@@ -84,26 +84,27 @@ const PickingProvider = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        //     axios
-        //         .post('providers/type-details', {
-        //             currentPos: {
-        //                 latitude: 0,
-        //                 longitude: 0,
-        //             },
-        //             modelId: vehicles.model.id,
-        //             serviceDetailIds: selectedServicesType,
-        //         })
-        //         .then((rs) => {
-        //             setProviders(rs.data), setSearchProviders(rs.data);
-        //         });
-        console.log({
-            currentPos: {
-                latitude: 0,
-                longitude: 0,
-            },
-            modelId: vehicles.model.id,
-            serviceDetailIds: selectedServicesType,
-        });
+        let serviceTypes = selectedServicesType.map((ser) => ser.id) ?? [];
+        axios
+            .post('providers/type-details', {
+                currentPos: {
+                    latitude: 0,
+                    longitude: 0,
+                },
+                modelId: vehicles.model.id,
+                serviceDetailIds: serviceTypes,
+            })
+            .then((rs) => {
+                setProviders(rs.data), setSearchProviders(rs.data);
+            });
+        // console.log({
+        //     currentPos: {
+        //         latitude: 0,
+        //         longitude: 0,
+        //     },
+        //     modelId: vehicles.model.id,
+        //     serviceDetailIds: selectedServicesType,
+        // });
     }, []);
     return (
         <View>

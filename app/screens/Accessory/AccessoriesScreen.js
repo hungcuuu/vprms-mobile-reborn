@@ -31,6 +31,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
     };
 
     const getAllAccessories = () => {
+        console.log('type', accessoryType);
         return axios.post('providers/part-categories', {
             categoryIds: [accessoryType],
             currentPos: {
@@ -45,7 +46,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
             <View style={{}}>
                 <TouchableOpacity
                     onPress={() =>
-                        navigation.navigate('AccessoryDetail', {
+                        navigation.navigate('ProviderAccessories', {
                             part: part,
                             provider: provider,
                         })
@@ -136,11 +137,9 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 <View style={{ marginTop: 20, marginHorizontal: 10 }}>
                     <FlatList
                         showsVerticalScrollIndicator={false}
-                        data={itemData.item.priceDetails}
+                        data={itemData.item.suggestedParts}
                         keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item: service }) =>
-                            renderServices(service, itemData.item)
-                        }
+                        renderItem={({ item: part }) => renderParts(part, itemData.item)}
                         // numColumns={2}
                     />
                 </View>
@@ -150,6 +149,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         getAllAccessories().then((rs) => {
+            console.log(rs.data);
             setGarageList(rs.data);
         });
     }, []);

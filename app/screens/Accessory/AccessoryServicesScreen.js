@@ -28,22 +28,32 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                         <Text>{part.part.name}</Text>
 
                         {/* <Text>{part.part.name}</Text> */}
+                        {part.services
+                            ? part.services.map((detail) => (
+                                  <CheckBox
+                                      key={detail.serviceId}
+                                      center
+                                      title={`${detail.serviceName}`}
+                                      checkedIcon="dot-circle-o"
+                                      uncheckedIcon="circle-o"
+                                      checked={detail.serviceId === part.checked}
+                                      onPress={() =>
+                                          serviceChangedHandler(
+                                              part.part.id,
+                                              detail.serviceId,
+                                          )
+                                      }
+                                  />
+                              ))
+                            : null}
 
-                        <CheckBox
-                            center
-                            title={`${part.serviceName}`}
-                            checkedIcon="dot-circle-o"
-                            uncheckedIcon="circle-o"
-                            checked={part.checked}
-                            onPress={() => serviceChangedHandler(part.part.id, true)}
-                        />
                         <CheckBox
                             center
                             title="None"
                             checkedIcon="dot-circle-o"
                             uncheckedIcon="circle-o"
-                            checked={!part.checked}
-                            onPress={() => serviceChangedHandler(part.part.id, false)}
+                            checked={part.checked === 'none'}
+                            onPress={() => serviceChangedHandler(part.part.id, 'none')}
                             // onPress={() => setSelected(1)}
                             // checked={selected === 1}
                         />
@@ -59,18 +69,23 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        console.log('selec', selections);
-        let categories = [...new Set(selections.map((item) => item.categoryId))];
-        console.log('cate', categories);
+        // console.log('select', selections);
+        let categories = [...new Set(selections.map((item) => item.id))];
+        // console.log('cate', categories);
         axios
             .post(
                 'services/providers/' +
                     detail.provider.id +
+                    // 1 +
                     '/models/' +
                     vehicles.model.id,
+                // 1,
                 categories,
             )
             .then((rs) => {
+                // console.log('data', rs.data);
+                let a = rs.data;
+                // console.log('a', a[3]);
                 const partList = selections
                     .reduce(
                         (curr, part) => [
@@ -78,20 +93,16 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                             {
                                 part: part,
                                 category: part.categoryId,
-                                ...rs.data[part.categoryId],
+                                services: a[part.id],
                             },
                         ],
                         [],
                     )
-                    .map((part) => ({ ...part, checked: true }));
-
+                    .map((part) => ({ ...part, checked: 'none' }));
+                console.log('part', partList);
+                // console.log('rs', rs.data);
                 setPartList(partList);
             });
-        // console.log(selections, categoryList);
-        // console.log(selections.find((p) => p.categoryId.toString() === '7'));
-
-        // console.log(output);
-        // (output);
     }, []);
 
     return (

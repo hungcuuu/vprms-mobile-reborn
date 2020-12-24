@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Button } from 'react-native-elements';
+
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { toTimeString } from '../../utils';
+import _ from 'lodash';
 
 const ScheduleScreen = ({ navigation, route }) => {
     const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
@@ -20,25 +22,38 @@ const ScheduleScreen = ({ navigation, route }) => {
             Alert.alert('Please choose time');
         } else {
             let parts = partList
-                .filter((value) => !value.checked)
+                .filter((value) => value.checked === 'none')
                 .reduce(
                     (curr, prod) =>
                         Object.assign(curr, { [prod.part.id]: prod.part.quantity }),
                     {},
                 );
-            let serviceParts = partList
-                .filter((value) => value.checked)
-                .reduce(
-                    (curr, prod) =>
-                        Object.assign(curr, {
-                            [prod.serviceId]: {
-                                id: prod.part.id,
-                                quantity: prod.part.quantity,
-                            },
+            let serviceParts = _.chain(partList)
+                .filter((value) => value.checked != 'none')
+                .groupBy('checked')
+                .map((value, key) => {
+                    return {
+                        serviceId: +key,
+                        parts: value.map((item, index) => {
+                            return { id: item.part.id, quantity: item.part.quantity };
                         }),
-                    {},
-                );
+                    };
+                })
+                .value();
+
+            // (curr, part) => [
+            //     ...curr,
+            //     {
+            //         [prod.checked]: part,
+            //         category: part.categoryId,
+            //         a: data[part.id].filter((x) => x.price > 0),
+            //     },
+            // ],
+            // [],
+
+            console.log('partList', partList);
             try {
+                console.log('serviceParts', serviceParts);
                 axios
                     .post('requests', {
                         parts: parts,
@@ -49,12 +64,12 @@ const ScheduleScreen = ({ navigation, route }) => {
                         packageIds: [],
                     })
                     .then((rs) => {
-                        Alert.alert('Success');
-                        // console.log('booking', rs.data);
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Accessory' }],
-                        });
+                        Alert.alert('success');
+                        console.log('booking', rs.data);
+                        // navigation.reset({
+                        //     index: 0,
+                        //     routes: [{ name: 'Accessory' }],
+                        // });
                     });
             } catch (error) {
                 Alert.alert('Fail');

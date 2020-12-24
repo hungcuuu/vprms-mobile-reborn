@@ -50,7 +50,9 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                         resizeMethod="resize"
                         resizeMode="cover"
                         source={{
-                            uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                            uri:
+                                section.sectionImageUrl ??
+                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                             height: '100%',
                             width: '100%',
                         }}
@@ -76,7 +78,11 @@ const ServiceTypeDetail = ({ navigation, route }) => {
     useEffect(() => {
         let typeIdList = serviceType.map((type) => type.id);
         axios
-            .post('service-type-details', typeIdList)
+            .post('service-type-details', typeIdList, {
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+            })
             .then((rs) => setSectionList(rs.data));
     }, []);
     return (

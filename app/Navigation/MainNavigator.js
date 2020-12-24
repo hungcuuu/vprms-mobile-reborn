@@ -22,7 +22,9 @@ import ScheduleScreen from '../screens/Accessory/ScheduleScreen';
 import ServiceType from '../screens/Booking/ServiceType';
 import ServiceTypeDetail from '../screens/Booking/ServiceTypeDetail';
 import PickingProvider from '../screens/Booking/PickingProvider';
+import ProviderServices from '../screens/Booking/ProviderServices';
 import Orders from '../screens/Order/Orders';
+import OrderHistory from '../screens/Order/OrderHistory';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -132,7 +134,25 @@ const BookingNavigator = ({ navigation }) => (
             component={PickingProvider}
             options={{
                 // headerLeft: <Ionicons name="md-home" />,
-                title: 'Type',
+                title: 'Provider',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <BookingStackNavigator.Screen
+            name="ProviderServices"
+            component={ProviderServices}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Services',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <BookingStackNavigator.Screen
+            name="Review"
+            component={ReviewScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Review',
                 headerTitleAlign: 'center',
             }}
         />
@@ -298,11 +318,11 @@ function OrderTab() {
         <Tab.Navigator
             initialRouteName="1"
             tabBarOptions={{
-                labelStyle: { fontSize: 12 },
-                tabStyle: { width: 100 },
+                // labelStyle: { fontSize: 12 },
+                // tabStyle: { width: 100 },
                 style: { backgroundColor: 'powderblue' },
             }}>
-            <Tab.Screen name="1" component={Orders} />
+            <Tab.Screen name="1" component={OrderHistory} />
             <Tab.Screen name="2" component={Orders} />
         </Tab.Navigator>
     );
