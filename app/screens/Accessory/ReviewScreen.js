@@ -6,48 +6,50 @@ import { formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
-    let partList = route.params.partList ?? [];
+    let serviceList = route.params.serviceList ?? [];
 
     console.log('detail', detail);
-    console.log('partList', partList);
+    console.log('partList', serviceList);
     const [totalPrice, setTotalPrice] = useState(0);
 
-    const renderParts = (part) => {
-        let service = part.services.find((x) => x.serviceId === part.checked);
+    const renderServices = service => {
+        let parts = service.parts ?? [];
 
         return (
             <View style={{ borderWidth: 1 }}>
                 <View>
-                    <Text>{part.serviceName}</Text>
+                    <Text>{service.name}</Text>
                 </View>
                 <View>
-                    <Text>{part.part.name}</Text>
-                    <Text>
+                    <Text>{service.price}</Text>
+                    {/* <Text>
                         {formatMoney(
                             (part.part.price * part.part.quantity ?? 0) +
                                 (part.price ?? 0),
                         )}
-                    </Text>
-                    <Text>x{part.part.quantity}</Text>
+                    </Text> */}
                 </View>
-                {service ? (
-                    <View>
-                        <Text>{service.serviceName ?? ''}</Text>
-                        <Text>{service.price ?? 0}</Text>
-                    </View>
-                ) : null}
+                <FlatList
+                    data={parts}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: part }) => (
+                        <View>
+                            <Text>{part.name}</Text>
+                        </View>
+                    )}
+                />
             </View>
         );
     };
     useEffect(() => {
         let total = 0;
-        partList.map((part) => {
-            total +=
-                part.part.price * part.part.quantity +
-                (part.services.find((x) => x.serviceId === part.checked)
-                    ? part.services.find((x) => x.serviceId === part.checked).price
-                    : 0);
-        });
+        // partList.map(part => {
+        //     total +=
+        //         part.part.price * part.part.quantity +
+        //         (part.services.find(x => x.serviceId === part.checked)
+        //             ? part.services.find(x => x.serviceId === part.checked).price
+        //             : 0);
+        // });
         setTotalPrice(total);
     }, []);
     return (
@@ -62,9 +64,9 @@ const ReviewScreen = ({ navigation, route }) => {
             </View>
             <View>
                 <FlatList
-                    data={partList}
+                    data={serviceList}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item: part }) => renderParts(part)}
+                    renderItem={({ item: part }) => renderServices(part)}
                 />
             </View>
             <View>
@@ -76,7 +78,7 @@ const ReviewScreen = ({ navigation, route }) => {
                     onPress={() =>
                         navigation.navigate('Schedule', {
                             detail: detail,
-                            partList: partList,
+                            serviceList: serviceList,
                         })
                     }
                 />

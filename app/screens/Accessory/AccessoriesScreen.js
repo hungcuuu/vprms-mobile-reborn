@@ -46,7 +46,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
             <View style={{}}>
                 <TouchableOpacity
                     onPress={() =>
-                        navigation.navigate('ProviderAccessories', {
+                        navigation.navigate('AccessoryDetail', {
                             part: part,
                             provider: provider,
                         })

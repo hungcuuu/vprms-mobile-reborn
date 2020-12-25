@@ -156,6 +156,15 @@ const BookingNavigator = ({ navigation }) => (
                 headerTitleAlign: 'center',
             }}
         />
+        <BookingStackNavigator.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Schedule',
+                headerTitleAlign: 'center',
+            }}
+        />
     </BookingStackNavigator.Navigator>
 );
 const AccessoryStackNavigator = createStackNavigator();

@@ -9,10 +9,10 @@ import { toTimeString } from '../../utils';
 import _ from 'lodash';
 
 const ScheduleScreen = ({ navigation, route }) => {
-    const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
+    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const detail = route.params.detail ?? [];
-    const partList = route.params.partList ?? [];
+    const serviceList = route.params.serviceList ?? [];
     const [currentDay, setCurrentDay] = useState(new Date().toISOString().split('T')[0]);
     const [timeList, setTimeList] = useState([]);
     const [currentEpoch, setCurrentEpoch] = useState(null);
@@ -21,49 +21,20 @@ const ScheduleScreen = ({ navigation, route }) => {
         if (!currentEpoch) {
             Alert.alert('Please choose time');
         } else {
-            let parts = partList
-                .filter((value) => value.checked === 'none')
-                .reduce(
-                    (curr, prod) =>
-                        Object.assign(curr, { [prod.part.id]: prod.part.quantity }),
-                    {},
-                );
-            let serviceParts = _.chain(partList)
-                .filter((value) => value.checked != 'none')
-                .groupBy('checked')
-                .map((value, key) => {
-                    return {
-                        serviceId: +key,
-                        parts: value.map((item, index) => {
-                            return { id: item.part.id, quantity: item.part.quantity };
-                        }),
-                    };
-                })
-                .value();
-
-            // (curr, part) => [
-            //     ...curr,
-            //     {
-            //         [prod.checked]: part,
-            //         category: part.categoryId,
-            //         a: data[part.id].filter((x) => x.price > 0),
-            //     },
-            // ],
-            // [],
-
-            console.log('partList', partList);
+            let serviceIds = serviceList.map(x => x.id);
+            console.log('ser', serviceIds);
             try {
-                console.log('serviceParts', serviceParts);
                 axios
                     .post('requests', {
-                        parts: parts,
-                        serviceParts: serviceParts,
+                        parts: {},
+                        serviceIds: serviceIds,
                         bookingTime: currentEpoch,
                         providerId: detail.provider.id,
                         vehicleId: vehicles.id,
                         packageIds: [],
+                        note: '',
                     })
-                    .then((rs) => {
+                    .then(rs => {
                         Alert.alert('success');
                         console.log('booking', rs.data);
                         // navigation.reset({
@@ -79,9 +50,9 @@ const ScheduleScreen = ({ navigation, route }) => {
     const getTimeTable = (id, epoch) => {
         axios
             .get('providers/' + id + '/bookings/' + epoch)
-            .then((rs) => setTimeList(rs.data));
+            .then(rs => setTimeList(rs.data));
     };
-    const onDayPick = (value) => {
+    const onDayPick = value => {
         getTimeTable(detail.provider.id, Math.floor(new Date(value).getTime() / 1000));
         setCurrentDay(value);
     };
@@ -91,18 +62,18 @@ const ScheduleScreen = ({ navigation, route }) => {
                 // style={[styles.calendar]}
                 current={currentDay}
                 minDate={new Date()}
-                onDayPress={(day) => {
+                onDayPress={day => {
                     onDayPick(day.dateString);
                 }}
-                onDayLongPress={(day) => {
+                onDayLongPress={day => {
                     onDayPick(day.dateString);
                 }}
                 monthFormat={'yyyy MMMM'}
                 hideExtraDays={false}
                 firstDay={1}
                 hideDayNames={false}
-                onPressArrowLeft={(subtractMonth) => subtractMonth()}
-                onPressArrowRight={(addMonth) => addMonth()}
+                onPressArrowLeft={subtractMonth => subtractMonth()}
+                onPressArrowRight={addMonth => addMonth()}
                 enableSwipeMonths={true}
                 markingType="custom"
                 theme={{
@@ -134,7 +105,7 @@ const ScheduleScreen = ({ navigation, route }) => {
         );
     };
 
-    const renderTimeTable = (time) => {
+    const renderTimeTable = time => {
         return (
             <TouchableOpacity
                 style={{

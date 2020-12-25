@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import { Button, Card, CheckBox } from 'react-native-elements';
 import { Picker } from '@react-native-community/picker';
+import * as ImagePicker from 'expo-image-picker';
+
+// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
@@ -22,13 +25,14 @@ import { SafeAreaView } from 'react-native';
 import { VirtualizedList } from 'react-native';
 import { LogBox } from 'react-native';
 const CatalogScreen = ({ navigation }) => {
-    const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
+    const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
     const dispatch = useDispatch();
 
     // console.log(useSelector((state) => state.vehicles.currentVehicle));
     const [isVisible, setIsVisible] = useState(false);
     // const [currentVehicle, setCurrentVehicle] = useState();
-    const currentVehicle = useSelector((state) => state.vehicles.currentVehicle ?? {});
+    const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
+    const [capturedPhoto, setCapturedPhoto] = useState(null);
 
     // useSelector((state) => state.vehicles?.vehicles[0]),
     const [currentManu, setCurrentManu] = useState(1);
@@ -52,10 +56,10 @@ const CatalogScreen = ({ navigation }) => {
                     Accept: 'application/json',
                 },
             })
-            .then((rs) => setManufactureList(rs.data))
-            .catch((err) => Alert.alert(err));
+            .then(rs => setManufactureList(rs.data))
+            .catch(err => Alert.alert(err));
     };
-    const getVehicleTypeList = (id) => {
+    const getVehicleTypeList = id => {
         return axios
             .get('models/manufacturers/' + id, {
                 headers: {
@@ -63,15 +67,36 @@ const CatalogScreen = ({ navigation }) => {
                     Accept: 'application/json',
                 },
             })
-            .then((rs) => {
+            .then(rs => {
                 setVehicleTypeList(rs.data);
             })
-            .catch((er) => Alert.alert(er));
+            .catch(er => Alert.alert(er));
     };
-    const changeVehicle = (vehicle) => {
+    const changeVehicle = vehicle => {
         // console.log(vehicle);
         dispatch(actions.updateCurrentVehicle(vehicle));
         // console.log('1');
+    };
+
+    const pickImage = async () => {
+        return await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+            //base64: true,
+        })
+            .then(result => {
+                if (!result.cancelled) {
+                    const urlBase64 = result.base64;
+                    // console.log(result);
+                    const { height, width, type, uri, base64 } = result;
+                    // const Imagefilename = uri.substring(uri.lastIndexOf('/') + 1);
+
+                    setCapturedPhoto(uri);
+                }
+            })
+            .catch(error => {
+                Alert.alert('Error', 'Something wrong with Camera');
+            });
     };
     const renderOtherPicker = () => (
         <View style={{ width: '100%' }}>
@@ -92,7 +117,7 @@ const CatalogScreen = ({ navigation }) => {
                     {/* <Picker.Item key={0} label={'None'} value={0} /> */}
 
                     {manufactureList
-                        ? manufactureList.map((m) => (
+                        ? manufactureList.map(m => (
                               <Picker.Item key={m.id} label={m.name} value={m.id} />
                           ))
                         : null}
@@ -111,17 +136,17 @@ const CatalogScreen = ({ navigation }) => {
                                     model: {
                                         id: itemValue?.toString(),
                                         name: vehicleTypeList.find(
-                                            (vehicle) => vehicle.id === itemValue,
+                                            vehicle => vehicle.id === itemValue,
                                         ).name,
                                         year: vehicleTypeList.find(
-                                            (vehicle) => vehicle.id === itemValue,
+                                            vehicle => vehicle.id === itemValue,
                                         ).year,
                                     },
                                     id: 'other',
                                 });
                                 setCurrentType(itemValue);
                             }}>
-                            {vehicleTypeList.map((t) => (
+                            {vehicleTypeList.map(t => (
                                 <Picker.Item
                                     key={t.id}
                                     label={t.name + ' ' + t.year}
@@ -167,7 +192,7 @@ const CatalogScreen = ({ navigation }) => {
             </Modal>
         );
     };
-    const renderVehicleList = (itemData) => (
+    const renderVehicleList = itemData => (
         <CheckBox
             key={'' + itemData.item.id}
             checkedIcon="dot-circle-o"
@@ -186,7 +211,7 @@ const CatalogScreen = ({ navigation }) => {
         />
     );
 
-    const renderAccessoryTypeList = (itemData) => (
+    const renderAccessoryTypeList = itemData => (
         <View style={styles.items}>
             {/* <Text>{Object.keys(itemData.item)}</Text> */}
 
@@ -214,7 +239,7 @@ const CatalogScreen = ({ navigation }) => {
                         resizeMethod="resize"
                         resizeMode="contain"
                         source={{
-                            uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                            uri: itemData.item.sectionImageUrl,
                             height: '100%',
                             width: '100%',
                         }}
@@ -245,6 +270,7 @@ const CatalogScreen = ({ navigation }) => {
     //         ),
     //     });
     // }, []);
+
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     }, []);
@@ -252,7 +278,7 @@ const CatalogScreen = ({ navigation }) => {
         const abortController = new AbortController();
         const signal = abortController.signal;
         getManufactures();
-        getCatalog().then((rs) => {
+        getCatalog().then(rs => {
             setCatalog(
                 // Object.keys(rs.data).map((key) => {
                 //     return { name: key, value: rs.data[key] };
@@ -267,6 +293,18 @@ const CatalogScreen = ({ navigation }) => {
     return (
         <ScrollView style={styles.container} nestedScrollEnabled={true}>
             <View>
+                <View>
+                    <Button title="Choose Image" onPress={pickImage} />
+                    <Image
+                        style={{
+                            alignSelf: 'center',
+                            width: Dimensions.get('window').width,
+                            height: 300,
+                            zIndex: 1,
+                        }}
+                        source={{ uri: capturedPhoto }}
+                    />
+                </View>
                 <View>
                     <Button
                         title={
@@ -295,7 +333,7 @@ const CatalogScreen = ({ navigation }) => {
             <View style={styles.itemsContainer}>
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    data={Catalog.filter((cat) => cat.typeName === 'Thay thế và lắp ráp')}
+                    data={Catalog.filter(cat => cat.typeName === 'Thay thế và lắp ráp')}
                     keyExtractor={(item, index) => index}
                     renderItem={renderAccessoryTypeList}
                     numColumns={3}

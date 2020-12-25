@@ -96,6 +96,7 @@ const PickingProvider = ({ navigation, route }) => {
             })
             .then((rs) => {
                 setProviders(rs.data), setSearchProviders(rs.data);
+                // console.log('data', rs.data.services);
             });
         // console.log({
         //     currentPos: {

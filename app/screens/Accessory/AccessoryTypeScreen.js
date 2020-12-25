@@ -74,7 +74,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                     resizeMethod="resize"
                     resizeMode="contain"
                     source={{
-                        uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                        uri: itemData.item.imageUrl,
                         height: '100%',
                         width: '100%',
                     }}
@@ -96,9 +96,9 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
     );
 
     useEffect(() => {
-        axios
-            .get('service-type-details/categories/sections/' + sectionId)
-            .then((rs) => setCategories(rs.data));
+        axios.get('service-type-details/categories/sections/' + sectionId).then((rs) => {
+            setCategories(rs.data);
+        });
     }, []);
     return (
         <ScrollView contentContainerStyle={styles.container} nestedScrollEnabled>
