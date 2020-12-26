@@ -29,15 +29,13 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                     <View style={{ alignItems: 'flex-start' }}>
                         {/* <Text>{part.part.id}</Text> */}
                         <CheckBox
-                            key={service.serviceId}
+                            key={service.id}
                             center
-                            title={`${service.serviceName}`}
+                            title={`${service.name}`}
                             checkedIcon="dot-circle-o"
                             uncheckedIcon="circle-o"
                             checked={
-                                selectedService.findIndex(
-                                    x => x.serviceId === service.serviceId,
-                                ) > -1
+                                selectedService.findIndex(x => x.id === service.id) > -1
                             }
                             onPress={() =>
                                 // serviceChangedHandler(service.serviceId)
@@ -131,8 +129,21 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item: service }) => renderServices(service)}
                 showsVerticalScrollIndicator={false}
+                initialNumToRender={7}
             />
-
+            <View style={{}}>
+                <Button
+                    title="See More"
+                    onPress={() =>
+                        selectedService
+                            ? navigation.navigate('ProviderServices', {
+                                  provider: detail.provider,
+                                  selectedService: selectedService,
+                              })
+                            : Alert.alert('You have to choose one service')
+                    }
+                />
+            </View>
             <View style={{}}>
                 <Button
                     title="Next"

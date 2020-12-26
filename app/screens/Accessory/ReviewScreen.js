@@ -31,6 +31,7 @@ const ReviewScreen = ({ navigation, route }) => {
                 </View>
                 <FlatList
                     data={parts}
+                    initialNumToRender={7}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item: part }) => (
                         <View>

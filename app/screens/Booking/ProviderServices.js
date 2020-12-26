@@ -15,11 +15,18 @@ import {
 
 import { CheckBox } from 'react-native-elements';
 import { SliderBox } from 'react-native-image-slider-box';
+import { useSelector } from 'react-redux';
+import axios from '../../axios';
 
 const ProviderServices = ({ navigation, route }) => {
-    const services = route.params?.provider ?? [];
-    console.log(services);
+    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
+
+    const provider = route.params?.provider ?? [];
+    const selectedService = route.params?.selectedService ?? [];
+
     const [visible, setVisible] = useState(false);
+    const [services, setServices] = useState(route.params?.provider.services ?? []);
+
     const [partList, setPartList] = useState([]);
     const [serviceList, setServiceList] = useState([]);
     // const images = [
@@ -84,6 +91,7 @@ const ProviderServices = ({ navigation, route }) => {
                             data={partList}
                             keyExtractor={(item, index) => item.id.toString()}
                             renderItem={({ item: detail }) => renderParts(detail)}
+                            initialNumToRender={7}
                         />
                     </View>
 
@@ -148,14 +156,15 @@ const ProviderServices = ({ navigation, route }) => {
     const renderServices = () => {
         return (
             <View>
-                {services.services
-                    ? services.services.map(ser => (
+                {services
+                    ? services.map(ser => (
                           <View key={ser.typeDetail.id}>
                               <Text>{ser.typeDetail.typeName}</Text>
                               <FlatList
                                   data={ser.serviceDetails}
                                   keyExtractor={(item, index) => item.id.toString()}
                                   renderItem={({ item: detail }) => renderDetail(detail)}
+                                  initialNumToRender={7}
                               />
                           </View>
                       ))
@@ -163,7 +172,15 @@ const ProviderServices = ({ navigation, route }) => {
             </View>
         );
     };
-    useEffect(() => {}, []);
+    useEffect(() => {
+        if (selectedService.length > 0) {
+            axios
+                .get('services/providers/' + provider.id + '/models/' + vehicles.model.id)
+                .then(rs => setServices(rs.data));
+            setServiceList(selectedService);
+            console.log('///////////');
+        }
+    }, []);
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ flex: 1 }}>
@@ -179,8 +196,7 @@ const ProviderServices = ({ navigation, route }) => {
                     <SliderBox
                         circleLoop
                         images={
-                            // services.imageUrls ??
-                            [
+                            provider.imageUrls ?? [
                                 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                                 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
 
@@ -202,8 +218,8 @@ const ProviderServices = ({ navigation, route }) => {
                             // height: 20,
                             // maxWidth: '70%',
                         }}>
-                        {services.id}
-                        {services.name}
+                        {provider.id}
+                        {provider.name}
                     </Text>
                     <Text
                         style={{
@@ -214,7 +230,7 @@ const ProviderServices = ({ navigation, route }) => {
                             // height: 20,
                             // maxWidth: '70%',
                         }}>
-                        {services.address}
+                        {provider.address}
                     </Text>
                 </View>
                 {renderServices()}
@@ -228,9 +244,9 @@ const ProviderServices = ({ navigation, route }) => {
                             ? navigation.navigate('Review', {
                                   detail: {
                                       provider: {
-                                          id: services.id,
-                                          name: services.name,
-                                          address: services.address,
+                                          id: provider.id,
+                                          name: provider.name,
+                                          address: provider.address,
                                       },
                                   },
                                   serviceList: serviceList,

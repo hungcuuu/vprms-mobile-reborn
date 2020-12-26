@@ -17,7 +17,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
     const sectionId = route.params ?? 0;
     const [categories, setCategories] = useState([]);
 
-    const renderAccessoriesList = (itemData) => (
+    const renderAccessoriesList = itemData => (
         <TouchableOpacity onPress={() => openModal()} style={styles.accessoryItems}>
             <View
                 style={{
@@ -58,7 +58,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
             </View>
         </TouchableOpacity>
     );
-    const renderAccessoryTypeList = (itemData) => (
+    const renderAccessoryTypeList = itemData => (
         <TouchableOpacity
             onPress={() => navigation.navigate('Accessories', itemData.item.id)}
             style={styles.items}>
@@ -96,7 +96,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
     );
 
     useEffect(() => {
-        axios.get('service-type-details/categories/sections/' + sectionId).then((rs) => {
+        axios.get('service-type-details/categories/sections/' + sectionId).then(rs => {
             setCategories(rs.data);
         });
     }, []);
@@ -151,58 +151,30 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         minHeight: Dimensions.get('screen').width,
-        // paddingVertical: 8,
-        // paddingHorizontal: 8,
+
         borderWidth: 1,
-        // flexDirection: 'row',
-        // flexWrap: 'nowrap',
     },
     items: {
-        // borderWidth: 1,
-        // borderColor: 'red',
-        // alignItems: 'stretch',
-        // width: '40%',
-        // height: '100%',
-        // margin: 8,
         height: 100,
         width: 100,
-        // margin: 10,
+
         alignItems: 'center',
         alignContent: 'center',
-        // justifyContent: 'center',
     },
     itemsContainer: {
         marginTop: 20,
         flexDirection: 'row',
-        // flex: 1,
-        // height: '20%',
-        // padding: 16,
-        // borderWidth: 1,
     },
     accessoriesContainer: {
         marginTop: 20,
         flexDirection: 'row',
-        // flex: 1,
-        // height: 200,
-        // padding: 16,
-        // borderWidth: 2,
     },
     accessoryItems: {
         flex: 1,
-        // borderWidth: 1,
-        // borderColor: 'red',
-        // alignItems: 'stretch',
-        // width: '40%',
-        // height: '100%',
-        // margin: 8,
+
         height: 200,
         width: '30%',
-        // paddingHorizontal: 8,
-        // marginHorizontal: 8,
-        // margin: 10,
-        // paddingVertical: 8,
+
         alignItems: 'center',
-        // alignContent: 'center',
-        // justifyContent: 'center',
     },
 });
