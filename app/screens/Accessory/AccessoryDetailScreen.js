@@ -12,12 +12,17 @@ const AccessoryDetailScreen = ({ navigation, route }) => {
                 <Text>{detail.provider.name}</Text>
             </View>
             <View>
+                <Text>{detail.part.id}</Text>
+            </View>
+            <View>
                 <Text>{detail.part.name}</Text>
             </View>
             <View>
                 <Button
                     title="Book now"
-                    onPress={() => navigation.navigate('ProviderAccessories', detail)}
+                    onPress={() =>
+                        navigation.navigate('AccessoryServices', { detail: detail })
+                    }
                 />
             </View>
         </View>

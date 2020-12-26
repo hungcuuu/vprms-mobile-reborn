@@ -221,7 +221,7 @@ const AccessoryNavigator = ({ navigation }) => (
             component={AccessoryDetailScreen}
             options={{
                 // headerLeft: <Ionicons name="md-home" />,
-                title: '',
+                title: 'Detail',
                 headerTitleAlign: 'center',
             }}
         />

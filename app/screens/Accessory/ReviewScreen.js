@@ -9,7 +9,7 @@ const ReviewScreen = ({ navigation, route }) => {
     let serviceList = route.params.serviceList ?? [];
 
     console.log('detail', detail);
-    console.log('partList', serviceList);
+    console.log('serviceList', serviceList);
     const [totalPrice, setTotalPrice] = useState(0);
 
     const renderServices = service => {

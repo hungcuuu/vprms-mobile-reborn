@@ -18,7 +18,7 @@ import { SliderBox } from 'react-native-image-slider-box';
 
 const ProviderServices = ({ navigation, route }) => {
     const services = route.params?.provider ?? [];
-    // console.log(services.services);
+    console.log(services);
     const [visible, setVisible] = useState(false);
     const [partList, setPartList] = useState([]);
     const [serviceList, setServiceList] = useState([]);

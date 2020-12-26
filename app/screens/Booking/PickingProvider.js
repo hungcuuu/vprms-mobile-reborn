@@ -10,24 +10,25 @@ import { normalizeString } from '../../utils';
 
 const PickingProvider = ({ navigation, route }) => {
     const selectedServicesType = route.params?.selectedServicesType ?? [];
-    const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
+    console.log('serviceType', selectedServicesType);
+    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
 
     const [searchText, setSearchText] = useState('');
-    const searchHandler = (text) => {
+    const searchHandler = text => {
         setSearchText(text);
         if (!text || text === '') {
             setSearchProviders([...providers]);
         }
 
-        const updatedProviders = providers.filter((pro) =>
+        const updatedProviders = providers.filter(pro =>
             normalizeString(pro.name).match(normalizeString(text)),
         );
         setSearchProviders(updatedProviders);
     };
-    const renderProviders = (provider) => {
+    const renderProviders = provider => {
         return (
             <TouchableOpacity
                 style={{
@@ -84,7 +85,7 @@ const PickingProvider = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        let serviceTypes = selectedServicesType.map((ser) => ser.id) ?? [];
+        let serviceTypes = selectedServicesType.map(ser => ser.id) ?? [];
         axios
             .post('providers/type-details', {
                 currentPos: {
@@ -94,18 +95,10 @@ const PickingProvider = ({ navigation, route }) => {
                 modelId: vehicles.model.id,
                 serviceDetailIds: serviceTypes,
             })
-            .then((rs) => {
+            .then(rs => {
                 setProviders(rs.data), setSearchProviders(rs.data);
                 // console.log('data', rs.data.services);
             });
-        // console.log({
-        //     currentPos: {
-        //         latitude: 0,
-        //         longitude: 0,
-        //     },
-        //     modelId: vehicles.model.id,
-        //     serviceDetailIds: selectedServicesType,
-        // });
     }, []);
     return (
         <View>
@@ -115,7 +108,7 @@ const PickingProvider = ({ navigation, route }) => {
                     placeholder="Search Here..."
                     lightTheme
                     round
-                    onChangeText={(text) => searchHandler(text)}
+                    onChangeText={text => searchHandler(text)}
                     autoCorrect={false}
                     blurOnSubmit={false}
                     clearButtonMode="always"
@@ -125,7 +118,7 @@ const PickingProvider = ({ navigation, route }) => {
             <View>
                 <FlatList
                     data={searchProviders}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={item => item.id.toString()}
                     renderItem={({ item: provider }) => renderProviders(provider)}
                     showsVerticalScrollIndicator={false}
                     // numColumns={2}
