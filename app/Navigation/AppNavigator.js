@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { AuthNavigator, HomeNavigator, SideDrawer } from './MainNavigator';
+import { AuthNavigator, SideDrawer } from './MainNavigator';
 import * as actions from '../store/actions';
 
 const AppNavigator = (props) => {

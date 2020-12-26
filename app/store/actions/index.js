@@ -25,3 +25,5 @@ export {
     updateCurrentVehicle,
     updateCurrentVehicleSuccess,
 } from './vehicles';
+
+export { fetchCart } from './cart';

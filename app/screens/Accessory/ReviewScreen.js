@@ -1,31 +1,58 @@
 // import { formatMoney } from '';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import { formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
-    let partList = route.params.partList ?? [];
-    const renderParts = (part) => {
+    let serviceList = route.params.serviceList ?? [];
+
+    console.log('detail', detail);
+    console.log('serviceList', serviceList);
+    const [totalPrice, setTotalPrice] = useState(0);
+
+    const renderServices = service => {
+        let parts = service.parts ?? [];
+
         return (
             <View style={{ borderWidth: 1 }}>
                 <View>
-                    <Text>{part.serviceName}</Text>
+                    <Text>{service.name}</Text>
                 </View>
                 <View>
-                    <Text>{part.part.name}</Text>
-                </View>
-                <View>
-                    <Text>
+                    <Text>{service.price}</Text>
+                    {/* <Text>
                         {formatMoney(
-                            (part.part.price * part.part.quantity ?? 0) + part.price,
+                            (part.part.price * part.part.quantity ?? 0) +
+                                (part.price ?? 0),
                         )}
-                    </Text>
+                    </Text> */}
                 </View>
+                <FlatList
+                    data={parts}
+                    initialNumToRender={7}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: part }) => (
+                        <View>
+                            <Text>{part.name}</Text>
+                        </View>
+                    )}
+                />
             </View>
         );
     };
+    useEffect(() => {
+        let total = 0;
+        // partList.map(part => {
+        //     total +=
+        //         part.part.price * part.part.quantity +
+        //         (part.services.find(x => x.serviceId === part.checked)
+        //             ? part.services.find(x => x.serviceId === part.checked).price
+        //             : 0);
+        // });
+        setTotalPrice(total);
+    }, []);
     return (
         <View>
             <View>
@@ -38,10 +65,13 @@ const ReviewScreen = ({ navigation, route }) => {
             </View>
             <View>
                 <FlatList
-                    data={partList}
+                    data={serviceList}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item: part }) => renderParts(part)}
+                    renderItem={({ item: part }) => renderServices(part)}
                 />
+            </View>
+            <View>
+                <Text>Total Price: {formatMoney(totalPrice)}</Text>
             </View>
             <View>
                 <Button
@@ -49,7 +79,7 @@ const ReviewScreen = ({ navigation, route }) => {
                     onPress={() =>
                         navigation.navigate('Schedule', {
                             detail: detail,
-                            partList: partList,
+                            serviceList: serviceList,
                         })
                     }
                 />

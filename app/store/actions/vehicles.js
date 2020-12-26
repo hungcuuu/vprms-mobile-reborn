@@ -1,9 +1,10 @@
 import * as actionTypes from './actionTypes';
 
-export const updateCurrentVehicle = (vehicle) => {
+export const updateCurrentVehicle = (vehicle, callBack) => {
     return {
         type: actionTypes.UPDATE_CURRENT_VEHICLE,
         vehicle,
+        callBack,
     };
 };
 export const updateCurrentVehicleSuccess = (vehicle) => {

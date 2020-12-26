@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Button } from 'react-native-elements';
+
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { toTimeString } from '../../utils';
+import _ from 'lodash';
 
 const ScheduleScreen = ({ navigation, route }) => {
-    const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
+    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const detail = route.params.detail ?? [];
-    const partList = route.params.partList ?? [];
+    const serviceList = route.params.serviceList ?? [];
     const [currentDay, setCurrentDay] = useState(new Date().toISOString().split('T')[0]);
     const [timeList, setTimeList] = useState([]);
     const [currentEpoch, setCurrentEpoch] = useState(null);
@@ -19,42 +21,26 @@ const ScheduleScreen = ({ navigation, route }) => {
         if (!currentEpoch) {
             Alert.alert('Please choose time');
         } else {
-            let parts = partList
-                .filter((value) => !value.checked)
-                .reduce(
-                    (curr, prod) =>
-                        Object.assign(curr, { [prod.part.id]: prod.part.quantity }),
-                    {},
-                );
-            let serviceParts = partList
-                .filter((value) => value.checked)
-                .reduce(
-                    (curr, prod) =>
-                        Object.assign(curr, {
-                            [prod.serviceId]: {
-                                id: prod.part.id,
-                                quantity: prod.part.quantity,
-                            },
-                        }),
-                    {},
-                );
+            let serviceIds = serviceList.map(x => x.id);
+            console.log('ser', serviceIds);
             try {
                 axios
                     .post('requests', {
-                        parts: parts,
-                        serviceParts: serviceParts,
+                        parts: {},
+                        serviceIds: serviceIds,
                         bookingTime: currentEpoch,
                         providerId: detail.provider.id,
                         vehicleId: vehicles.id,
                         packageIds: [],
+                        note: '',
                     })
-                    .then((rs) => {
-                        Alert.alert('Success');
-                        // console.log('booking', rs.data);
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Accessory' }],
-                        });
+                    .then(rs => {
+                        Alert.alert('success');
+                        console.log('booking', rs.data);
+                        // navigation.reset({
+                        //     index: 0,
+                        //     routes: [{ name: 'Accessory' }],
+                        // });
                     });
             } catch (error) {
                 Alert.alert('Fail');
@@ -64,9 +50,9 @@ const ScheduleScreen = ({ navigation, route }) => {
     const getTimeTable = (id, epoch) => {
         axios
             .get('providers/' + id + '/bookings/' + epoch)
-            .then((rs) => setTimeList(rs.data));
+            .then(rs => setTimeList(rs.data));
     };
-    const onDayPick = (value) => {
+    const onDayPick = value => {
         getTimeTable(detail.provider.id, Math.floor(new Date(value).getTime() / 1000));
         setCurrentDay(value);
     };
@@ -76,18 +62,18 @@ const ScheduleScreen = ({ navigation, route }) => {
                 // style={[styles.calendar]}
                 current={currentDay}
                 minDate={new Date()}
-                onDayPress={(day) => {
+                onDayPress={day => {
                     onDayPick(day.dateString);
                 }}
-                onDayLongPress={(day) => {
+                onDayLongPress={day => {
                     onDayPick(day.dateString);
                 }}
                 monthFormat={'yyyy MMMM'}
                 hideExtraDays={false}
                 firstDay={1}
                 hideDayNames={false}
-                onPressArrowLeft={(subtractMonth) => subtractMonth()}
-                onPressArrowRight={(addMonth) => addMonth()}
+                onPressArrowLeft={subtractMonth => subtractMonth()}
+                onPressArrowRight={addMonth => addMonth()}
                 enableSwipeMonths={true}
                 markingType="custom"
                 theme={{
@@ -119,7 +105,7 @@ const ScheduleScreen = ({ navigation, route }) => {
         );
     };
 
-    const renderTimeTable = (time) => {
+    const renderTimeTable = time => {
         return (
             <TouchableOpacity
                 style={{

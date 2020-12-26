@@ -17,13 +17,18 @@ const PickingVehicleScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
 
-    const pickingVehicleHandler = () => {
-        navigation.navigate('PickingServiceType');
+    const pickingVehicleHandler = (vehicle) => {
+        dispatch(
+            actions.updateCurrentVehicle(vehicle, () => {
+                navigation.navigate('ServiceType');
+            }),
+        );
     };
-    const renderVehicleItem = (itemData) => (
+    console.log(vehicles);
+    const renderVehicleItem = (vehicle) => (
         <TouchableOpacity
             // useForeground
-            onPress={() => pickingVehicleHandler()}>
+            onPress={() => pickingVehicleHandler(vehicle)}>
             <View style={styles.renderItemContainer}>
                 <View style={styles.icon}>
                     <Ionicons name="md-car" size={50} />
@@ -31,19 +36,15 @@ const PickingVehicleScreen = ({ navigation }) => {
 
                 <View style={{ flex: 1, paddingLeft: 16, display: 'flex' }}>
                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                        {itemData.item.name}
+                        {vehicle.model.name}
                     </Text>
-                    <Text style={{ fontSize: 16 }}>
-                        {itemData.item.licensePlateNumber}
-                    </Text>
-                    <Text style={{ fontSize: 16 }}>{itemData.item.VIN}</Text>
+                    <Text style={{ fontSize: 16 }}>{vehicle.plateNumber}</Text>
+                    <Text style={{ fontSize: 16 }}>{vehicle.vinNumber}</Text>
                 </View>
             </View>
         </TouchableOpacity>
     );
-    useEffect(() => {
-        dispatch(actions.fetchVehicles());
-    }, []);
+    useEffect(() => {}, []);
     return (
         <View style={styles.container}>
             {/* <Text>Vehicle Screen</Text> */}
@@ -53,10 +54,10 @@ const PickingVehicleScreen = ({ navigation }) => {
             <FlatList
                 data={vehicles}
                 keyExtractor={(item, index) => item.id.toString()}
-                renderItem={renderVehicleItem}
+                renderItem={({ item: vehicle }) => renderVehicleItem(vehicle)}
             />
             <Button
-                title="ADD VEHICLE"
+                title="Create new Vehicle"
                 onPress={() => navigation.navigate('CreateVehicle')}
             />
         </View>

@@ -1,51 +1,70 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 
 const AccessoryServicesScreen = ({ navigation, route }) => {
-    const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
-    const selections = route.params.selections ?? [];
+    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
+    // const selections = route.params.selections ?? [];
 
     let detail = route.params.detail ?? [];
-    const [partList, setPartList] = useState([]);
+    const [services, setServices] = useState();
+    const [selectedService, setSelectedService] = useState([]);
     // const [categoryList, setCategoryList] = useState([]);
 
-    const serviceChangedHandler = (partId, checked) => {
-        const updatedPartList = [...partList];
-        const index = updatedPartList.findIndex((part) => part.part.id === partId);
-        updatedPartList[index].checked = checked;
-        setPartList(updatedPartList);
-    };
+    // const serviceChangedHandler = (partId, checked) => {
+    //     setSelectedService((curr) => {
+    //         if (curr.findIndex((item) => item.id === type.id) === -1) {
+    //             return [...curr, type];
+    //         }
+    //         return curr.filter((item) => item.id !== type.id);
+    //     });
+    // };
 
-    const renderParts = (part) => {
+    const renderServices = service => {
         return (
             <View style={{ borderWidth: 1, padding: 16 }}>
                 <View>
                     <View style={{ alignItems: 'flex-start' }}>
                         {/* <Text>{part.part.id}</Text> */}
-                        <Text>{part.part.name}</Text>
-
-                        {/* <Text>{part.part.name}</Text> */}
                         <CheckBox
+                            key={service.id}
                             center
-                            title={`${part.serviceName}`}
+                            title={`${service.name}`}
                             checkedIcon="dot-circle-o"
                             uncheckedIcon="circle-o"
-                            checked={part.checked}
-                            onPress={() => serviceChangedHandler(part.part.id, true)}
+                            checked={
+                                selectedService.findIndex(x => x.id === service.id) > -1
+                            }
+                            onPress={() =>
+                                // serviceChangedHandler(service.serviceId)
+                                setSelectedService([service])
+                            }
                         />
-                        <CheckBox
+
+                        <Text>{service.price}</Text>
+
+                        {service.parts
+                            ? service.parts.map(part => (
+                                  <View key={part.id}>
+                                      <Text>{part.name}</Text>
+                                      <Text>quantity {part.quantity}</Text>
+                                      <Text>{part.price}</Text>
+                                  </View>
+                              ))
+                            : null}
+
+                        {/* <CheckBox
                             center
                             title="None"
                             checkedIcon="dot-circle-o"
                             uncheckedIcon="circle-o"
-                            checked={!part.checked}
-                            onPress={() => serviceChangedHandler(part.part.id, false)}
+                            checked={service.checked === 'none'}
+                            onPress={() => serviceChangedHandler(service.part.id, 'none')}
                             // onPress={() => setSelected(1)}
                             // checked={selected === 1}
-                        />
+                        /> */}
 
                         {/* <Text>{part.serviceName}</Text>
                         <Text>{part.price}</Text> */}
@@ -58,38 +77,42 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        let categories = [...new Set(selections.map((item) => item.categoryId))];
-
+        // console.log('select', selections);
+        // let categories = [...new Set(selections.map(item => item.id))];
+        // console.log('cate', categories);
         axios
-            .post(
+            .get(
                 'services/providers/' +
                     detail.provider.id +
+                    // 1 +
                     '/models/' +
-                    vehicles.model.id,
-                categories,
+                    vehicles.model.id +
+                    '/parts/' +
+                    detail.part.id,
+                // 1,
+                // categories,
             )
-            .then((rs) => {
-                const partList = selections
-                    .reduce(
-                        (curr, part) => [
-                            ...curr,
-                            {
-                                part: part,
-                                category: part.categoryId,
-                                ...rs.data[part.categoryId],
-                            },
-                        ],
-                        [],
-                    )
-                    .map((part) => ({ ...part, checked: true }));
-
-                setPartList(partList);
+            .then(rs => {
+                // console.log('data', rs.data);
+                setServices(rs.data);
+                console.log('a', rs.data);
+                // const partList = selections
+                //     .reduce(
+                //         (curr, part) => [
+                //             ...curr,
+                //             {
+                //                 part: part,
+                //                 category: part.categoryId,
+                //                 services: a[part.id],
+                //             },
+                //         ],
+                //         [],
+                //     )
+                //     .map((part) => ({ ...part, checked: 'none' }));
+                // console.log('part', partList);
+                // console.log('rs', rs.data);
+                // setPartList(partList);
             });
-        // console.log(selections, categoryList);
-        // console.log(selections.find((p) => p.categoryId.toString() === '7'));
-
-        // console.log(output);
-        // (output);
     }, []);
 
     return (
@@ -102,20 +125,35 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 borderWidth: 1,
             }}>
             <FlatList
-                data={partList}
+                data={services}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item: part }) => renderParts(part)}
+                renderItem={({ item: service }) => renderServices(service)}
                 showsVerticalScrollIndicator={false}
+                initialNumToRender={7}
             />
-
+            <View style={{}}>
+                <Button
+                    title="See More"
+                    onPress={() =>
+                        selectedService
+                            ? navigation.navigate('ProviderServices', {
+                                  provider: detail.provider,
+                                  selectedService: selectedService,
+                              })
+                            : Alert.alert('You have to choose one service')
+                    }
+                />
+            </View>
             <View style={{}}>
                 <Button
                     title="Next"
                     onPress={() =>
-                        navigation.navigate('Review', {
-                            partList: partList,
-                            detail: detail,
-                        })
+                        selectedService
+                            ? navigation.navigate('Review', {
+                                  serviceList: selectedService,
+                                  detail: detail,
+                              })
+                            : Alert.alert('You have to choose one service')
                     }
                 />
             </View>

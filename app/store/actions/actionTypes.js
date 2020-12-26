@@ -9,10 +9,11 @@ export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 export const LOGOUT = 'LOGOUT';
 
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
-
+/////////////////////////////////////////////////////////////////
 export const FETCH_SERVICES = 'FETCH_SERVICES';
 
 export const FETCH_SERVICES_SUCCESS = 'FETCH_SERVICES_SUCCESS';
+/////////////////////////////////////////////////////////////////
 
 export const FETCH_VEHICLE = 'FETCH_VEHICLE';
 
@@ -40,4 +41,9 @@ export const UPDATE_CURRENT_VEHICLE = 'UPDATE_CURRENT_VEHICLE';
 
 export const UPDATE_CURRENT_VEHICLE_SUCCESS = 'UPDATE_CURRENT_VEHICLE_SUCCESS';
 
+/////////////////////////////////////////////////////////////////
+
 export const ADD_PROVIDER = 'ADD_PROVIDER';
+/////////////////////////////////////////////////////////////////
+
+export const FETCH_CART = 'FETCH_CART';

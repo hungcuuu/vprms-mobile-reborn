@@ -1,31 +1,30 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabBar, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import LoginScreen from '../screens/LoginScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import ServicesScreen from '../screens/ServicesScreen';
 import VehiclesScreen from '../screens/Vehicle/VehiclesScreen';
 import VehicleCreateScreen from '../screens/Vehicle/VehicleCreateScreen';
 import VehicleDetailScreen from '../screens/Vehicle/VehicleDetailScreen';
-import BookingScreen from '../screens/Booking/BookingScreen';
 import PickingVehicleScreen from '../screens/Booking/PickingVehicleScreen';
-import PickingServiceTypeScreen from '../screens/Booking/PickingServiceTypeScreen';
-import PickingAccessoryTypeScreen from '../screens/Booking/PickingAccessoryTypeScreen';
-import PickingAccessoryScreen from '../screens/Booking/PickingAccessoryScreen';
-import PickingProviderScreen from '../screens/Booking/PickingProviderScreen';
 import CatalogScreen from '../screens/Accessory/CatalogScreen';
 import AccessoryTypeScreen from '../screens/Accessory/AccessoryTypeScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { color } from 'react-native-reanimated';
 import AccessoriesScreen from '../screens/Accessory/AccessoriesScreen';
 import AccessoryDetailScreen from '../screens/Accessory/AccessoryDetailScreen';
 import ProviderAccessoriesScreen from '../screens/Accessory/ProviderAccessoriesScreen';
 import AccessoryServicesScreen from '../screens/Accessory/AccessoryServicesScreen';
 import ReviewScreen from '../screens/Accessory/ReviewScreen';
 import ScheduleScreen from '../screens/Accessory/ScheduleScreen';
+import ServiceType from '../screens/Booking/ServiceType';
+import ServiceTypeDetail from '../screens/Booking/ServiceTypeDetail';
+import PickingProvider from '../screens/Booking/PickingProvider';
+import ProviderServices from '../screens/Booking/ProviderServices';
+import Orders from '../screens/Order/Orders';
+import OrderHistory from '../screens/Order/OrderHistory';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -109,25 +108,67 @@ const BookingNavigator = ({ navigation }) => (
             }}
         />
         <BookingStackNavigator.Screen
-            name="PickingServiceType"
-            component={PickingServiceTypeScreen}
+            name="ServiceType"
+            component={ServiceType}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Type',
+                headerTitleAlign: 'center',
+            }}
         />
-
         <BookingStackNavigator.Screen
-            name="PickingAccessoryType"
-            component={PickingAccessoryTypeScreen}
+            name="CreateVehicle"
+            component={VehicleCreateScreen}
         />
         <BookingStackNavigator.Screen
-            name="PickingAccessory"
-            component={PickingAccessoryScreen}
+            name="ServiceTypeDetail"
+            component={ServiceTypeDetail}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Type',
+                headerTitleAlign: 'center',
+            }}
         />
         <BookingStackNavigator.Screen
             name="PickingProvider"
-            component={PickingProviderScreen}
+            component={PickingProvider}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Provider',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <BookingStackNavigator.Screen
+            name="ProviderServices"
+            component={ProviderServices}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Services',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <BookingStackNavigator.Screen
+            name="Review"
+            component={ReviewScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Review',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <BookingStackNavigator.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Schedule',
+                headerTitleAlign: 'center',
+            }}
         />
     </BookingStackNavigator.Navigator>
 );
 const AccessoryStackNavigator = createStackNavigator();
+
 const AccessoryNavigator = ({ navigation }) => (
     <AccessoryStackNavigator.Navigator
         initialRouteName="AccessoryOverview"
@@ -180,7 +221,7 @@ const AccessoryNavigator = ({ navigation }) => (
             component={AccessoryDetailScreen}
             options={{
                 // headerLeft: <Ionicons name="md-home" />,
-                title: '',
+                title: 'Detail',
                 headerTitleAlign: 'center',
             }}
         />
@@ -198,10 +239,20 @@ const AccessoryNavigator = ({ navigation }) => (
             component={AccessoryServicesScreen}
             options={{
                 // headerLeft: <Ionicons name="md-home" />,
-                title: '',
+                title: 'AccessoryServices',
                 headerTitleAlign: 'center',
             }}
         />
+        <AccessoryStackNavigator.Screen
+            name="ProviderServices"
+            component={ProviderServices}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'ProviderServices',
+                headerTitleAlign: 'center',
+            }}
+        />
+
         <AccessoryStackNavigator.Screen
             name="Review"
             component={ReviewScreen}
@@ -222,20 +273,79 @@ const AccessoryNavigator = ({ navigation }) => (
         />
     </AccessoryStackNavigator.Navigator>
 );
-const HomeTabNavigator = createBottomTabNavigator();
 
-export const HomeNavigator = () => {
-    return (
-        <HomeTabNavigator.Navigator screenOptions={{ unmountOnBlur: true }}>
-            <HomeTabNavigator.Screen name="Booking" component={BookingNavigator} />
-
-            <HomeTabNavigator.Screen name="Vehicle" component={VehicleNavigator} />
-
-            <HomeTabNavigator.Screen name="Profile" component={ProfileScreen} />
-            <HomeTabNavigator.Screen name="Service" component={ServicesScreen} />
-        </HomeTabNavigator.Navigator>
-    );
+const ServiceStackNavigator = createStackNavigator();
+const ServiceNavigator = () => {
+    <ServiceStackNavigator.Navigator>
+        <ServiceStackNavigator.Screen
+            name="ServiceType"
+            component={ServiceType}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'ServiceType',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <ServiceStackNavigator.Screen
+            name="ServiceTypeDetail"
+            component={ServiceTypeDetail}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: '',
+                headerTitleAlign: 'center',
+            }}
+        />
+    </ServiceStackNavigator.Navigator>;
 };
+
+const OrderStackNavigator = createStackNavigator();
+const OrderNavigator = ({ navigation }) => (
+    <OrderStackNavigator.Navigator
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerTitleAlign: 'center',
+        }}>
+        <OrderStackNavigator.Screen
+            name="Order"
+            component={OrderTab}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Order',
+
+                headerLeft: () => (
+                    <Ionicons
+                        name="menu-outline"
+                        style={{ fontSize: 30 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    />
+                ),
+            }}
+        />
+    </OrderStackNavigator.Navigator>
+);
+
+const Tab = createMaterialTopTabNavigator();
+
+function OrderTab() {
+    return (
+        <Tab.Navigator
+            initialRouteName="1"
+            tabBarOptions={{
+                // labelStyle: { fontSize: 12 },
+                // tabStyle: { width: 100 },
+                style: { backgroundColor: 'powderblue' },
+            }}>
+            <Tab.Screen name="1" component={OrderHistory} />
+            <Tab.Screen name="2" component={Orders} />
+        </Tab.Navigator>
+    );
+}
 const Drawer = createDrawerNavigator();
 export function SideDrawer() {
     return (
@@ -258,7 +368,19 @@ export function SideDrawer() {
                     ),
                 }}
             />
-
+            <Drawer.Screen
+                name="Service"
+                component={ServiceNavigator}
+                options={{
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-home"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
             <Drawer.Screen
                 name="Vehicle"
                 component={VehicleNavigator}
@@ -276,6 +398,19 @@ export function SideDrawer() {
             <Drawer.Screen
                 name="Booking"
                 component={BookingNavigator}
+                options={{
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="md-calendar"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Order"
+                component={OrderNavigator}
                 options={{
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
