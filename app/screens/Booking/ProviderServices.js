@@ -23,7 +23,7 @@ const ProviderServices = ({ navigation, route }) => {
 
     const provider = route.params?.provider ?? [];
     const selectedService = route.params?.selectedService ?? [];
-
+    const path = route.params?.path ?? '';
     const [visible, setVisible] = useState(false);
     const [services, setServices] = useState(route.params?.provider.services ?? []);
 
@@ -173,6 +173,10 @@ const ProviderServices = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
+        if (path === 'provider') {
+            let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
+            axios.get(url).then(rs => setServices(rs.data));
+        }
         if (selectedService.length > 0) {
             axios
                 .get('services/providers/' + provider.id + '/models/' + vehicles.model.id)

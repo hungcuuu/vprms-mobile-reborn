@@ -25,6 +25,7 @@ import PickingProvider from '../screens/Booking/PickingProvider';
 import ProviderServices from '../screens/Booking/ProviderServices';
 import Orders from '../screens/Order/Orders';
 import OrderHistory from '../screens/Order/OrderHistory';
+import Providers from '../screens/Provider/Providers';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -329,7 +330,78 @@ const OrderNavigator = ({ navigation }) => (
         />
     </OrderStackNavigator.Navigator>
 );
+const ProviderStackNavigator = createStackNavigator();
+const ProviderNavigator = ({ navigation }) => (
+    <ProviderStackNavigator.Navigator
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerTitleAlign: 'center',
+        }}>
+        <ProviderStackNavigator.Screen
+            name="VehiclesScreen"
+            component={VehiclesScreen}
+            initialParams={{ path: 'provider' }}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Vehicle',
 
+                headerLeft: () => (
+                    <Ionicons
+                        name="menu-outline"
+                        style={{ fontSize: 30 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    />
+                ),
+            }}
+        />
+        <ProviderStackNavigator.Screen
+            name="CreateVehicle"
+            component={VehicleCreateScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Providers',
+            }}
+        />
+        <ProviderStackNavigator.Screen
+            name="Providers"
+            component={Providers}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Providers',
+            }}
+        />
+        <ProviderStackNavigator.Screen
+            name="ProviderServices"
+            component={ProviderServices}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'ProviderServices',
+            }}
+        />
+        <ProviderStackNavigator.Screen
+            name="Review"
+            component={ReviewScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Review',
+            }}
+        />
+        <ProviderStackNavigator.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Schedule',
+            }}
+        />
+    </ProviderStackNavigator.Navigator>
+);
 const Tab = createMaterialTopTabNavigator();
 
 function OrderTab() {
@@ -369,8 +441,8 @@ export function SideDrawer() {
                 }}
             />
             <Drawer.Screen
-                name="Service"
-                component={ServiceNavigator}
+                name="Provider"
+                component={ProviderNavigator}
                 options={{
                     drawerIcon: ({ focused, size }) => (
                         <Ionicons
