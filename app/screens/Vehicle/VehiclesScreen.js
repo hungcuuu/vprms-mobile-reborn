@@ -13,15 +13,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
-const VehiclesScreen = ({ navigation }) => {
+const VehiclesScreen = ({ navigation, route }) => {
     const dispatch = useDispatch();
-    const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
-    const renderVehicleItem = (itemData) => (
+    const path = route.params?.path ?? '';
+    const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
+    const renderVehicleItem = itemData => (
         <View style={{}}>
             <View style={{ flex: 1 }}>
                 <TouchableOpacity
                     // useForeground
-                    onPress={() => navigation.navigate('VehicleDetail', itemData.item)}>
+                    onPress={() =>
+                        path === 'provider'
+                            ? dispatch(
+                                  actions.updateCurrentVehicle(itemData.item, () =>
+                                      navigation.navigate('Providers'),
+                                  ),
+                              )
+                            : navigation.navigate('VehicleDetail', itemData.item)
+                    }>
                     <View style={styles.renderItemContainer}>
                         <View style={styles.icon}>
                             <Ionicons name="md-car" size={50} />
