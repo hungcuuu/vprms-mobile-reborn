@@ -23,9 +23,10 @@ import ServiceType from '../screens/Booking/ServiceType';
 import ServiceTypeDetail from '../screens/Booking/ServiceTypeDetail';
 import PickingProvider from '../screens/Booking/PickingProvider';
 import ProviderServices from '../screens/Booking/ProviderServices';
-import Orders from '../screens/Order/Orders';
+import OrdersInProgress from '../screens/Order/OrdersInProgress';
 import OrderHistory from '../screens/Order/OrderHistory';
 import Providers from '../screens/Provider/Providers';
+import BookingDetail from '../screens/Order/BookingDetail';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -328,6 +329,14 @@ const OrderNavigator = ({ navigation }) => (
                 ),
             }}
         />
+        <OrderStackNavigator.Screen
+            name="BookingDetail"
+            component={BookingDetail}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'BookingDetail',
+            }}
+        />
     </OrderStackNavigator.Navigator>
 );
 const ProviderStackNavigator = createStackNavigator();
@@ -413,8 +422,16 @@ function OrderTab() {
                 // tabStyle: { width: 100 },
                 style: { backgroundColor: 'powderblue' },
             }}>
-            <Tab.Screen name="1" component={OrderHistory} />
-            <Tab.Screen name="2" component={Orders} />
+            <Tab.Screen
+                name="History"
+                initialParams={{ OrderStatus: 'all' }}
+                component={OrderHistory}
+            />
+            <Tab.Screen
+                name="In Progress"
+                initialParams={{ OrderStatus: 'inProgress' }}
+                component={OrderHistory}
+            />
         </Tab.Navigator>
     );
 }

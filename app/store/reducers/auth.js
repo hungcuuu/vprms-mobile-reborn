@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils';
 
 const initialState = {
-    user: {},
+    user: { userId: 24 },
     token: 'abc',
     loading: false,
 };
