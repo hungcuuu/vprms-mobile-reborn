@@ -103,47 +103,47 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
         });
     }, []);
     return (
-        <ScrollView contentContainerStyle={styles.container} nestedScrollEnabled>
-            <View
-                style={{
-                    width: '100%',
-                    height: Dimensions.get('screen').height * 0.25,
-                    minHeight: 100,
-                }}>
-                <Image
-                    source={{
-                        uri:
-                            'https://www.motorbeam.com/wp-content/uploads/Nissan-Mocks-Honda-In-Sunny-Ad.jpg',
-                        height: '100%',
-                        width: '100%',
-                    }}
-                    // style={{ width: '100%', height: '100%' }}
-                />
-            </View>
-            <View style={styles.itemsContainer}>
-                <FlatList
-                    nestedScrollEnabled
-                    data={categories}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={renderAccessoryTypeList}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                />
-            </View>
-            <View style={{ flex: 1 }}>
-                <View style={styles.accessoriesContainer}>
-                    <FlatList
-                        // nestedScrollEnabled
-                        scrollEnabled={false}
-                        showsVerticalScrollIndicator={false}
-                        data={ACCESSORIES}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={renderAccessoriesList}
-                        numColumns={2}
-                    />
-                </View>
-            </View>
-        </ScrollView>
+        <View contentContainerStyle={styles.container}>
+            <FlatList
+                ListHeaderComponent={
+                    <>
+                        <View
+                            style={{
+                                width: '100%',
+                                height: Dimensions.get('screen').height * 0.25,
+                                minHeight: 100,
+                            }}>
+                            <Image
+                                source={{
+                                    uri:
+                                        'https://www.motorbeam.com/wp-content/uploads/Nissan-Mocks-Honda-In-Sunny-Ad.jpg',
+                                    height: '100%',
+                                    width: '100%',
+                                }}
+                                // style={{ width: '100%', height: '100%' }}
+                            />
+                        </View>
+                        <View style={styles.itemsContainer}>
+                            <FlatList
+                                nestedScrollEnabled
+                                data={categories}
+                                keyExtractor={(item, index) => index.toString()}
+                                renderItem={renderAccessoryTypeList}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                            />
+                        </View>
+                    </>
+                }
+                // nestedScrollEnabled
+                // scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                data={ACCESSORIES}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderAccessoriesList}
+                numColumns={2}
+            />
+        </View>
     );
 };
 
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         minHeight: Dimensions.get('screen').width,
-
+        flex: 1,
         borderWidth: 1,
     },
     items: {
@@ -167,10 +167,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
         flexDirection: 'row',
     },
-    accessoriesContainer: {
-        marginTop: 20,
-        flexDirection: 'row',
-    },
+    // accessoriesContainer: {
+    //     marginTop: 20,
+    //     flexDirection: 'row',
+    // },
     accessoryItems: {
         flex: 1,
 

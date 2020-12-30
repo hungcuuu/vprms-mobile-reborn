@@ -270,7 +270,7 @@ const CatalogScreen = ({ navigation }) => {
                 <Ionicons name="camera" color="white" size={50} onPress={pickImage} />
             ),
         });
-        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+        // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     }, []);
     useEffect(() => {
         const abortController = new AbortController();
@@ -289,49 +289,54 @@ const CatalogScreen = ({ navigation }) => {
         };
     }, []);
     return (
-        <ScrollView style={styles.container} nestedScrollEnabled={true}>
-            <View>
-                {/* <View>
-                    <Button title="Choose Image" onPress={pickImage} />
-                </View> */}
-                <View>
-                    <Button
-                        title={
-                            currentVehicle
-                                ? currentVehicle.model?.name ??
-                                  '' + ' ' + currentVehicle.model?.year ??
-                                  ''
-                                : 'You dont have car'
-                        }
-                        onPress={() => setIsVisible(true)}
-                    />
-                </View>
-            </View>
-            <View style={{ width: '100%', height: 150 }}>
-                <Image
-                    resizeMethod="resize"
-                    resizeMode="cover"
-                    source={{
-                        uri: 'https://i.ytimg.com/vi/PPHMI63FHm0/maxresdefault.jpg',
-                        height: '100%',
-                        width: '100%',
-                    }}
-                    // style={{ width: '100%', height: '100%' }}
-                />
-            </View>
+        <View style={styles.container} nestedScrollEnabled={true}>
             <View style={styles.itemsContainer}>
                 <FlatList
+                    ListHeaderComponent={
+                        <>
+                            <View>
+                                {/* <View>
+                        <Button title="Choose Image" onPress={pickImage} />
+                    </View> */}
+                                <View>
+                                    <Button
+                                        title={
+                                            currentVehicle
+                                                ? currentVehicle.model?.name ??
+                                                  '' + ' ' + currentVehicle.model?.year ??
+                                                  ''
+                                                : 'You dont have car'
+                                        }
+                                        onPress={() => setIsVisible(true)}
+                                    />
+                                </View>
+                            </View>
+                            <View style={{ width: '100%', height: 150 }}>
+                                <Image
+                                    resizeMethod="resize"
+                                    resizeMode="cover"
+                                    source={{
+                                        uri:
+                                            'https://i.ytimg.com/vi/PPHMI63FHm0/maxresdefault.jpg',
+                                        height: '100%',
+                                        width: '100%',
+                                    }}
+                                    // style={{ width: '100%', height: '100%' }}
+                                />
+                            </View>
+                        </>
+                    }
                     showsVerticalScrollIndicator={false}
                     data={Catalog.filter(cat => cat.typeName === 'Thay thế và lắp ráp')}
                     keyExtractor={(item, index) => index}
                     renderItem={renderAccessoryTypeList}
                     numColumns={3}
-                    scrollEnabled={false}
+                    // scrollEnabled={false}
                     nestedScrollEnabled={true}
                 />
             </View>
             <View>{modalPickVehicle()}</View>
-        </ScrollView>
+        </View>
     );
 };
 
