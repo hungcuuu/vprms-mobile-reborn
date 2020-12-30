@@ -17,6 +17,7 @@ import { CheckBox } from 'react-native-elements';
 import { SliderBox } from 'react-native-image-slider-box';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
+import { formatMoney } from '../../utils';
 
 const ProviderServices = ({ navigation, route }) => {
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
@@ -50,7 +51,7 @@ const ProviderServices = ({ navigation, route }) => {
                     <Text>Id: {parts.id}</Text>
                     {/* <Text>{detail}</Text> */}
                     <Text>Name: {parts.name}</Text>
-                    <Text>Price: {parts.price}</Text>
+                    <Text>Price: {formatMoney(parts.price)}</Text>
                 </View>
 
                 {/* {detail.parts
@@ -134,7 +135,7 @@ const ProviderServices = ({ navigation, route }) => {
                         {/* <Text>{detail.id}</Text> */}
                         {/* <Text>{detail}</Text> */}
                         <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
-                        <Text>{detail.price}</Text>
+                        <Text>{formatMoney(detail.price)}</Text>
                         {/* {detail.parts
                     ? detail.parts.map((x) => (
                           <View key={x.id}>
@@ -182,7 +183,7 @@ const ProviderServices = ({ navigation, route }) => {
         if (path === 'provider') {
             let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
             axios.get(url).then(rs => {
-                setServices(rs.data), console.log(rs.data);
+                setServices(rs.data), console.log(rs.data[0].serviceDetails);
             });
         }
         if (selectedService.length > 0) {
