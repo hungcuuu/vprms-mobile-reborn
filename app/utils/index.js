@@ -15,15 +15,23 @@ export const calculateRequestPrice = request => {
 
     const servicesPrice = services.reduce((curr, service) => {
         const { price, parts } = service;
+
+        return curr + price;
+    }, 0);
+
+    const partsPrice = services.reduce((curr, service) => {
+        const { price, parts } = service;
         const partsPrice = parts.reduce((curr, part) => {
             return curr + part.priceEach * part.quantity;
         }, 0);
 
-        return curr + price + partsPrice;
+        return curr + partsPrice;
     }, 0);
+
     return {
         services: servicesPrice,
-        total: servicesPrice,
+        partsPrice: partsPrice,
+        total: servicesPrice + partsPrice,
     };
 };
 export const normalizeString = value => {

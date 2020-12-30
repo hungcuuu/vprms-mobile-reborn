@@ -157,14 +157,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     items: {
-        height: 100,
+        // height: 200,
         width: 100,
-
+        flex: 1,
         alignItems: 'center',
         alignContent: 'center',
     },
     itemsContainer: {
-        marginTop: 20,
+        marginVertical: 20,
         flexDirection: 'row',
     },
     // accessoriesContainer: {

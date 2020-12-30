@@ -183,7 +183,7 @@ const ProviderServices = ({ navigation, route }) => {
         if (path === 'provider') {
             let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
             axios.get(url).then(rs => {
-                setServices(rs.data), console.log(rs.data[0].serviceDetails);
+                setServices(rs.data), console.log(rs.data[0]?.serviceDetails);
             });
         }
         if (selectedService.length > 0) {
