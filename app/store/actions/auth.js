@@ -8,15 +8,14 @@ export const loginRequest = (phoneNumber, password) => {
     };
 };
 
-export const loginSuccess = (user, token) => {
+export const loginSuccess = user => {
     return {
         type: actionTypes.LOGIN_SUCCESS,
         user,
-        token,
     };
 };
 
-export const loginFailed = (error) => {
+export const loginFailed = error => {
     return {
         type: actionTypes.LOGIN_FAILED,
         error,

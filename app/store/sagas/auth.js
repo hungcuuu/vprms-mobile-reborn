@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, takeEvery } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as actionTypes from '../actions/actionTypes';
@@ -8,15 +8,11 @@ import axios from '../../axios';
 function* login(action) {
     const { phoneNumber, password } = action;
     try {
-        // const response = yield axios
-        //   .post('/authenticate', { username: phoneNumber, password })
-        //   .then((res) => res.data);
-        // const { jwtToken } = response;
-        const jwtToken = 'abc123';
-        yield AsyncStorage.setItem('AUTH_TOKEN', jwtToken);
-        const user = { userId: 1, phoneNumber, fullName: 'Test Login', role: 'ADMIN' };
-        yield put(actions.loginSuccess(user, jwtToken));
-        yield put(actions.fetchVehicles(user.userId));
+        const data = yield axios
+            .post('/users', { phoneNumber, password })
+            .then(({ data }) => data);
+        yield AsyncStorage.setItem('user', JSON.stringify(data));
+        yield put(actions.loginSuccess(data));
     } catch (error) {
         console.log('Error: ', error);
         yield put(actions.loginFailed(error));
@@ -24,7 +20,7 @@ function* login(action) {
 }
 
 function* logout(action) {
-    yield call([AsyncStorage, 'removeItem'], 'token');
+    yield AsyncStorage.clear();
     yield put(actions.logout());
 }
 

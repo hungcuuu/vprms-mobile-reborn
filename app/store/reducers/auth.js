@@ -2,8 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils';
 
 const initialState = {
-    user: { userId: 24 },
-    token: 'abc',
+    user: null,
     loading: false,
 };
 
@@ -15,7 +14,6 @@ const loginSuccess = (state, action) => {
     return updateObject(state, {
         loading: false,
         user: action.user,
-        token: action.token,
     });
 };
 
