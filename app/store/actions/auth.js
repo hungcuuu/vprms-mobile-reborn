@@ -34,11 +34,9 @@ export const logout = () => {
     };
 };
 
-export const registerRequest = (phoneNumber, password, fullname) => {
+export const register = newUser => {
     return {
-        type: actionTypes.REGISTER_REQUEST,
-        phoneNumber,
-        password,
-        fullname,
+        type: actionTypes.REGISTER,
+        payload: newUser,
     };
 };

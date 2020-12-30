@@ -8,7 +8,7 @@ export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 
 export const LOGOUT = 'LOGOUT';
 
-export const REGISTER_REQUEST = 'REGISTER_REQUEST';
+export const REGISTER = 'REGISTER';
 /////////////////////////////////////////////////////////////////
 export const FETCH_SERVICES = 'FETCH_SERVICES';
 

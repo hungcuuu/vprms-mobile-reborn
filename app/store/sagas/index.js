@@ -12,6 +12,6 @@ export default function* rootSaga() {
         servicesSagas(),
         vehiclesSagas(),
         requestsSagas(),
-        cartSagas,
+        cartSagas(),
     ]);
 }

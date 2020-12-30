@@ -25,11 +25,19 @@ function* logout(action) {
 }
 
 function* register(action) {
-    yield put(actions.loginRequest(action.phoneNumber, action.password));
+    try {
+        const data = yield axios
+            .post('/users/signup', action.payload)
+            .then(({ data }) => data);
+        yield AsyncStorage.setItem('user', JSON.stringify(data));
+        yield put(actions.loginSuccess(data));
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export default function* authSagas() {
     yield takeEvery(actionTypes.LOGIN_REQUEST, login);
     yield takeEvery(actionTypes.LOGOUT_REQUEST, logout);
-    yield takeEvery(actionTypes.REGISTER_REQUEST, register);
+    yield takeEvery(actionTypes.REGISTER, register);
 }

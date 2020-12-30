@@ -31,11 +31,6 @@ const logoutSuccess = (state, action) => {
     });
 };
 
-const registerRequest = (state, action) => {
-    return updateObject(state, {
-        loading: true,
-    });
-};
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.LOGIN_REQUEST:
@@ -46,8 +41,6 @@ const reducer = (state = initialState, action) => {
             return loginFailed(state, action);
         case actionTypes.LOGOUT:
             return logoutSuccess(state, action);
-        case actionTypes.REGISTER_REQUEST:
-            return registerRequest(state, action);
         default:
             return state;
     }

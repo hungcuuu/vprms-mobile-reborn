@@ -4,7 +4,7 @@ export {
     loginFailed,
     logoutRequest,
     logout,
-    registerRequest,
+    register,
 } from './auth';
 
 export { fetchServices, fetchServicesSuccess } from './services';

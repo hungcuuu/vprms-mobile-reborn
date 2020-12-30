@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import LoginScreen from '../screens/Auth/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import RegisterScreen from '../screens/Auth/RegisterScreen';
 import VehiclesScreen from '../screens/Vehicle/VehiclesScreen';
 import VehicleCreateScreen from '../screens/Vehicle/VehicleCreateScreen';
 import VehicleDetailScreen from '../screens/Vehicle/VehicleDetailScreen';
