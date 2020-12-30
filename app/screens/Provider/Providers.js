@@ -79,6 +79,17 @@ const Providers = ({ navigation }) => {
                         }}>
                         {provider.name}
                     </Text>
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 16,
+                            margin: 10,
+                            // width: '70%',
+                            // height: 20,
+                            // maxWidth: '70%',
+                        }}>
+                        {provider.distance}
+                    </Text>
                 </View>
             </TouchableOpacity>
         );
@@ -92,13 +103,13 @@ const Providers = ({ navigation }) => {
         // console.log('vehicle', currentVehicle);
 
         axios
-            .get('providers/', {
+            .post('providers/', {
                 latitude: 0,
                 longitude: 0,
             })
             .then(rs => {
                 setProviders(rs.data), setSearchProviders(rs.data);
-                console.log('data', rs.data.services);
+                console.log('data', rs.data);
             });
     }, []);
     return (
