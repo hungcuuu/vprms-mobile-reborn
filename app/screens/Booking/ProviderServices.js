@@ -173,9 +173,13 @@ const ProviderServices = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
+        console.log('aa');
         if (path === 'provider') {
+            console.log('/////// PROVIDER');
             let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
-            axios.get(url).then(rs => setServices(rs.data));
+            axios.get(url).then(rs => {
+                setServices(rs.data), console.log(rs.data);
+            });
         }
         if (selectedService.length > 0) {
             axios

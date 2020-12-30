@@ -6,7 +6,7 @@ const BookingScreen = () => {
     return (
         <View>
             <View></View>
-            <Text>aa</Text>
+            <Text></Text>
         </View>
     );
 };

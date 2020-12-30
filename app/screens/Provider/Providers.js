@@ -58,7 +58,9 @@ const Providers = ({ navigation }) => {
                         resizeMethod="resize"
                         resizeMode="cover"
                         source={{
-                            uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                            uri:
+                                provider.imageUrls[0] ??
+                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                             height: '100%',
                             width: '100%',
                         }}
@@ -90,13 +92,13 @@ const Providers = ({ navigation }) => {
         // console.log('vehicle', currentVehicle);
 
         axios
-            .post('providers/', {
+            .get('providers/', {
                 latitude: 0,
                 longitude: 0,
             })
             .then(rs => {
                 setProviders(rs.data), setSearchProviders(rs.data);
-                // console.log('data', rs.data.services);
+                console.log('data', rs.data.services);
             });
     }, []);
     return (

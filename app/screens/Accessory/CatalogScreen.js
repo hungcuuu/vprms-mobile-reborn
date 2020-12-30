@@ -295,23 +295,14 @@ const CatalogScreen = ({ navigation }) => {
             <View>
                 <View>
                     <Button title="Choose Image" onPress={pickImage} />
-                    <Image
-                        style={{
-                            alignSelf: 'center',
-                            width: Dimensions.get('window').width,
-                            height: 300,
-                            zIndex: 1,
-                        }}
-                        source={{ uri: capturedPhoto }}
-                    />
                 </View>
                 <View>
                     <Button
                         title={
                             currentVehicle
-                                ? currentVehicle.model?.name +
-                                  ' ' +
-                                  currentVehicle.model?.year
+                                ? currentVehicle.model?.name ??
+                                  '' + ' ' + currentVehicle.model?.year ??
+                                  ''
                                 : 'You dont have car'
                         }
                         onPress={() => setIsVisible(true)}
