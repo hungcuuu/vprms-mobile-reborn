@@ -58,7 +58,9 @@ const Providers = ({ navigation }) => {
                         resizeMethod="resize"
                         resizeMode="cover"
                         source={{
-                            uri: 'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                            uri:
+                                provider.imageUrls[0] ??
+                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                             height: '100%',
                             width: '100%',
                         }}
@@ -76,6 +78,17 @@ const Providers = ({ navigation }) => {
                             // maxWidth: '70%',
                         }}>
                         {provider.name}
+                    </Text>
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 16,
+                            margin: 10,
+                            // width: '70%',
+                            // height: 20,
+                            // maxWidth: '70%',
+                        }}>
+                        {provider.distance}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -96,7 +109,7 @@ const Providers = ({ navigation }) => {
             })
             .then(rs => {
                 setProviders(rs.data), setSearchProviders(rs.data);
-                // console.log('data', rs.data.services);
+                console.log('data', rs.data);
             });
     }, []);
     return (

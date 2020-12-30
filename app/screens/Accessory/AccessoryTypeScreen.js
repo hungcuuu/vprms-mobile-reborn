@@ -74,7 +74,9 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                     resizeMethod="resize"
                     resizeMode="contain"
                     source={{
-                        uri: itemData.item.imageUrl,
+                        uri:
+                            itemData.item.imageUrl ??
+                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                         height: '100%',
                         width: '100%',
                     }}

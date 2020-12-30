@@ -23,9 +23,11 @@ import ServiceType from '../screens/Booking/ServiceType';
 import ServiceTypeDetail from '../screens/Booking/ServiceTypeDetail';
 import PickingProvider from '../screens/Booking/PickingProvider';
 import ProviderServices from '../screens/Booking/ProviderServices';
-import Orders from '../screens/Order/Orders';
+import OrdersInProgress from '../screens/Order/OrdersInProgress';
 import OrderHistory from '../screens/Order/OrderHistory';
 import Providers from '../screens/Provider/Providers';
+import BookingDetail from '../screens/Order/BookingDetail';
+import Feedback from '../screens/Order/Feedback';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -328,6 +330,22 @@ const OrderNavigator = ({ navigation }) => (
                 ),
             }}
         />
+        <OrderStackNavigator.Screen
+            name="BookingDetail"
+            component={BookingDetail}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'BookingDetail',
+            }}
+        />
+        <OrderStackNavigator.Screen
+            name="Feedback"
+            component={Feedback}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Feedback',
+            }}
+        />
     </OrderStackNavigator.Navigator>
 );
 const ProviderStackNavigator = createStackNavigator();
@@ -407,14 +425,22 @@ const Tab = createMaterialTopTabNavigator();
 function OrderTab() {
     return (
         <Tab.Navigator
-            initialRouteName="1"
+            initialRouteName="InProgress"
             tabBarOptions={{
                 // labelStyle: { fontSize: 12 },
                 // tabStyle: { width: 100 },
                 style: { backgroundColor: 'powderblue' },
             }}>
-            <Tab.Screen name="1" component={OrderHistory} />
-            <Tab.Screen name="2" component={Orders} />
+            <Tab.Screen
+                name="InProgress"
+                initialParams={{ OrderStatus: 'inProgress' }}
+                component={OrderHistory}
+            />
+            <Tab.Screen
+                name="History"
+                initialParams={{ OrderStatus: 'all' }}
+                component={OrderHistory}
+            />
         </Tab.Navigator>
     );
 }

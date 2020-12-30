@@ -17,7 +17,7 @@ import { formatMoney } from '../../utils';
 // import { ACCESSORIES } from '../../data/accessories';
 
 const AccessoriesScreen = ({ navigation, route }) => {
-    const vehicles = useSelector((state) => state.vehicles.currentVehicle ?? []);
+    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const accessoryType = route.params;
     const [garageList, setGarageList] = useState([]);
@@ -108,7 +108,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
             </View>
         );
     };
-    const renderGarageList = (itemData) => {
+    const renderGarageList = itemData => {
         return (
             <View style={styles.items}>
                 <View>
@@ -148,7 +148,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        getAllAccessories().then((rs) => {
+        getAllAccessories().then(rs => {
             console.log(rs.data);
             setGarageList(rs.data);
         });

@@ -12,6 +12,7 @@ import {
 import { Button, Card, CheckBox } from 'react-native-elements';
 import { Picker } from '@react-native-community/picker';
 import * as ImagePicker from 'expo-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
@@ -239,7 +240,9 @@ const CatalogScreen = ({ navigation }) => {
                         resizeMethod="resize"
                         resizeMode="contain"
                         source={{
-                            uri: itemData.item.sectionImageUrl,
+                            uri:
+                                itemData.item.sectionImageUrl ??
+                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                             height: '100%',
                             width: '100%',
                         }}
@@ -260,18 +263,13 @@ const CatalogScreen = ({ navigation }) => {
             </TouchableOpacity>
         </View>
     );
-    // useEffect(() => {
-    //     navigation.setOptions({
-    //         headerRight: () => (
-    //             <Button
-    //                 onPress={() => navigation.navigate('ServiceType')}
-    //                 title="Booking"
-    //             />
-    //         ),
-    //     });
-    // }, []);
 
     useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Ionicons name="camera" color="white" size={50} onPress={pickImage} />
+            ),
+        });
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     }, []);
     useEffect(() => {
@@ -293,25 +291,16 @@ const CatalogScreen = ({ navigation }) => {
     return (
         <ScrollView style={styles.container} nestedScrollEnabled={true}>
             <View>
-                <View>
+                {/* <View>
                     <Button title="Choose Image" onPress={pickImage} />
-                    <Image
-                        style={{
-                            alignSelf: 'center',
-                            width: Dimensions.get('window').width,
-                            height: 300,
-                            zIndex: 1,
-                        }}
-                        source={{ uri: capturedPhoto }}
-                    />
-                </View>
+                </View> */}
                 <View>
                     <Button
                         title={
                             currentVehicle
-                                ? currentVehicle.model?.name +
-                                  ' ' +
-                                  currentVehicle.model?.year
+                                ? currentVehicle.model?.name ??
+                                  '' + ' ' + currentVehicle.model?.year ??
+                                  ''
                                 : 'You dont have car'
                         }
                         onPress={() => setIsVisible(true)}

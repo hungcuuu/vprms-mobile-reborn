@@ -110,6 +110,8 @@ const ProviderServices = ({ navigation, route }) => {
                     flexDirection: 'row',
                     flex: 1,
                     justifyContent: 'space-between',
+                    borderRadius: 8,
+                    margin: 8,
                 }}>
                 <View
                     style={{
@@ -117,20 +119,21 @@ const ProviderServices = ({ navigation, route }) => {
                         flexDirection: 'row',
                         flex: 1,
                     }}>
-                    <View style={{}}>
+                    <View style={{ borderRightWidth: 1 }}>
                         <CheckBox
                             // key={detail.serviceId}
                             center
                             checkedIcon="check-square-o"
                             uncheckedIcon="square-o"
                             checked={serviceList.findIndex(s => s.id === detail.id) > -1}
+                            size={30}
                             onPress={() => onSelectServiceChecked(detail)}
                         />
                     </View>
-                    <View style={{ width: '80%' }}>
-                        <Text>{detail.id}</Text>
+                    <View style={{ width: '80%', marginHorizontal: 8 }}>
+                        {/* <Text>{detail.id}</Text> */}
                         {/* <Text>{detail}</Text> */}
-                        <Text>{detail.name}</Text>
+                        <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
                         <Text>{detail.price}</Text>
                         {/* {detail.parts
                     ? detail.parts.map((x) => (
@@ -142,7 +145,7 @@ const ProviderServices = ({ navigation, route }) => {
                     </View>
                 </View>
 
-                <View style={{ justifyContent: 'center' }}>
+                <View style={{ justifyContent: 'center', marginRight: 8 }}>
                     <Button
                         title="detail"
                         onPress={() => {
@@ -159,7 +162,10 @@ const ProviderServices = ({ navigation, route }) => {
                 {services
                     ? services.map(ser => (
                           <View key={ser.typeDetail.id}>
-                              <Text>{ser.typeDetail.typeName}</Text>
+                              <Text style={{ color: 'red' }}>
+                                  {ser.typeDetail.typeName}
+                              </Text>
+                              {ser.serviceDetails ? null : <Text>None</Text>}
                               <FlatList
                                   data={ser.serviceDetails}
                                   keyExtractor={(item, index) => item.id.toString()}
@@ -175,7 +181,9 @@ const ProviderServices = ({ navigation, route }) => {
     useEffect(() => {
         if (path === 'provider') {
             let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
-            axios.get(url).then(rs => setServices(rs.data));
+            axios.get(url).then(rs => {
+                setServices(rs.data), console.log(rs.data);
+            });
         }
         if (selectedService.length > 0) {
             axios
