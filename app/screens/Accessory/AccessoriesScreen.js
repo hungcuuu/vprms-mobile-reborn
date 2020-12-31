@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Button,
-    Dimensions,
-    FlatList,
-    Image,
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { useCallback } from 'react';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Rating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -21,16 +12,8 @@ const AccessoriesScreen = ({ navigation, route }) => {
 
     const accessoryType = route.params;
     const [garageList, setGarageList] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
-    // const [provider, setProvider] = useState({});
-    const closeModal = () => {
-        setModalVisible(false);
-    };
-    const openModal = () => {
-        setModalVisible(true);
-    };
 
-    const getAllAccessories = () => {
+    const getAllAccessories = useCallback(() => {
         console.log('type', accessoryType);
         return axios.post('providers/part-categories', {
             categoryIds: [accessoryType],
@@ -40,7 +23,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
             },
             modelId: vehicles.model.id,
         });
-    };
+    }, [accessoryType, vehicles.model.id]);
     const renderParts = (part, provider) => {
         return (
             <View style={{}}>
@@ -83,31 +66,11 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
 
-                <View style={styles.separator}></View>
+                <View style={styles.separator} />
             </View>
         );
     };
-    const renderServices = (service, provider) => {
-        // console.log(data);
-        // console.log(service);
-        return (
-            <View style={{}}>
-                {/* <View>
-                <Text>{itemData.item.serviceName}</Text>
-            </View> */}
-                <View>
-                    <FlatList
-                        // scrollEnabled={false}
-                        showsVerticalScrollIndicator={false}
-                        data={service.parts}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item: part }) => renderParts(part, provider)}
-                        // numColumns={2}
-                    />
-                </View>
-            </View>
-        );
-    };
+
     const renderGarageList = itemData => {
         return (
             <View style={styles.items}>
@@ -133,7 +96,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
                         {5} {'  '} {(itemData.item.distance / 1000).toFixed(1)} km
                     </Text>
                 </View>
-                <View style={styles.separator}></View>
+                <View style={styles.separator} />
                 <View style={{ marginTop: 20, marginHorizontal: 10 }}>
                     <FlatList
                         showsVerticalScrollIndicator={false}
@@ -152,7 +115,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
             console.log(rs.data);
             setGarageList(rs.data);
         });
-    }, []);
+    }, [getAllAccessories]);
     return (
         <View style={styles.container}>
             <View style={styles.itemsContainer}>

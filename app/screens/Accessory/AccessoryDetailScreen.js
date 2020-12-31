@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
 const AccessoryDetailScreen = ({ navigation, route }) => {
@@ -30,5 +30,3 @@ const AccessoryDetailScreen = ({ navigation, route }) => {
 };
 
 export default AccessoryDetailScreen;
-
-const styles = StyleSheet.create({});

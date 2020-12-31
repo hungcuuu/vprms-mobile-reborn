@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import { Dimensions } from 'react-native';
 import { Image } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import axios from '../../axios';
 
@@ -13,15 +12,15 @@ const ServiceTypeDetail = ({ navigation, route }) => {
     const [sectionList, setSectionList] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);
 
-    const onSelectService = (service) => {
-        setSelectedServices((curr) => {
-            if (curr.findIndex((item) => item.id === service.id) === -1) {
+    const onSelectService = service => {
+        setSelectedServices(curr => {
+            if (curr.findIndex(item => item.id === service.id) === -1) {
                 return [...curr, service];
             }
-            return curr.filter((item) => item.id !== service.id);
+            return curr.filter(item => item.id !== service.id);
         });
     };
-    const renderSections = (section) => {
+    const renderSections = section => {
         return (
             <TouchableOpacity
                 style={{
@@ -32,7 +31,7 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                     borderWidth: 1,
                     margin: 8,
                     backgroundColor:
-                        selectedServices.findIndex((ser) => ser.id === section.id) > -1
+                        selectedServices.findIndex(ser => ser.id === section.id) > -1
                             ? '#D5E8D4'
                             : 'white',
                     borderRadius: 24,
@@ -76,29 +75,29 @@ const ServiceTypeDetail = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        let typeIdList = serviceType.map((type) => type.id);
+        let typeIdList = serviceType.map(type => type.id);
         axios
             .post('service-type-details', typeIdList, {
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
                 },
             })
-            .then((rs) => setSectionList(rs.data));
-    }, []);
+            .then(rs => setSectionList(rs.data));
+    }, [serviceType]);
     return (
         <View style={{ flex: 1 }}>
             <FlatList
                 data={serviceType}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={{}}>
                         <Text> {item.name} </Text>
                         <View style={{}}>
                             <FlatList
                                 data={sectionList.filter(
-                                    (sec) => sec.typeName === item.name,
+                                    sec => sec.typeName === item.name,
                                 )}
-                                keyExtractor={(item) => item.id.toString()}
+                                keyExtractor={item => item.id.toString()}
                                 renderItem={({ item: section }) =>
                                     renderSections(section)
                                 }
@@ -127,5 +126,3 @@ const ServiceTypeDetail = ({ navigation, route }) => {
 };
 
 export default ServiceTypeDetail;
-
-const styles = StyleSheet.create({});

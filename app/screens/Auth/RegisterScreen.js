@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, StatusBar } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Text, Input, Button } from 'react-native-elements';
+import { Input, Button } from 'react-native-elements';
 import { useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 

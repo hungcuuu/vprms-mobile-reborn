@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Dimensions,
     FlatList,
     Image,
     StyleSheet,
@@ -8,8 +7,9 @@ import {
     View,
     TouchableOpacity,
     Modal,
+    Alert,
 } from 'react-native';
-import { Button, Card, CheckBox } from 'react-native-elements';
+import { Button, CheckBox } from 'react-native-elements';
 import { Picker } from '@react-native-community/picker';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,11 +20,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
 
 import axios from '../../axios';
-import { CATALOG } from '../../data/catalog';
-import { ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native';
-import { VirtualizedList } from 'react-native';
-import { LogBox } from 'react-native';
 const CatalogScreen = ({ navigation }) => {
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
     const dispatch = useDispatch();
@@ -33,7 +28,7 @@ const CatalogScreen = ({ navigation }) => {
     const [isVisible, setIsVisible] = useState(false);
     // const [currentVehicle, setCurrentVehicle] = useState();
     const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
-    const [capturedPhoto, setCapturedPhoto] = useState(null);
+    const [, setCapturedPhoto] = useState(null);
 
     // useSelector((state) => state.vehicles?.vehicles[0]),
     const [currentManu, setCurrentManu] = useState(1);
@@ -87,15 +82,12 @@ const CatalogScreen = ({ navigation }) => {
         })
             .then(result => {
                 if (!result.cancelled) {
-                    const urlBase64 = result.base64;
-                    // console.log(result);
-                    const { height, width, type, uri, base64 } = result;
-                    // const Imagefilename = uri.substring(uri.lastIndexOf('/') + 1);
+                    const { uri } = result;
 
                     setCapturedPhoto(uri);
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 Alert.alert('Error', 'Something wrong with Camera');
             });
     };
@@ -106,17 +98,10 @@ const CatalogScreen = ({ navigation }) => {
                     mode="dropdown"
                     selectedValue={currentManu}
                     style={{ height: 50 }}
-                    onValueChange={(itemValue, itemIndex) => {
-                        setCurrentManu(itemValue), getVehicleTypeList(itemValue);
-
-                        // changeVehicle({
-                        //     ...currentVehicle,
-                        //     id: 'other',
-                        // });
-                        // setCurrentType(1);
+                    onValueChange={itemValue => {
+                        setCurrentManu(itemValue);
+                        getVehicleTypeList(itemValue);
                     }}>
-                    {/* <Picker.Item key={0} label={'None'} value={0} /> */}
-
                     {manufactureList
                         ? manufactureList.map(m => (
                               <Picker.Item key={m.id} label={m.name} value={m.id} />
@@ -131,7 +116,7 @@ const CatalogScreen = ({ navigation }) => {
                             mode="dropdown"
                             selectedValue={+currentType}
                             style={{ height: 50 }}
-                            onValueChange={(itemValue, itemIndex) => {
+                            onValueChange={itemValue => {
                                 changeVehicle({
                                     ...currentVehicle,
                                     model: {
@@ -271,22 +256,12 @@ const CatalogScreen = ({ navigation }) => {
             ),
         });
         // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    }, []);
+    }, [navigation]);
     useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
         getManufactures();
         getCatalog().then(rs => {
-            setCatalog(
-                // Object.keys(rs.data).map((key) => {
-                //     return { name: key, value: rs.data[key] };
-                // }),
-                rs.data,
-            );
+            setCatalog(rs.data);
         });
-        return function cleanup() {
-            abortController.abort();
-        };
     }, []);
     return (
         <View style={styles.container} nestedScrollEnabled={true}>

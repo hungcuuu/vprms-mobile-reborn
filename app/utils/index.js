@@ -14,13 +14,13 @@ export const calculateRequestPrice = request => {
     const { services } = request;
 
     const servicesPrice = services.reduce((curr, service) => {
-        const { price, parts } = service;
+        const { price } = service;
 
         return curr + price;
     }, 0);
 
     const partsPrice = services.reduce((curr, service) => {
-        const { price, parts } = service;
+        const { parts } = service;
         const partsPrice = parts.reduce((curr, part) => {
             return curr + part.priceEach * part.quantity;
         }, 0);

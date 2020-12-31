@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { TouchableOpacity } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -98,10 +98,10 @@ const PickingProvider = ({ navigation, route }) => {
                 serviceDetailIds: serviceTypes,
             })
             .then(rs => {
-                setProviders(rs.data), setSearchProviders(rs.data);
-                // console.log('data', rs.data.services);
+                setProviders(rs.data);
+                setSearchProviders(rs.data);
             });
-    }, []);
+    }, [selectedServicesType, vehicles.model.id]);
     return (
         <View>
             <View>
@@ -131,5 +131,3 @@ const PickingProvider = ({ navigation, route }) => {
 };
 
 export default PickingProvider;
-
-const styles = StyleSheet.create({});

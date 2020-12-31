@@ -65,7 +65,7 @@ const deleteVehicle = (state, action) => {
 
 const deleteVehicleSuccess = (state, action) => {
     return updateObject(state, {
-        vehicles: state.vehicles.filter((veh) => veh.id !== action.id),
+        vehicles: state.vehicles.filter(veh => veh.id !== action.id),
         error: null,
     });
 };
@@ -84,7 +84,7 @@ const updateVehicle = (state, action) => {
 const updateVehicleSuccess = (state, action) => {
     const updatedVehicles = [...state.vehicles];
     const updatedIndex = updatedVehicles.findIndex(
-        (vehicle) => vehicle.id === action.vehicle.id,
+        vehicle => vehicle.id === action.vehicle.id,
     );
     updatedVehicles[updatedIndex] = action.vehicle;
     return updateObject(state, {

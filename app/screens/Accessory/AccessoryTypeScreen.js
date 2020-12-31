@@ -7,7 +7,6 @@ import {
     TouchableOpacity,
     View,
     Image,
-    ScrollView,
 } from 'react-native';
 import axios from '../../axios';
 
@@ -18,7 +17,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
     const [categories, setCategories] = useState([]);
 
     const renderAccessoriesList = itemData => (
-        <TouchableOpacity onPress={() => openModal()} style={styles.accessoryItems}>
+        <TouchableOpacity onPress={() => {}} style={styles.accessoryItems}>
             <View
                 style={{
                     borderWidth: 1,
@@ -101,7 +100,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
         axios.get('service-type-details/categories/sections/' + sectionId).then(rs => {
             setCategories(rs.data);
         });
-    }, []);
+    }, [sectionId]);
     return (
         <View contentContainerStyle={styles.container}>
             <FlatList

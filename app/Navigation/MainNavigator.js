@@ -275,29 +275,29 @@ const AccessoryNavigator = ({ navigation }) => (
     </AccessoryStackNavigator.Navigator>
 );
 
-const ServiceStackNavigator = createStackNavigator();
-const ServiceNavigator = () => {
-    <ServiceStackNavigator.Navigator>
-        <ServiceStackNavigator.Screen
-            name="ServiceType"
-            component={ServiceType}
-            options={{
-                // headerLeft: <Ionicons name="md-home" />,
-                title: 'ServiceType',
-                headerTitleAlign: 'center',
-            }}
-        />
-        <ServiceStackNavigator.Screen
-            name="ServiceTypeDetail"
-            component={ServiceTypeDetail}
-            options={{
-                // headerLeft: <Ionicons name="md-home" />,
-                title: '',
-                headerTitleAlign: 'center',
-            }}
-        />
-    </ServiceStackNavigator.Navigator>;
-};
+// const ServiceStackNavigator = createStackNavigator();
+// const ServiceNavigator = () => {
+//     <ServiceStackNavigator.Navigator>
+//         <ServiceStackNavigator.Screen
+//             name="ServiceType"
+//             component={ServiceType}
+//             options={{
+//                 // headerLeft: <Ionicons name="md-home" />,
+//                 title: 'ServiceType',
+//                 headerTitleAlign: 'center',
+//             }}
+//         />
+//         <ServiceStackNavigator.Screen
+//             name="ServiceTypeDetail"
+//             component={ServiceTypeDetail}
+//             options={{
+//                 // headerLeft: <Ionicons name="md-home" />,
+//                 title: '',
+//                 headerTitleAlign: 'center',
+//             }}
+//         />
+//     </ServiceStackNavigator.Navigator>;
+// };
 
 const OrderStackNavigator = createStackNavigator();
 const OrderNavigator = ({ navigation }) => (

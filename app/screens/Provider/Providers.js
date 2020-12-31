@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -9,7 +9,7 @@ const Providers = ({ navigation }) => {
     const vehicle = useSelector(state => state.vehicles.currentVehicle ?? []);
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
-    const [currentVehicle, setCurrentVehicle] = useState(vehicle);
+    const [currentVehicle] = useState(vehicle);
     const [searchText, setSearchText] = useState('');
     const searchHandler = text => {
         setSearchText(text);
@@ -98,7 +98,7 @@ const Providers = ({ navigation }) => {
         navigation.setOptions({
             title: currentVehicle.model.name,
         });
-    }, []);
+    }, [currentVehicle.model.name, navigation]);
     useEffect(() => {
         // console.log('vehicle', currentVehicle);
 
@@ -108,7 +108,8 @@ const Providers = ({ navigation }) => {
                 longitude: 0,
             })
             .then(rs => {
-                setProviders(rs.data), setSearchProviders(rs.data);
+                setProviders(rs.data);
+                setSearchProviders(rs.data);
                 console.log('data', rs.data);
             });
     }, []);
@@ -141,5 +142,3 @@ const Providers = ({ navigation }) => {
 };
 
 export default Providers;
-
-const styles = StyleSheet.create({});

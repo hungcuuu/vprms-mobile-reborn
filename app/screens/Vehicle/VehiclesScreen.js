@@ -1,13 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableNativeFeedback,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Button } from 'react-native-elements';

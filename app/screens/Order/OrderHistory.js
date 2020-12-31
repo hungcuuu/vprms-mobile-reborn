@@ -129,7 +129,7 @@ const OrderHistory = ({ navigation, route }) => {
         axios.get(`requests/users/${user.userId}`).then(rs => {
             setHistoryList(rs.data);
         });
-    }, []);
+    }, [user.userId]);
     return (
         <View style={styles.container}>
             <FlatList
@@ -139,7 +139,7 @@ const OrderHistory = ({ navigation, route }) => {
                 data={
                     OrderStatus === 'inProgress'
                         ? historyList.filter(x => x.status === 'ACCEPTED')
-                        : historyList.filter(x => x.status != 'ACCEPTED')
+                        : historyList.filter(x => x.status !== 'ACCEPTED')
                 }
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item: history }) => renderHistory(history)}
