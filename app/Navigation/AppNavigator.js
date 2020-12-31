@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { AuthNavigator, SideDrawer } from './MainNavigator';
 import * as actions from '../store/actions';
 
-const AppNavigator = (props) => {
-    const isAuth = useSelector((state) => !!state.auth.token);
+const AppNavigator = props => {
     const dispatch = useDispatch();
-    dispatch(actions.fetchVehicles('24'));
+    const userData = useSelector(state => state.auth.user);
+
+    useEffect(() => {
+        if (userData) {
+            dispatch(actions.fetchVehicles(userData.id));
+        }
+    }, [userData]);
 
     return (
         <NavigationContainer>
-            <SideDrawer />
+            {!userData ? <AuthNavigator /> : <SideDrawer />}
         </NavigationContainer>
     );
 };

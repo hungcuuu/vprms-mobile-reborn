@@ -8,15 +8,14 @@ export const loginRequest = (phoneNumber, password) => {
     };
 };
 
-export const loginSuccess = (user, token) => {
+export const loginSuccess = user => {
     return {
         type: actionTypes.LOGIN_SUCCESS,
         user,
-        token,
     };
 };
 
-export const loginFailed = (error) => {
+export const loginFailed = error => {
     return {
         type: actionTypes.LOGIN_FAILED,
         error,
@@ -35,11 +34,9 @@ export const logout = () => {
     };
 };
 
-export const registerRequest = (phoneNumber, password, fullname) => {
+export const register = newUser => {
     return {
-        type: actionTypes.REGISTER_REQUEST,
-        phoneNumber,
-        password,
-        fullname,
+        type: actionTypes.REGISTER,
+        payload: newUser,
     };
 };

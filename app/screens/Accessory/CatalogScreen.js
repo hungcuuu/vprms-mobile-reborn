@@ -290,6 +290,7 @@ const CatalogScreen = ({ navigation }) => {
     }, []);
     return (
         <View style={styles.container} nestedScrollEnabled={true}>
+            <Button onPress={() => dispatch(actions.logoutRequest())} title="Logout" />
             <View style={styles.itemsContainer}>
                 <FlatList
                     ListHeaderComponent={

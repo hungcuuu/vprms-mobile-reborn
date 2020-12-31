@@ -3,8 +3,8 @@ import { View, StyleSheet, StatusBar } from 'react-native';
 import { Text, Input, Button } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import * as actions from '../store/actions';
-import { Colors } from '../constants';
+import * as actions from '../../store/actions';
+import { Colors } from '../../constants';
 import { connect } from 'react-redux';
 
 const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
@@ -41,13 +41,13 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
                     placeholder="Phone Number"
                     inputContainerStyle={styles.input}
                     leftIcon={{ type: 'font-awesome', name: 'phone' }}
-                    onChangeText={(value) => setPhoneInput(value)}
+                    onChangeText={value => setPhoneInput(value)}
                 />
                 <Input
                     placeholder="Password"
                     inputContainerStyle={styles.input}
                     leftIcon={{ type: 'font-awesome', name: 'lock' }}
-                    onChangeText={(value) => setPasswordInput(value)}
+                    onChangeText={value => setPasswordInput(value)}
                 />
                 <Button
                     buttonStyle={{
@@ -81,16 +81,17 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
 
 const styles = StyleSheet.create({});
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
         error: state.auth.error,
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
-        onLogin: (phoneNumber, password) => dispatch(actions.loginRequest(phoneNumber, password)),
+        onLogin: (phoneNumber, password) =>
+            dispatch(actions.loginRequest(phoneNumber, password)),
     };
 };
 
