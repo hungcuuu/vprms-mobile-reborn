@@ -14,8 +14,6 @@ import { Picker } from '@react-native-community/picker';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
 
@@ -265,7 +263,6 @@ const CatalogScreen = ({ navigation }) => {
     }, []);
     return (
         <View style={styles.container} nestedScrollEnabled={true}>
-            <Button onPress={() => dispatch(actions.logoutRequest())} title="Logout" />
             <View style={styles.itemsContainer}>
                 <FlatList
                     ListHeaderComponent={
@@ -304,7 +301,7 @@ const CatalogScreen = ({ navigation }) => {
                     }
                     showsVerticalScrollIndicator={false}
                     data={Catalog.filter(cat => cat.typeName === 'Thay thế và lắp ráp')}
-                    keyExtractor={(item, index) => index}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={renderAccessoryTypeList}
                     numColumns={3}
                     // scrollEnabled={false}

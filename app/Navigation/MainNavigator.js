@@ -1,8 +1,14 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItem,
+    DrawerItemList,
+} from '@react-navigation/drawer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
@@ -26,6 +32,10 @@ import OrderHistory from '../screens/Order/OrderHistory';
 import Providers from '../screens/Provider/Providers';
 import BookingDetail from '../screens/Order/BookingDetail';
 import Feedback from '../screens/Order/Feedback';
+import { useDispatch } from 'react-redux';
+
+import * as actions from '../store/actions';
+import { Text, View } from 'react-native';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -444,8 +454,28 @@ function OrderTab() {
 }
 const Drawer = createDrawerNavigator();
 export function SideDrawer() {
+    const dispatch = useDispatch();
     return (
         <Drawer.Navigator
+            drawerContent={props => {
+                return (
+                    <DrawerContentScrollView {...props}>
+                        <DrawerItemList {...props} />
+                        <DrawerItem
+                            icon={({ focused, size }) => (
+                                <Ionicons
+                                    name="log-out-outline"
+                                    size={size}
+                                    color="red"
+                                />
+                            )}
+                            label="Logout"
+                            labelStyle={{ fontWeight: 'bold', color: 'red' }}
+                            onPress={() => dispatch(actions.logoutRequest())}
+                        />
+                    </DrawerContentScrollView>
+                );
+            }}
             initialRouteName="Accessory"
             screenOptions={{
                 unmountOnBlur: true,
@@ -469,8 +499,8 @@ export function SideDrawer() {
                 component={ProviderNavigator}
                 options={{
                     drawerIcon: ({ focused, size }) => (
-                        <Ionicons
-                            name="md-home"
+                        <MaterialCommunityIcons
+                            name="garage"
                             size={size}
                             color={focused ? '#7cc' : '#ccc'}
                         />
@@ -509,8 +539,8 @@ export function SideDrawer() {
                 component={OrderNavigator}
                 options={{
                     drawerIcon: ({ focused, size }) => (
-                        <Ionicons
-                            name="md-calendar"
+                        <MaterialCommunityIcons
+                            name="history"
                             size={size}
                             color={focused ? '#7cc' : '#ccc'}
                         />
