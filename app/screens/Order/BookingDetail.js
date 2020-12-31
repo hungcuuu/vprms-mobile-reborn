@@ -1,20 +1,12 @@
 import React, { useEffect } from 'react';
-import {
-    Alert,
-    Button,
-    FlatList,
-    Image,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
+import { Alert, Button, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { Card } from 'react-native-elements';
 import moment from 'moment';
+
 import { STATUS, STATUS_TAG_COLORS } from '../../constants';
 import { calculateRequestPrice, formatMoney } from '../../utils/index';
 import axios from '../../axios';
+import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
     const getStatusTagColor = status => {
@@ -98,33 +90,39 @@ const BookingDetail = ({ navigation, route }) => {
             </>
         );
     };
-    const cancelBooking = id => {
-        axios.delete('requests/' + id).then(res =>
-            // setCurrentBooking(res.data)
-            {
-                if (res.status == 200) {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Order' }],
-                    });
-                }
-            },
-        );
-    };
-    const onCancel = id => {
-        Alert.alert('', 'Do u want to Cancel this request?', [
-            {
-                text: 'Cancel',
-                style: 'cancel',
-            },
-            {
-                text: 'OK',
-                onPress: () => {
-                    cancelBooking(id);
+    const cancelBooking = useCallback(
+        id => {
+            axios.delete('requests/' + id).then(res =>
+                // setCurrentBooking(res.data)
+                {
+                    if (res.status === 200) {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Order' }],
+                        });
+                    }
                 },
-            },
-        ]);
-    };
+            );
+        },
+        [navigation],
+    );
+    const onCancel = useCallback(
+        id => {
+            Alert.alert('', 'Do u want to Cancel this request?', [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        cancelBooking(id);
+                    },
+                },
+            ]);
+        },
+        [cancelBooking],
+    );
     useEffect(() => {
         detail.status === 'ACCEPTED'
             ? navigation.setOptions({
@@ -133,11 +131,11 @@ const BookingDetail = ({ navigation, route }) => {
                   ),
               })
             : null;
-    }, []);
+    }, [detail.id, detail.status, navigation, onCancel]);
     useEffect(() => {
         navigation.setOptions({ headerTitle: `request #${detail.id}` });
         // console.log(detail.services[0].parts);
-    }, []);
+    }, [detail.id, navigation]);
     return (
         <View style={styles.container}>
             <FlatList

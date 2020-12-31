@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, CheckBox, SearchBar } from 'react-native-elements';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Button, SearchBar } from 'react-native-elements';
 
 import axios from '../../axios';
-import { ACCESSORIES } from '../../data/accessories';
 
 import { normalizeString } from '../../utils';
 const ProviderAccessoriesScreen = ({ navigation, route }) => {
@@ -22,13 +21,13 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
     const [filteredAccessories, setFilteredAccessories] = useState([]);
     const [searchText, setSearchText] = useState('');
 
-    const searchHandler = (text) => {
+    const searchHandler = text => {
         setSearchText(text);
         if (!text || text === '') {
             setFilteredAccessories([...accessories]);
         }
 
-        const updatedAccessories = accessories.filter((ser) =>
+        const updatedAccessories = accessories.filter(ser =>
             normalizeString(ser.name).match(normalizeString(text)),
         );
         setFilteredAccessories(updatedAccessories);
@@ -36,7 +35,7 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
 
     const onAddPart = (itemId, price, categoryId, name) => {
         const updatedSelections = [...selections];
-        const index = selections.findIndex((item) => item.id === itemId);
+        const index = selections.findIndex(item => item.id === itemId);
         if (index >= 0) {
             // Update quantity
             updatedSelections[index].quantity++;
@@ -52,9 +51,9 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
         }
         setSelections(updatedSelections);
     };
-    const onRemovePart = (itemId) => {
+    const onRemovePart = itemId => {
         let updatedSelections = [...selections];
-        let index = selections.findIndex((item) => +item.id === +itemId);
+        let index = selections.findIndex(item => +item.id === +itemId);
         if (index >= 0) {
             if (updatedSelections[index].quantity > 1) {
                 updatedSelections[index].quantity--;
@@ -66,9 +65,9 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
         }
         setSelections(updatedSelections);
     };
-    const renderAccessoryList = (itemData) => {
+    const renderAccessoryList = itemData => {
         const quantity =
-            selections.find((item) => item.id === itemData.item.id)?.quantity ?? 0;
+            selections.find(item => item.id === itemData.item.id)?.quantity ?? 0;
 
         return (
             <View
@@ -156,11 +155,11 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        axios.get(`/parts/1`).then((res) => {
+        axios.get('/parts/1').then(res => {
             setAccessories(res.data);
             setFilteredAccessories(res.data);
             let list = res.data ?? [];
-            let a = list.find((item) => item.id === detail.part.id);
+            let a = list.find(item => item.id === detail.part.id);
             // console.log('1');
             setSelections([
                 {
@@ -172,7 +171,7 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
                 },
             ]);
         });
-    }, []);
+    }, [detail.part.id]);
 
     return (
         <View style={styles.container}>
@@ -191,7 +190,7 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
                     placeholder="Search Here..."
                     lightTheme
                     round
-                    onChangeText={(text) => searchHandler(text)}
+                    onChangeText={text => searchHandler(text)}
                     autoCorrect={false}
                     blurOnSubmit={false}
                     clearButtonMode="always"
@@ -199,7 +198,7 @@ const ProviderAccessoriesScreen = ({ navigation, route }) => {
             </View>
             <FlatList
                 data={filteredAccessories}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={item => item.id.toString()}
                 renderItem={renderAccessoryList}
                 showsVerticalScrollIndicator={false}
             />

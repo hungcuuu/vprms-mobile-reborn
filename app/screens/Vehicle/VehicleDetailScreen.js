@@ -1,17 +1,16 @@
-/* eslint-disable react-native/no-unused-styles */
 import React, { useState, useEffect } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
-import { Picker } from '@react-native-community/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import * as actions from '../../store/actions';
+import { useCallback } from 'react';
 
 const VehicleDetailScreen = ({ route, navigation }) => {
     const vehicle = route.params;
     const dispatch = useDispatch();
-    const error = useSelector((state) => state.vehicles.error);
+    const error = useSelector(state => state.vehicles.error);
     const [currentVehicle, setCurrentVehicle] = useState(vehicle);
     const [isVisible, setIsVisible] = useState(false);
     const cancelUpdateHandler = () => {
@@ -19,26 +18,31 @@ const VehicleDetailScreen = ({ route, navigation }) => {
 
         setIsVisible(false);
     };
-    const updateVehicleHandler = (vehicle) => {
+    const updateVehicleHandler = vehicle => {
         dispatch(actions.updateVehicle(vehicle, () => setIsVisible(false)));
     };
 
-    if (error) Alert.alert(error);
+    if (error) {
+        Alert.alert(error);
+    }
 
-    const deleteVehicle = (id) => {
-        Alert.alert('', 'Do u want to Delete this Vehicle?', [
-            {
-                text: 'Cancel',
-                style: 'cancel',
-            },
-            {
-                text: 'OK',
-                onPress: () => {
-                    dispatch(actions.deleteVehicle(id, () => navigation.pop()));
+    const deleteVehicle = useCallback(
+        id => {
+            Alert.alert('', 'Do u want to Delete this Vehicle?', [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
                 },
-            },
-        ]);
-    };
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        dispatch(actions.deleteVehicle(id, () => navigation.pop()));
+                    },
+                },
+            ]);
+        },
+        [dispatch, navigation],
+    );
 
     const modalUpdate = () => {
         return (
@@ -47,8 +51,8 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     <Text>Plate Number</Text>
                     <Input
                         value={currentVehicle.plateNumber}
-                        onChangeText={(value) =>
-                            setCurrentVehicle((cur) => ({
+                        onChangeText={value =>
+                            setCurrentVehicle(cur => ({
                                 ...cur,
                                 plateNumber: value,
                             }))
@@ -58,8 +62,8 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     <Text>VIN</Text>
                     <Input
                         value={currentVehicle.vinNumber}
-                        onChangeText={(value) =>
-                            setCurrentVehicle((cur) => ({
+                        onChangeText={value =>
+                            setCurrentVehicle(cur => ({
                                 ...cur,
                                 vinNumber: value,
                             }))
@@ -91,7 +95,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             ),
             headerTitle: vehicle.model.name,
         });
-    }, []);
+    }, [deleteVehicle, navigation, vehicle.id, vehicle.model.name]);
     return (
         <View style={styles.container}>
             <ScrollView nestedScrollEnabled style={{ flex: 1 }}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Text, View } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -70,7 +70,6 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                         <Text>{part.price}</Text> */}
                         {/* <Text>{part.serviceId}</Text> */}
                     </View>
-                    <View></View>
                 </View>
             </View>
         );
@@ -113,7 +112,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 // console.log('rs', rs.data);
                 // setPartList(partList);
             });
-    }, []);
+    }, [detail.part.id, detail.provider.id, vehicles.model.id]);
 
     return (
         <View
@@ -162,5 +161,3 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
 };
 
 export default AccessoryServicesScreen;
-
-const styles = StyleSheet.create({});

@@ -1,13 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableNativeFeedback,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Button } from 'react-native-elements';
@@ -15,9 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
 const PickingVehicleScreen = ({ navigation }) => {
     const dispatch = useDispatch();
-    const vehicles = useSelector((state) => state.vehicles.vehicles ?? []);
+    const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
 
-    const pickingVehicleHandler = (vehicle) => {
+    const pickingVehicleHandler = vehicle => {
         dispatch(
             actions.updateCurrentVehicle(vehicle, () => {
                 navigation.navigate('ServiceType');
@@ -25,7 +17,7 @@ const PickingVehicleScreen = ({ navigation }) => {
         );
     };
     console.log(vehicles);
-    const renderVehicleItem = (vehicle) => (
+    const renderVehicleItem = vehicle => (
         <TouchableOpacity
             // useForeground
             onPress={() => pickingVehicleHandler(vehicle)}>

@@ -1,6 +1,5 @@
-// import { formatMoney } from '';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import { formatMoney } from '../../utils';
 
@@ -89,5 +88,3 @@ const ReviewScreen = ({ navigation, route }) => {
 };
 
 export default ReviewScreen;
-
-const styles = StyleSheet.create({});

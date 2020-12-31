@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Button } from 'react-native-elements';
-
 import { useSelector } from 'react-redux';
+
 import axios from '../../axios';
 import { toTimeString } from '../../utils';
-import _ from 'lodash';
 
 const ScheduleScreen = ({ navigation, route }) => {
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
@@ -136,7 +135,7 @@ const ScheduleScreen = ({ navigation, route }) => {
             detail.provider.id,
             Math.floor(new Date(currentDay).getTime() / 1000),
         );
-    }, []);
+    }, [currentDay, detail.provider.id]);
     return (
         <View style={{ flex: 1, padding: 8 }}>
             <View>{renderCalendar()}</View>
@@ -162,5 +161,3 @@ const ScheduleScreen = ({ navigation, route }) => {
 };
 
 export default ScheduleScreen;
-
-const styles = StyleSheet.create({});

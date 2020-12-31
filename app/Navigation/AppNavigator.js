@@ -13,7 +13,7 @@ const AppNavigator = props => {
         if (userData) {
             dispatch(actions.fetchVehicles(userData.id));
         }
-    }, [userData]);
+    }, [dispatch, userData]);
 
     return (
         <NavigationContainer>

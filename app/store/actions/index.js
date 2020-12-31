@@ -8,7 +8,6 @@ export {
 } from './auth';
 
 export { fetchServices, fetchServicesSuccess } from './services';
-export {} from './requests';
 
 export {
     fetchVehicles,

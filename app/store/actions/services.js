@@ -6,7 +6,7 @@ export const fetchServices = () => {
     };
 };
 
-export const fetchServicesSuccess = (services) => {
+export const fetchServicesSuccess = services => {
     return {
         type: actionTypes.FETCH_SERVICES_SUCCESS,
         services,

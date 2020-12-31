@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -6,32 +6,22 @@ import {
     Image,
     ScrollView,
     StyleSheet,
-    Text,
     View,
 } from 'react-native';
 import { Input } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 
 import { AirbnbRating } from 'react-native-ratings';
-import { useSelector } from 'react-redux';
 import axios from '../../axios';
 
 const Feedback = ({ navigation, route }) => {
-    const user = useSelector(state => state.auth.user ?? {});
     const [capturedPhoto, setCapturedPhoto] = useState(null);
 
     const requestId = route.params?.requestId;
-    const [refreshing, setRefreshing] = useState(false);
 
-    const [content, setContent] = useState('');
+    const [, setContent] = useState('');
     const [imageUrls, setImageUrls] = useState(null);
     const [ratings, setRatings] = useState(1);
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-
-        setRefreshing(false);
-    }, [refreshing]);
 
     const sendFeedbackHandler = () => {
         // console.log(feedbackForm);
@@ -77,7 +67,7 @@ const Feedback = ({ navigation, route }) => {
 
                     // Infer the type of the image
                     let match = /\.(\w+)$/.exec(filename);
-                    let type = match ? `image/${match[1]}` : `image`;
+                    let type = match ? `image/${match[1]}` : 'image';
 
                     setImageUrls([{ uri: localUri, name: filename, type }]);
                     setCapturedPhoto(localUri);
@@ -89,7 +79,7 @@ const Feedback = ({ navigation, route }) => {
     };
     useEffect(() => {
         navigation.setOptions({ title: `request #${requestId}` });
-    }, []);
+    }, [navigation, requestId]);
     return (
         <ScrollView style={styles.container}>
             <View>

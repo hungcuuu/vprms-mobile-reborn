@@ -5,7 +5,6 @@ import persistReducer from 'redux-persist/es/persistReducer';
 import authReducer from './auth';
 import servicesReducer from './services';
 import vehiclesReducer from './vehicles';
-import requestsReducer from './requests';
 import cartReducer from './cart';
 
 const authPersistConfig = {
@@ -24,7 +23,6 @@ const rootReducer = combineReducers({
     auth: persistReducer(authPersistConfig, authReducer),
     services: servicesReducer,
     vehicles: persistReducer(vehiclesPersistConfig, vehiclesReducer),
-    request: requestsReducer,
     cart: cartReducer,
 });
 

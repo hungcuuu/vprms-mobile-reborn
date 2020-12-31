@@ -17,7 +17,7 @@ const LoginScreen = ({ loading, error, navigation, onLogin, ...rest }) => {
 
     useEffect(() => {
         navigation.setOptions({ title: 'Login' });
-    }, []);
+    }, [navigation]);
 
     return (
         <View

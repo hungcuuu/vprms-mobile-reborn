@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input, Button } from 'react-native-elements';
@@ -12,10 +12,8 @@ const VehicleCreateScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [VIN, setVIN] = useState('');
     const [boughtDate, setBoughtDate] = useState(new Date());
     const [currentManu, setCurrentManu] = useState(1);
-    const [licensePlateNum, setLicensePlateNum] = useState('');
     const [manufactureList, setManufactureList] = useState();
     const [vehicleTypeList, setVehicleTypeList] = useState([]);
     const [currentVehicle, setCurrentVehicle] = useState({
@@ -48,10 +46,10 @@ const VehicleCreateScreen = ({ navigation }) => {
                     Accept: 'application/json',
                 },
             })
-            .then((rs) => setManufactureList(rs.data))
-            .catch((err) => Alert.alert(err));
+            .then(rs => setManufactureList(rs.data))
+            .catch(err => Alert.alert(err));
     };
-    const getVehicleTypeList = async (id) => {
+    const getVehicleTypeList = async id => {
         return axios
             .get('models/manufacturers/' + id, {
                 headers: {
@@ -59,26 +57,20 @@ const VehicleCreateScreen = ({ navigation }) => {
                     Accept: 'application/json',
                 },
             })
-            .then((rs) => setVehicleTypeList(rs.data))
-            .catch((er) => Alert.alert(er));
+            .then(rs => setVehicleTypeList(rs.data))
+            .catch(er => Alert.alert(er));
     };
 
     useEffect(() => {
-        const abortController = new AbortController();
-        const signal = abortController.signal;
         getManufactures();
-        // getVehicleTypeList(1);
-        return function cleanup() {
-            abortController.abort();
-        };
     }, []);
     return (
         <View>
             <View>
                 <Input
                     placeholder="License plate number"
-                    onChangeText={(value) => {
-                        setCurrentVehicle((currentVehicle) => ({
+                    onChangeText={value => {
+                        setCurrentVehicle(currentVehicle => ({
                             ...currentVehicle,
                             plateNumber: value,
                         }));
@@ -88,8 +80,8 @@ const VehicleCreateScreen = ({ navigation }) => {
             <View>
                 <Input
                     placeholder="VIN"
-                    onChangeText={(value) => {
-                        setCurrentVehicle((currentVehicle) => ({
+                    onChangeText={value => {
+                        setCurrentVehicle(currentVehicle => ({
                             ...currentVehicle,
                             vinNumber: value,
                         }));
@@ -103,10 +95,11 @@ const VehicleCreateScreen = ({ navigation }) => {
                     selectedValue={currentManu}
                     style={{ height: 50 }}
                     onValueChange={(itemValue, itemIndex) => {
-                        setCurrentManu(itemValue), getVehicleTypeList(itemValue);
+                        setCurrentManu(itemValue);
+                        getVehicleTypeList(itemValue);
                     }}>
                     {manufactureList
-                        ? manufactureList.map((m) => (
+                        ? manufactureList.map(m => (
                               <Picker.Item key={m.id} label={m.name} value={m.id} />
                           ))
                         : null}
@@ -121,12 +114,12 @@ const VehicleCreateScreen = ({ navigation }) => {
                             selectedValue={+currentVehicle.modelId}
                             style={{ height: 50 }}
                             onValueChange={(itemValue, itemIndex) => {
-                                setCurrentVehicle((currentVehicle) => ({
+                                setCurrentVehicle(currentVehicle => ({
                                     ...currentVehicle,
                                     modelId: itemValue ? itemValue.toString() : '',
                                 }));
                             }}>
-                            {vehicleTypeList.map((t) => (
+                            {vehicleTypeList.map(t => (
                                 <Picker.Item
                                     key={t.id}
                                     label={t.name + ' ' + t.year}
@@ -149,7 +142,7 @@ const VehicleCreateScreen = ({ navigation }) => {
                         color: currentVehicle.color,
                     }}
                     onValueChange={(itemValue, itemIndex) =>
-                        setCurrentVehicle((currentVehicle) => ({
+                        setCurrentVehicle(currentVehicle => ({
                             ...currentVehicle,
                             color: itemValue.toString(),
                         }))
@@ -208,5 +201,3 @@ const VehicleCreateScreen = ({ navigation }) => {
 };
 
 export default VehicleCreateScreen;
-
-const styles = StyleSheet.create({});

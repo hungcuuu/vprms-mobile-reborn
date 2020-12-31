@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import {
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    View,
-    ScrollView,
-    Modal,
-    Button,
-    TouchableOpacity,
-    VirtualizedList,
-} from 'react-native';
+import { FlatList, Text, View, ScrollView, Modal, Button } from 'react-native';
 
 import { CheckBox } from 'react-native-elements';
 import { SliderBox } from 'react-native-image-slider-box';
@@ -150,7 +139,8 @@ const ProviderServices = ({ navigation, route }) => {
                     <Button
                         title="detail"
                         onPress={() => {
-                            setPartList(detail.parts), setVisible(true);
+                            setPartList(detail.parts);
+                            setVisible(true);
                         }}
                     />
                 </View>
@@ -183,7 +173,8 @@ const ProviderServices = ({ navigation, route }) => {
         if (path === 'provider') {
             let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
             axios.get(url).then(rs => {
-                setServices(rs.data), console.log(rs.data[0]?.serviceDetails);
+                setServices(rs.data);
+                console.log(rs.data[0]?.serviceDetails);
             });
         }
         if (selectedService.length > 0) {
@@ -191,9 +182,8 @@ const ProviderServices = ({ navigation, route }) => {
                 .get('services/providers/' + provider.id + '/models/' + vehicles.model.id)
                 .then(rs => setServices(rs.data));
             setServiceList(selectedService);
-            console.log('///////////');
         }
-    }, []);
+    }, [path, provider.id, selectedService, vehicles.model.id]);
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={{ flex: 1 }}>
@@ -273,5 +263,3 @@ const ProviderServices = ({ navigation, route }) => {
 };
 
 export default ProviderServices;
-
-const styles = StyleSheet.create({});

@@ -2,7 +2,6 @@ import { put, takeEvery } from 'redux-saga/effects';
 
 import * as actionTypes from '../actions/actionTypes';
 import * as actions from '../actions';
-import { VEHICLES } from '../../data/dummy-data';
 import axios from '../../axios';
 
 function* updateCurrentVehicle(action) {
@@ -22,7 +21,7 @@ function* fetchVehicles(action) {
                     Accept: 'application/json',
                 },
             })
-            .then((rs) => rs.data);
+            .then(rs => rs.data);
         yield put(actions.fetchVehiclesSuccess(data));
     } catch (error) {
         console.log(error);
@@ -37,7 +36,7 @@ function* createVehicle(action) {
                     Accept: 'application/json',
                 },
             })
-            .then((rs) => rs.data);
+            .then(rs => rs.data);
 
         yield put(actions.createVehicleSuccess(data));
         action.callBack();
@@ -85,7 +84,7 @@ function* updateVehicle(action) {
                     },
                 },
             )
-            .then((rs) => rs.data);
+            .then(rs => rs.data);
         yield put(actions.updateVehicleSuccess(data));
         action.callBack();
     } catch (error) {
