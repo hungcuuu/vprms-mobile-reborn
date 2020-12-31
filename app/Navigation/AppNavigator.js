@@ -11,9 +11,9 @@ const AppNavigator = props => {
 
     useEffect(() => {
         if (userData) {
-            dispatch(actions.fetchVehicles(userData.id));
+            dispatch(actions.fetchVehicles(userData.userId));
         }
-    }, [userData]);
+    }, [dispatch, userData]);
 
     return (
         <NavigationContainer>
