@@ -11,9 +11,10 @@ const loginRequest = (state, action) => {
 };
 
 const loginSuccess = (state, action) => {
+    const { id: userId, ...rest } = action.user;
     return updateObject(state, {
         loading: false,
-        user: action.user,
+        user: { userId, ...rest },
     });
 };
 
