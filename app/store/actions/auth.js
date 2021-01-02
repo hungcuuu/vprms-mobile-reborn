@@ -40,3 +40,20 @@ export const register = newUser => {
         payload: newUser,
     };
 };
+
+export const updateUser = (id, fullName, gender, callBack) => {
+    return {
+        type: actionTypes.UPDATE_USER,
+        id,
+        fullName,
+        gender,
+        callBack,
+    };
+};
+
+export const updateUserSuccess = user => {
+    return {
+        type: actionTypes.UPDATE_USER_SUCCESS,
+        user,
+    };
+};

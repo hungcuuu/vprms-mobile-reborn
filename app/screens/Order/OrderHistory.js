@@ -126,10 +126,10 @@ const OrderHistory = ({ navigation, route }) => {
 
     useEffect(() => {
         // console.log(user);
-        axios.get(`requests/users/${user.userId}`).then(rs => {
+        axios.get(`requests/users/${user.id}`).then(rs => {
             setHistoryList(rs.data);
         });
-    }, [user.userId]);
+    }, [user.id]);
     return (
         <View style={styles.container}>
             <FlatList

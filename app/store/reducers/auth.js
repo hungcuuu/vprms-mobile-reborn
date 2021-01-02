@@ -11,10 +11,9 @@ const loginRequest = (state, action) => {
 };
 
 const loginSuccess = (state, action) => {
-    const { id: userId, ...rest } = action.user;
     return updateObject(state, {
         loading: false,
-        user: { userId, ...rest },
+        user: action.user,
     });
 };
 
@@ -31,7 +30,16 @@ const logoutSuccess = (state, action) => {
         token: null,
     });
 };
+const updateUser = (state, action) => {
+    return updateObject(state, { loading: true });
+};
 
+const updateUserSuccess = (state, action) => {
+    return updateObject(state, {
+        loading: false,
+        user: action.user,
+    });
+};
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.LOGIN_REQUEST:
@@ -42,6 +50,10 @@ const reducer = (state = initialState, action) => {
             return loginFailed(state, action);
         case actionTypes.LOGOUT:
             return logoutSuccess(state, action);
+        case actionTypes.UPDATE_USER:
+            return updateUser(state, action);
+        case actionTypes.UPDATE_USER_SUCCESS:
+            return updateUserSuccess(state, action);
         default:
             return state;
     }

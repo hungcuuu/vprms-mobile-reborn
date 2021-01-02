@@ -5,6 +5,8 @@ export {
     logoutRequest,
     logout,
     register,
+    updateUser,
+    updateUserSuccess,
 } from './auth';
 
 export { fetchServices, fetchServicesSuccess } from './services';

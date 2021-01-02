@@ -3,12 +3,14 @@ import { Alert, Text, View } from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input, Button } from 'react-native-elements';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as actions from '../../store/actions';
 import axios from '../../axios';
 
 const VehicleCreateScreen = ({ navigation }) => {
+    const user = useSelector(state => state.auth.user ?? {});
+
     const dispatch = useDispatch();
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -21,7 +23,7 @@ const VehicleCreateScreen = ({ navigation }) => {
         color: 'red',
         modelId: 1,
         plateNumber: '',
-        userId: 24,
+        userId: user.id,
         vinNumber: '',
     });
     const createVehicleHandler = () => {

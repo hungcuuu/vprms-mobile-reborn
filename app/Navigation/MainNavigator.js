@@ -36,6 +36,7 @@ import { useDispatch } from 'react-redux';
 
 import * as actions from '../store/actions';
 import { Text, View } from 'react-native';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -285,30 +286,6 @@ const AccessoryNavigator = ({ navigation }) => (
     </AccessoryStackNavigator.Navigator>
 );
 
-// const ServiceStackNavigator = createStackNavigator();
-// const ServiceNavigator = () => {
-//     <ServiceStackNavigator.Navigator>
-//         <ServiceStackNavigator.Screen
-//             name="ServiceType"
-//             component={ServiceType}
-//             options={{
-//                 // headerLeft: <Ionicons name="md-home" />,
-//                 title: 'ServiceType',
-//                 headerTitleAlign: 'center',
-//             }}
-//         />
-//         <ServiceStackNavigator.Screen
-//             name="ServiceTypeDetail"
-//             component={ServiceTypeDetail}
-//             options={{
-//                 // headerLeft: <Ionicons name="md-home" />,
-//                 title: '',
-//                 headerTitleAlign: 'center',
-//             }}
-//         />
-//     </ServiceStackNavigator.Navigator>;
-// };
-
 const OrderStackNavigator = createStackNavigator();
 const OrderNavigator = ({ navigation }) => (
     <OrderStackNavigator.Navigator
@@ -452,8 +429,44 @@ function OrderTab() {
         </Tab.Navigator>
     );
 }
+
+// const ProfileStackNavigator = createStackNavigator();
+// const ProfileNavigator = ({navigation}) = (
+
+// )
+const ProfileStackNavigator = createStackNavigator();
+const ProfileNavigator = ({ navigation }) => (
+    <ProfileStackNavigator.Navigator
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerTitleAlign: 'center',
+        }}>
+        <ProfileStackNavigator.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: '',
+
+                headerLeft: () => (
+                    <Ionicons
+                        name="menu-outline"
+                        style={{ fontSize: 30 }}
+                        onPress={() => navigation.toggleDrawer()}
+                    />
+                ),
+            }}
+        />
+    </ProfileStackNavigator.Navigator>
+);
 const Drawer = createDrawerNavigator();
-export function SideDrawer() {
+export function SideDrawer({ navigation }) {
     const dispatch = useDispatch();
     return (
         <Drawer.Navigator
@@ -541,6 +554,19 @@ export function SideDrawer() {
                     drawerIcon: ({ focused, size }) => (
                         <MaterialCommunityIcons
                             name="history"
+                            size={size}
+                            color={focused ? '#7cc' : '#ccc'}
+                        />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Profile"
+                component={ProfileNavigator}
+                options={{
+                    drawerIcon: ({ focused, size }) => (
+                        <Ionicons
+                            name="person-outline"
                             size={size}
                             color={focused ? '#7cc' : '#ccc'}
                         />

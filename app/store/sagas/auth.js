@@ -35,9 +35,23 @@ function* register(action) {
         console.log(error);
     }
 }
-
+function* updateUser(action) {
+    const { id, fullName, gender } = action;
+    console.log(id, fullName, gender);
+    try {
+        const data = yield axios
+            .post(`/users/${id}`, { fullName, gender })
+            .then(({ data }) => data);
+        yield AsyncStorage.setItem('user', JSON.stringify(data));
+        yield put(actions.updateUserSuccess(data));
+        action.callBack();
+    } catch (error) {
+        console.log(error);
+    }
+}
 export default function* authSagas() {
     yield takeEvery(actionTypes.LOGIN_REQUEST, login);
     yield takeEvery(actionTypes.LOGOUT_REQUEST, logout);
     yield takeEvery(actionTypes.REGISTER, register);
+    yield takeEvery(actionTypes.UPDATE_USER, updateUser);
 }

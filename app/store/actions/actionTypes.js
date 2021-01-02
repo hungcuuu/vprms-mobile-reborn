@@ -9,6 +9,10 @@ export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 export const LOGOUT = 'LOGOUT';
 
 export const REGISTER = 'REGISTER';
+
+export const UPDATE_USER = 'UPDATE_USER';
+
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 /////////////////////////////////////////////////////////////////
 export const FETCH_SERVICES = 'FETCH_SERVICES';
 
