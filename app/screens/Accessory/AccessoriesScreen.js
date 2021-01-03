@@ -21,7 +21,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 latitude: 0,
                 longitude: 0,
             },
-            modelId: vehicles.model.id,
+            modelId: vehicles.model.id ?? '',
         });
     }, [accessoryType, vehicles.model.id]);
     const renderParts = (part, provider) => {

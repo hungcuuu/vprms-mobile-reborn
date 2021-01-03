@@ -34,6 +34,31 @@ export const calculateRequestPrice = request => {
         total: servicesPrice + partsPrice,
     };
 };
+
+export const calculateReviewPrice = serviceList => {
+    // const { services } = serviceList;
+
+    const servicesPrice = serviceList.reduce((curr, service) => {
+        const { price } = service;
+        console.log('price', price);
+        return curr + price;
+    }, 0);
+
+    const partsPrice = serviceList.reduce((curr, service) => {
+        const { parts } = service;
+        const partsPrice = parts.reduce((curr, part) => {
+            return curr + part.price * part.quantity;
+        }, 0);
+
+        return curr + partsPrice;
+    }, 0);
+
+    return {
+        services: servicesPrice,
+        partsPrice: partsPrice,
+        total: servicesPrice + partsPrice,
+    };
+};
 export const normalizeString = value => {
     return value
         .toUpperCase()
