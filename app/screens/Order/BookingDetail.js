@@ -193,25 +193,6 @@ const BookingDetail = ({ navigation, route }) => {
                         <View style={styles.rowInfo}>
                             <Text>Technician:</Text>
                             <Text>{` ${detail.technician?.fullname ?? 'none'}`}</Text>
-                            {/* <View
-                                style={{
-                                    borderWidth: 1,
-                                    height: 100,
-                                    width: 100,
-                                }}>
-                                <Image
-                                    resizeMethod="resize"
-                                    resizeMode="cover"
-                                    source={{
-                                        uri:
-                                            detail.technician?.imageUrl ??
-                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
-                                        height: '100%',
-                                        width: '100%',
-                                    }}
-                                    style={{ width: '100%', height: '100%' }}
-                                />
-                            </View> */}
                         </View>
                     </>
                 }

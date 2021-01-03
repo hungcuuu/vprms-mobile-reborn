@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Image } from 'react-native';
 import { Alert } from 'react-native';
 import { FlatList, Text, View, ScrollView, Modal, Button } from 'react-native';
 
@@ -9,7 +10,7 @@ import axios from '../../axios';
 import { formatMoney } from '../../utils';
 
 const ProviderServices = ({ navigation, route }) => {
-    const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
+    const vehicleId = useSelector(state => state.vehicles.currentVehicle.model.id ?? '');
 
     const provider = route.params?.provider ?? [];
     const selectedService = route.params?.selectedService ?? [];
@@ -33,51 +34,77 @@ const ProviderServices = ({ navigation, route }) => {
             return curr.filter(item => item.id !== service.id);
         });
     };
-    const renderParts = parts => {
+    const renderParts = part => {
         return (
-            <View style={{ borderWidth: 1 }}>
-                <View>
-                    <Text>Id: {parts.id}</Text>
-                    {/* <Text>{detail}</Text> */}
-                    <Text>Name: {parts.name}</Text>
-                    <Text>Price: {formatMoney(parts.price)}</Text>
+            <View
+                style={{
+                    flex: 1,
+                    // borderWidth: 1,
+                    marginHorizontal: 8,
+                    marginVertical: 4,
+                    flexDirection: 'row',
+                    // justifyContent: 'space-between',
+                }}>
+                <View
+                    style={{
+                        // borderWidth: 1,
+                        minHeight: 70,
+                        width: '20%',
+                    }}>
+                    <Image
+                        resizeMethod="resize"
+                        resizeMode="contain"
+                        source={{
+                            uri:
+                                part.imageUrls[0] ??
+                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                            height: '100%',
+                            width: '100%',
+                        }}
+                        style={{ width: '100%', height: '100%' }}
+                    />
                 </View>
 
-                {/* {detail.parts
-                    ? detail.parts.map((x) => (
-                          <View key={x.id}>
-                              <Text>{x.name}</Text>
-                          </View>
-                      ))
-                    : null} */}
+                <View style={{ width: '80%' }}>
+                    <Text>{` ${part.name}   `}</Text>
+                    <Text
+                        style={{
+                            width: '100%',
+                            textAlign: 'right',
+                        }}>{`x ${part.quantity}`}</Text>
+                    <Text>{` ${formatMoney(part.price)}`}</Text>
+                </View>
             </View>
         );
     };
     const renderModal = () => {
         return (
             <Modal
-                animationType="fade"
+                animationType="slide"
                 transparent={true}
                 // presentationStyle="formSheet"
                 visible={visible}
-                style={{ justifyContent: 'flex-end' }}>
+                onRequestClose={() => setVisible(false)}>
                 <View
                     style={{
                         flex: 1,
                         // flexDirection: 'column',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: '#00BCD4',
+                        alignSelf: 'center',
+
+                        backgroundColor: '#f2f2f2',
                         height: '70%',
                         width: '80%',
-                        borderRadius: 10,
+                        borderRadius: 15,
                         borderWidth: 1,
-                        borderColor: '#fff',
-                        marginTop: 80,
-                        marginLeft: 40,
+                        borderColor: '#000000',
+                        // marginTop: 40,
+                        marginVertical: 20,
                     }}>
                     <View style={{ height: 500 }}>
                         <FlatList
+                            listKey={'modal'}
                             data={partList}
                             keyExtractor={(item, index) => item.id.toString()}
                             renderItem={({ item: detail }) => renderParts(detail)}
@@ -147,98 +174,106 @@ const ProviderServices = ({ navigation, route }) => {
             </View>
         );
     };
-    const renderServices = () => {
+    const renderServices = ser => {
         return (
             <View>
-                {services
-                    ? services.map(ser => (
-                          <View key={ser.typeDetail.id}>
-                              <Text style={{ color: 'red' }}>
-                                  {ser.typeDetail.typeName}
-                              </Text>
-                              {ser.serviceDetails ? null : <Text>None</Text>}
-                              <FlatList
-                                  data={ser.serviceDetails}
-                                  keyExtractor={(item, index) => item.id.toString()}
-                                  renderItem={({ item: detail }) => renderDetail(detail)}
-                                  initialNumToRender={7}
-                              />
-                          </View>
-                      ))
-                    : null}
+                <View key={ser.typeDetail.id}>
+                    <Text style={{ color: 'red' }}>{ser.typeDetail.typeName}</Text>
+                    {ser.serviceDetails ? null : <Text>None</Text>}
+                    <FlatList
+                        // listKey={}
+                        data={ser.serviceDetails}
+                        keyExtractor={(item, index) => item.id.toString()}
+                        renderItem={({ item: detail }) => renderDetail(detail)}
+                        initialNumToRender={7}
+                        scrollEnabled={false}
+                        nestedScrollEnabled={true}
+                    />
+                </View>
             </View>
         );
     };
     useEffect(() => {
-        if (path === 'provider') {
-            let url = `services/providers/${provider.id}/models/${vehicles.model.id}`;
-            axios.get(url).then(rs => {
-                setServices(rs.data);
-                console.log(rs.data[0]?.serviceDetails);
-            });
-        }
         if (selectedService.length > 0) {
             axios
-                .get('services/providers/' + provider.id + '/models/' + vehicles.model.id)
+                .get('services/providers/' + provider.id + '/models/' + vehicleId)
                 .then(rs => setServices(rs.data));
+
             setServiceList(selectedService);
         }
-    }, [path, provider.id, selectedService, vehicles.model.id]);
+    }, [provider.id, selectedService, vehicleId]);
+    useEffect(() => {
+        if (path === 'provider') {
+            let url = `services/providers/${provider.id}/models/${vehicleId}`;
+            axios.get(url).then(rs => setServices(rs.data));
+            // setServices(data);
+            // console.log(data);
+        }
+    }, [path, provider.id, vehicleId]);
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1 }}>
-                <View
-                    style={{
-                        marginTop: 8,
-                        marginLeft: 8,
-                        borderWidth: 1,
-                        // flex: 1,
-                        height: 200,
-                        // width: 100,
-                    }}>
-                    <SliderBox
-                        circleLoop
-                        images={
-                            provider.imageUrls ?? [
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+            <View style={{ flex: 1 }}>
+                <FlatList
+                    ListHeaderComponent={
+                        <>
+                            <View
+                                style={{
+                                    marginTop: 8,
+                                    marginLeft: 8,
+                                    borderWidth: 1,
+                                    // flex: 1,
+                                    height: 200,
+                                    // width: 100,
+                                }}>
+                                <SliderBox
+                                    circleLoop
+                                    images={
+                                        provider.imageUrls ?? [
+                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
 
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
-                            ]
-                        }
-                        autoplay
-                        dotColor="#FFEE58"
-                        inactiveDotColor="#90A4AE"
-                    />
-                </View>
-                <View>
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
-                        }}>
-                        {provider.id}
-                        {provider.name}
-                    </Text>
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
-                        }}>
-                        {provider.address}
-                    </Text>
-                </View>
-                {renderServices()}
-                {renderModal()}
-            </ScrollView>
+                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                        ]
+                                    }
+                                    autoplay
+                                    dotColor="#FFEE58"
+                                    inactiveDotColor="#90A4AE"
+                                />
+                            </View>
+                            <View>
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                        margin: 10,
+                                        // width: '70%',
+                                        // height: 20,
+                                        // maxWidth: '70%',
+                                    }}>
+                                    {/* {provider.id} */}
+                                    {provider.name}
+                                </Text>
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        fontSize: 16,
+                                        margin: 10,
+                                        // width: '70%',
+                                        // height: 20,
+                                        // maxWidth: '70%',
+                                    }}>
+                                    {provider.address}
+                                </Text>
+                            </View>
+                        </>
+                    }
+                    data={services}
+                    listKey={'service'}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: ser }) => renderServices(ser)}
+                />
+            </View>
+            {renderModal()}
             <View style={{ justifyContent: 'flex-end' }}>
                 <Button
                     title="next"

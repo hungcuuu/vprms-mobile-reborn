@@ -35,6 +35,7 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
     };
     useEffect(() => {
         navigation.setOptions({
+            headerTitle: `${user.fullName ?? ''}`,
             headerRight: () => (
                 <Button
                     onPress={() => setIsVisible(true)}
@@ -43,7 +44,7 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                 />
             ),
         });
-    }, [navigation, isVisible]);
+    }, [navigation, isVisible, user.fullName]);
     return (
         <ScrollView
             style={styles.container}
@@ -65,7 +66,6 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                         color: 'green',
                     }}
                     source={{ uri: user.imgUrl }}
-                    onPress={() => console.log('Works!')}
                     activeOpacity={0.7}
                     containerStyle={{
                         flex: 2,
@@ -76,7 +76,7 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                     }}
                 />
 
-                <Text style={styles.title}> {user?.fullName} </Text>
+                {/* <Text style={styles.title}> {user?.fullName} </Text> */}
                 <Card.Divider />
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>Phone Number: </Text>

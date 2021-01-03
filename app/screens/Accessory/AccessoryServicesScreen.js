@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Image } from 'react-native';
 import { Alert, FlatList, Text, View } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
+import { formatMoney } from '../../utils';
 
 const AccessoryServicesScreen = ({ navigation, route }) => {
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
@@ -11,51 +13,84 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
     const [services, setServices] = useState();
     const [selectedService, setSelectedService] = useState([]);
-    // const [categoryList, setCategoryList] = useState([]);
-
-    // const serviceChangedHandler = (partId, checked) => {
-    //     setSelectedService((curr) => {
-    //         if (curr.findIndex((item) => item.id === type.id) === -1) {
-    //             return [...curr, type];
-    //         }
-    //         return curr.filter((item) => item.id !== type.id);
-    //     });
-    // };
 
     const renderServices = service => {
         return (
             <View style={{ borderWidth: 1, padding: 16 }}>
-                <View>
-                    <View style={{ alignItems: 'flex-start' }}>
-                        {/* <Text>{part.part.id}</Text> */}
-                        <CheckBox
-                            key={service.id}
-                            center
-                            title={`${service.name}`}
-                            checkedIcon="dot-circle-o"
-                            uncheckedIcon="circle-o"
-                            checked={
-                                selectedService.findIndex(x => x.id === service.id) > -1
-                            }
-                            onPress={() =>
-                                // serviceChangedHandler(service.serviceId)
-                                setSelectedService([service])
-                            }
-                        />
+                <View
+                    style={
+                        {
+                            // alignItems: 'flex-start',
+                        }
+                    }>
+                    {/* <Text>{part.part.id}</Text> */}
+                    <CheckBox
+                        key={service.id}
+                        center
+                        containerStyle={{
+                            backgroundColor: 'transparent',
+                            // borderWidth: 1,
+                            // borderColor: 'red',
+                            // margin: 0,
+                            // padding: 0,
+                            alignSelf: 'flex-start',
+                        }}
+                        title={`${service.name} |  ${formatMoney(service.price)}`}
+                        checkedIcon="dot-circle-o"
+                        uncheckedIcon="circle-o"
+                        checked={selectedService.findIndex(x => x.id === service.id) > -1}
+                        onPress={() =>
+                            // serviceChangedHandler(service.serviceId)
+                            setSelectedService([service])
+                        }
+                    />
 
-                        <Text>{service.price}</Text>
+                    {/* <Text>{service.price}</Text> */}
 
-                        {service.parts
-                            ? service.parts.map(part => (
-                                  <View key={part.id}>
-                                      <Text>{part.name}</Text>
-                                      <Text>quantity {part.quantity}</Text>
-                                      <Text>{part.price}</Text>
+                    {service.parts
+                        ? service.parts.map(part => (
+                              <View
+                                  key={part.id}
+                                  style={{
+                                      flex: 1,
+                                      // borderWidth: 1,
+                                      marginHorizontal: 8,
+                                      marginVertical: 4,
+                                      flexDirection: 'row',
+                                  }}>
+                                  <View
+                                      style={{
+                                          //   borderWidth: 1,
+                                          minHeight: 70,
+                                          width: '20%',
+                                      }}>
+                                      <Image
+                                          resizeMethod="resize"
+                                          resizeMode="contain"
+                                          source={{
+                                              uri:
+                                                  part.imageUrls[0] ??
+                                                  'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                              height: '100%',
+                                              width: '100%',
+                                          }}
+                                          style={{ width: '100%', height: '100%' }}
+                                      />
                                   </View>
-                              ))
-                            : null}
+                                  <View style={{ width: '80%' }}>
+                                      <Text>{` ${part.name}   `}</Text>
+                                      <Text
+                                          style={{
+                                              width: '100%',
+                                              textAlign: 'right',
+                                          }}>{`x ${part.quantity}`}</Text>
+                                      <Text>{` ${formatMoney(part.price)}`}</Text>
+                                  </View>
+                              </View>
+                          ))
+                        : null}
 
-                        {/* <CheckBox
+                    {/* <CheckBox
                             center
                             title="None"
                             checkedIcon="dot-circle-o"
@@ -66,10 +101,9 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                             // checked={selected === 1}
                         /> */}
 
-                        {/* <Text>{part.serviceName}</Text>
+                    {/* <Text>{part.serviceName}</Text>
                         <Text>{part.price}</Text> */}
-                        {/* <Text>{part.serviceId}</Text> */}
-                    </View>
+                    {/* <Text>{part.serviceId}</Text> */}
                 </View>
             </View>
         );
@@ -85,7 +119,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                     detail.provider.id +
                     // 1 +
                     '/models/' +
-                    vehicles.model.id +
+                    vehicles.model?.id +
                     '/parts/' +
                     detail.part.id,
                 // 1,
@@ -94,7 +128,6 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
             .then(rs => {
                 // console.log('data', rs.data);
                 setServices(rs.data);
-                console.log('a', rs.data);
                 // const partList = selections
                 //     .reduce(
                 //         (curr, part) => [
@@ -130,7 +163,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 showsVerticalScrollIndicator={false}
                 initialNumToRender={7}
             />
-            <View style={{}}>
+            <View style={{ marginBottom: 16 }}>
                 <Button
                     title="See More"
                     onPress={() =>
