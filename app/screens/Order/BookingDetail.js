@@ -9,6 +9,7 @@ import axios from '../../axios';
 import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
+    console.log('ser', detail.services);
     const getStatusTagColor = status => {
         switch (status) {
             case STATUS.Accepted:
@@ -74,7 +75,7 @@ const BookingDetail = ({ navigation, route }) => {
         return (
             // ${formatMoney(service.price)}
             <>
-                <View style={{}}>
+                <View>
                     <Text
                         style={{
                             color: 'red',
@@ -82,10 +83,36 @@ const BookingDetail = ({ navigation, route }) => {
                             fontWeight: 'bold',
                         }}>{`${service.serviceName} `}</Text>
                     <FlatList
+                        // listKey={`${moment.unix.toString()}`}
                         data={service.parts ?? []}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item: part }) => renderParts(part)}
+                        scrollEnabled={false}
+                        nestedScrollEnabled={false}
                     />
+                </View>
+            </>
+        );
+    };
+    const renderPackages = packages => {
+        return (
+            // ${formatMoney(service.price)}
+            <>
+                <View>
+                    <Text
+                        style={{
+                            color: 'black',
+                            fontSize: 18,
+                            // fontWeight: 'bold',
+                        }}>{`+ ${packages.packageName} `}</Text>
+                    {/* <FlatList
+                        // listKey={`${moment.unix.toString()}`}
+                        data={packages.services ?? []}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item: ser }) => renderServices(ser)}
+                        scrollEnabled={false}
+                        nestedScrollEnabled={false}
+                    /> */}
                 </View>
             </>
         );
@@ -136,6 +163,7 @@ const BookingDetail = ({ navigation, route }) => {
         navigation.setOptions({ headerTitle: `request #${detail.id}` });
         // console.log(detail.services[0].parts);
     }, [detail.id, navigation]);
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -198,6 +226,26 @@ const BookingDetail = ({ navigation, route }) => {
                 }
                 ListFooterComponent={
                     <>
+                        <FlatList
+                            data={detail.packages ?? []}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item: packages }) => renderPackages(packages)}
+                            initialNumToRender={3}
+                            showsVerticalScrollIndicator={false}
+                            nestedScrollEnabled
+                            ListHeaderComponent={
+                                <>
+                                    <Text
+                                        style={{
+                                            color: 'green',
+                                            fontSize: 18,
+                                            fontWeight: 'bold',
+                                        }}>
+                                        Maintenance-Packages:
+                                    </Text>
+                                </>
+                            }
+                        />
                         <View
                             style={{
                                 marginVertical: 8,
@@ -228,10 +276,11 @@ const BookingDetail = ({ navigation, route }) => {
                     </>
                 }
                 data={detail.services ?? []}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item: service }) => renderServices(service)}
                 initialNumToRender={3}
                 showsVerticalScrollIndicator={false}
+                nestedScrollEnabled
             />
         </View>
     );

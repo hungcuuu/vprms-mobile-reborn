@@ -7,7 +7,7 @@ import { calculateReviewPrice, formatMoney } from '../../utils';
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
     let serviceList = route.params.serviceList ?? [];
-
+    let packageList = route.params.packageList ?? [];
     console.log('detail', detail);
     console.log('part', serviceList);
     const [totalPrice, setTotalPrice] = useState({});
@@ -91,6 +91,57 @@ const ReviewScreen = ({ navigation, route }) => {
             </View>
         );
     };
+    const renderPackageServices = service => {
+        return (
+            <View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 16,
+                    }}>
+                    <Text
+                        style={{
+                            color: 'black',
+                            fontSize: 15,
+                            // fontWeight: 'bold',
+                        }}>{`+${service.name} `}</Text>
+                </View>
+            </View>
+        );
+    };
+    const renderPackages = pac => {
+        return (
+            <View style={{ borderTopWidth: 1 }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 16,
+                    }}>
+                    <Text
+                        style={{
+                            color: 'red',
+                            fontSize: 15,
+                            fontWeight: 'bold',
+                        }}>{`${pac.name} `}</Text>
+                    <Text
+                        style={{
+                            color: 'red',
+                            fontSize: 15,
+                            fontWeight: 'bold',
+                        }}>{`${formatMoney(pac.price)} `}</Text>
+                </View>
+
+                <FlatList
+                    data={pac.packagedServices}
+                    initialNumToRender={7}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: ser }) => renderPackageServices(ser)}
+                />
+            </View>
+        );
+    };
     useEffect(() => {
         setTotalPrice(calculateReviewPrice(serviceList));
     }, [serviceList]);
@@ -109,6 +160,17 @@ const ReviewScreen = ({ navigation, route }) => {
                 data={serviceList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item: part }) => renderServices(part)}
+                ListFooterComponent={
+                    <View style={{ marginTop: 20 }}>
+                        <FlatList
+                            data={packageList}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item: Package }) => renderPackages(Package)}
+                        />
+                    </View>
+                }
+                // ListFooterComponentStyle={{ margin: 20, padding: 20 }}
+                contentContainerStyle={{ margin: 8, padding: 8 }}
             />
 
             <View
@@ -139,6 +201,7 @@ const ReviewScreen = ({ navigation, route }) => {
                     navigation.navigate('Schedule', {
                         detail: detail,
                         serviceList: serviceList,
+                        packageList: packageList,
                     })
                 }
             />

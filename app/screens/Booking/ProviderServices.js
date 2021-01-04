@@ -10,16 +10,21 @@ import axios from '../../axios';
 import { formatMoney } from '../../utils';
 
 const ProviderServices = ({ navigation, route }) => {
-    const vehicleId = useSelector(state => state.vehicles.currentVehicle.model.id ?? '');
+    const modelId = useSelector(state => state.vehicles.currentVehicle.model.id ?? '');
 
     const provider = route.params?.provider ?? [];
     const selectedService = route.params?.selectedService ?? [];
     const path = route.params?.path ?? '';
     const [visible, setVisible] = useState(false);
     const [services, setServices] = useState(route.params?.provider.services ?? []);
-
+    const [packages, setPackages] = useState(route.params?.provider.packages ?? []);
     const [partList, setPartList] = useState([]);
+    const [modalPackage, setModalPackage] = useState([]);
+
     const [serviceList, setServiceList] = useState([]);
+    const [packageList, setPackageList] = useState([]);
+    const [packageVisible, setPackageVisible] = useState(false);
+
     // const images = [
     //     'https://storage.googleapis.com/vrms-290212.appspot.com/b993e482-b7d7-4cc6-b5e3-160a61243c1fpreview.jpg?GoogleAccessId=firebase-adminsdk-y2tzh@vrms-290212.iam.gserviceaccount.com&Expires=2472004708&Signature=JROFokSik32lYHppJedh5R5SzcLMEVq5egeErrWRLDqgAKOUpyeqvs1uUWgpYQf8%2B%2BhuGAm%2Fh3E1iKKSdmOSP%2FMwz9ro%2FVco%2B36FKj6RCyqduDDGznFyKSMr9rj6JTNOMUd3OYRkJl%2BJAijRztV%2Bk9p9RxucRFxfDIRJXblp59nHaccrklX%2FnoexQvgRI3lNbcEKRlG0oTwaek8ErAglg5GFgVWItTv2PvaJIhHan%2FBaYIis1btQaIZnVMwfLe08heUbTSVqmtQB30g3oJRf8s67ZsIk7UoNbycEPw5j%2BYkIsZSFlQIwm28InPuzVRKfiHw4lAI8VqFGv5uHi9K%2F6g%3D%3D',
     //     'https://lh5.googleusercontent.com/p/AF1QipP_rnwWXIAorYxSJuScmKlfJdLJ65SXGLOA60HA=w426-h240-k-no',
@@ -28,6 +33,14 @@ const ProviderServices = ({ navigation, route }) => {
     // ];
     const onSelectServiceChecked = service => {
         setServiceList(curr => {
+            if (curr.findIndex(item => item.id === service.id) === -1) {
+                return [...curr, service];
+            }
+            return curr.filter(item => item.id !== service.id);
+        });
+    };
+    const onSelectPackageChecked = service => {
+        setPackageList(curr => {
             if (curr.findIndex(item => item.id === service.id) === -1) {
                 return [...curr, service];
             }
@@ -193,23 +206,175 @@ const ProviderServices = ({ navigation, route }) => {
             </View>
         );
     };
+    const renderPackageDetail = detail => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    borderWidth: 1,
+                    marginHorizontal: 8,
+                    marginVertical: 4,
+                    // flexDirection: 'row',
+                    // justifyContent: 'space-between',
+                }}>
+                <View style={{ width: '80%' }}>
+                    <Text style={{ color: 'red' }}>{` ${detail.name}   `}</Text>
+                </View>
+                <FlatList
+                    listKey={detail.id}
+                    data={detail.parts}
+                    keyExtractor={(item, index) => item.id.toString()}
+                    renderItem={({ item: part }) => renderParts(part)}
+                    initialNumToRender={3}
+                    scrollEnabled={false}
+                />
+            </View>
+        );
+    };
+    const renderPackageModal = () => {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                // presentationStyle="formSheet"
+                visible={packageVisible}
+                onRequestClose={() => setPackageVisible(false)}>
+                <View
+                    style={{
+                        flex: 1,
+                        // flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+
+                        backgroundColor: '#f2f2f2',
+                        height: '70%',
+                        width: '80%',
+                        borderRadius: 15,
+                        borderWidth: 1,
+                        borderColor: '#000000',
+                        // marginTop: 40,
+                        marginVertical: 20,
+                    }}>
+                    <View style={{ height: 500 }}>
+                        <FlatList
+                            listKey={'package'}
+                            data={modalPackage}
+                            keyExtractor={(item, index) => item.id.toString()}
+                            renderItem={({ item: detail }) => renderPackageDetail(detail)}
+                            initialNumToRender={3}
+                            nestedScrollEnabled={true}
+                        />
+                    </View>
+
+                    <View>
+                        <Button title="Close" onPress={() => setPackageVisible(false)} />
+                    </View>
+                </View>
+            </Modal>
+        );
+    };
+    const renderPackageList = detail => {
+        return (
+            <View
+                style={{
+                    borderWidth: 1,
+                    flexDirection: 'row',
+                    flex: 1,
+                    justifyContent: 'space-between',
+                    borderRadius: 8,
+                    margin: 8,
+                }}>
+                <View
+                    style={{
+                        // borderWidth: 1,
+                        flexDirection: 'row',
+                        flex: 1,
+                    }}>
+                    <View style={{ borderRightWidth: 1 }}>
+                        <CheckBox
+                            // key={detail.serviceId}
+                            center
+                            checkedIcon="check-square-o"
+                            uncheckedIcon="square-o"
+                            checked={packageList.findIndex(s => s.id === detail.id) > -1}
+                            size={30}
+                            onPress={() => onSelectPackageChecked(detail)}
+                        />
+                    </View>
+                    <View style={{ width: '80%', marginHorizontal: 8 }}>
+                        {/* <Text>{detail.id}</Text> */}
+                        {/* <Text>{detail}</Text> */}
+                        <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
+                        {/* <Text>{formatMoney(detail.price)}</Text>/  */}
+                        {/* {detail.parts
+                    ? detail.parts.map((x) => (
+                          <View key={x.id}>
+                              <Text>{x.name}</Text>
+                          </View>
+                      ))
+                    : null} */}
+                    </View>
+                </View>
+
+                <View style={{ justifyContent: 'center', marginRight: 8 }}>
+                    <Button
+                        title="detail"
+                        onPress={() => {
+                            setModalPackage(detail.packagedServices);
+                            setPackageVisible(true);
+                        }}
+                    />
+                </View>
+            </View>
+        );
+    };
+
+    const renderPackages = () => {
+        return (
+            <View>
+                <View>
+                    <Text style={{ color: 'red' }}>{`${
+                        packages.length > 0 ? 'Maintenance-Packages' : ''
+                    }`}</Text>
+
+                    <FlatList
+                        // listKey={}
+                        data={packages}
+                        keyExtractor={(item, index) => item.id.toString()}
+                        renderItem={({ item: detail }) => renderPackageList(detail)}
+                        initialNumToRender={3}
+                        scrollEnabled={false}
+                        nestedScrollEnabled={true}
+                    />
+                </View>
+            </View>
+        );
+    };
     useEffect(() => {
         if (selectedService.length > 0) {
             axios
-                .get('services/providers/' + provider.id + '/models/' + vehicleId)
+                .get('services/providers/' + provider.id + '/models/' + modelId)
                 .then(rs => setServices(rs.data));
 
             setServiceList(selectedService);
         }
-    }, [provider.id, selectedService, vehicleId]);
+    }, [provider.id, selectedService, modelId]);
     useEffect(() => {
         if (path === 'provider') {
-            let url = `services/providers/${provider.id}/models/${vehicleId}`;
+            let url = `services/providers/${provider.id}/models/${modelId}`;
             axios.get(url).then(rs => setServices(rs.data));
+            axios
+                .get(
+                    'maintenance-packages/providers/' + provider.id,
+                    // '/models/' +
+                    // modelId,
+                )
+                .then(rs => setPackages(rs.data));
             // setServices(data);
             // console.log(data);
         }
-    }, [path, provider.id, vehicleId]);
+    }, [path, provider.id, modelId]);
     return (
         <View style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
@@ -271,14 +436,16 @@ const ProviderServices = ({ navigation, route }) => {
                     listKey={'service'}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item: ser }) => renderServices(ser)}
+                    ListFooterComponent={renderPackages}
                 />
             </View>
             {renderModal()}
+            {renderPackageModal()}
             <View style={{ justifyContent: 'flex-end' }}>
                 <Button
                     title="next"
                     onPress={() =>
-                        serviceList.length > 0
+                        serviceList.length > 0 || packageList.length > 0
                             ? navigation.navigate('Review', {
                                   detail: {
                                       provider: {
@@ -288,6 +455,7 @@ const ProviderServices = ({ navigation, route }) => {
                                       },
                                   },
                                   serviceList: serviceList,
+                                  packageList: packageList,
                               })
                             : Alert.alert('You have to choose at least one service')
                     }
