@@ -4,6 +4,7 @@ import { SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
+import * as Location from 'expo-location';
 
 const Providers = ({ navigation }) => {
     const vehicle = useSelector(state => state.vehicles.currentVehicle ?? []);
@@ -88,7 +89,18 @@ const Providers = ({ navigation }) => {
                             // height: 20,
                             // maxWidth: '70%',
                         }}>
-                        {provider.distance}
+                        {`${(provider.distance / 1000).toFixed(1)} km`}
+                    </Text>
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 16,
+                            margin: 10,
+                            // width: '70%',
+                            // height: 20,
+                            // maxWidth: '70%',
+                        }}>
+                        {`${provider.ratings}`}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -100,18 +112,21 @@ const Providers = ({ navigation }) => {
         });
     }, [currentVehicle.model.name, navigation]);
     useEffect(() => {
+        (async () => {
+            let location = await Location.getCurrentPositionAsync({});
+            // setLocation(location);
+            axios
+                .post('providers/', {
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                })
+                .then(rs => {
+                    setProviders(rs.data);
+                    setSearchProviders(rs.data);
+                    console.log('data', rs.data);
+                });
+        })();
         // console.log('vehicle', currentVehicle);
-
-        axios
-            .post('providers/', {
-                latitude: 0,
-                longitude: 0,
-            })
-            .then(rs => {
-                setProviders(rs.data);
-                setSearchProviders(rs.data);
-                console.log('data', rs.data);
-            });
     }, []);
     return (
         <View>

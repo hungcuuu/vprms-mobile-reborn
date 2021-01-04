@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useCallback } from 'react';
+import { PermissionsAndroid } from 'react-native';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Rating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { formatMoney } from '../../utils';
+
 // import { ACCESSORIES } from '../../data/accessories';
 
 const AccessoriesScreen = ({ navigation, route }) => {
@@ -12,6 +14,28 @@ const AccessoriesScreen = ({ navigation, route }) => {
 
     const accessoryType = route.params;
     const [garageList, setGarageList] = useState([]);
+    const [location, setLocation] = useState();
+    // const requestLocationPermission = async () => {
+    //     try {
+    //         const granted = await PermissionsAndroid.request(
+    //             PermissionsAndroid.PERMISSIONS.CAMERA,
+    //             {
+    //                 title: 'VRMS App Camera Permission',
+    //                 message: 'VRMS App needs access to your location ',
+    //                 buttonNeutral: 'Ask Me Later',
+    //                 buttonNegative: 'Cancel',
+    //                 buttonPositive: 'OK',
+    //             },
+    //         );
+    //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //             // geolocation;
+
+    //         } else {
+    //         }
+    //     } catch (err) {
+    //         console.warn(err);
+    //     }
+    // };
 
     const getAllAccessories = useCallback(() => {
         console.log('type', accessoryType);
