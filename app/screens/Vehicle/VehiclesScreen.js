@@ -61,7 +61,7 @@ const VehiclesScreen = ({ navigation, route }) => {
                 title="ADD VEHICLE"
                 onPress={() => navigation.navigate('CreateVehicle')}
             />
-            <Button title="Booking" onPress={() => navigation.navigate('Booking')} />
+            {/* <Button title="Booking" onPress={() => navigation.navigate('Booking')} /> */}
         </View>
     );
 };

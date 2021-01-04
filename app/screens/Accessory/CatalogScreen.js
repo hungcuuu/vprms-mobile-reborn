@@ -9,19 +9,20 @@ import {
     Modal,
     Alert,
 } from 'react-native';
+import * as Location from 'expo-location';
 import { Button, CheckBox } from 'react-native-elements';
 import { Picker } from '@react-native-community/picker';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
 
 import axios from '../../axios';
+
 const CatalogScreen = ({ navigation }) => {
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
     const dispatch = useDispatch();
-
+    const [location, setLocation] = useState();
     // console.log(useSelector((state) => state.vehicles.currentVehicle));
     const [isVisible, setIsVisible] = useState(false);
     // const [currentVehicle, setCurrentVehicle] = useState();
@@ -246,7 +247,24 @@ const CatalogScreen = ({ navigation }) => {
             </TouchableOpacity>
         </View>
     );
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                // setErrorMsg('Permission to access location was denied');
+            }
 
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+            // console.log(location.coords.latitude, location.coords.longitude);
+            // getProvidersByLocation(
+            //     location.coords.latitude,
+            //     location.coords.longitude,
+            // ).then(rs => setProviderList(rs.data));
+            console.log(location.coords.latitude);
+            console.log(location.coords.longitude);
+        })();
+    }, []);
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
