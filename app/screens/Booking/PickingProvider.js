@@ -5,6 +5,8 @@ import { TouchableOpacity } from 'react-native';
 import { Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
+import * as Location from 'expo-location';
+
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
 
@@ -87,20 +89,23 @@ const PickingProvider = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        let serviceTypes = selectedServicesType.map(ser => ser.id) ?? [];
-        axios
-            .post('providers/type-details', {
-                currentPos: {
-                    latitude: 0,
-                    longitude: 0,
-                },
-                modelId: vehicles.model.id,
-                serviceDetailIds: serviceTypes,
-            })
-            .then(rs => {
-                setProviders(rs.data);
-                setSearchProviders(rs.data);
-            });
+        (async () => {
+            let serviceTypes = selectedServicesType.map(ser => ser.id) ?? [];
+            let location = await Location.getCurrentPositionAsync({});
+            axios
+                .post('providers/type-details', {
+                    currentPos: {
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                    },
+                    modelId: vehicles.model.id,
+                    serviceDetailIds: serviceTypes,
+                })
+                .then(rs => {
+                    setProviders(rs.data);
+                    setSearchProviders(rs.data);
+                });
+        })();
     }, [selectedServicesType, vehicles.model.id]);
     return (
         <View>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCallback } from 'react';
 import { PermissionsAndroid } from 'react-native';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Location from 'expo-location';
 import { Rating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -37,13 +38,16 @@ const AccessoriesScreen = ({ navigation, route }) => {
     //     }
     // };
 
-    const getAllAccessories = useCallback(() => {
+    const getAllAccessories = useCallback(async () => {
         console.log('type', accessoryType);
+        let location = await Location.getCurrentPositionAsync({});
+
+        setLocation(location);
         return axios.post('providers/part-categories', {
             categoryIds: [accessoryType],
             currentPos: {
-                latitude: 0,
-                longitude: 0,
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
             },
             modelId: vehicles.model.id ?? '',
         });
