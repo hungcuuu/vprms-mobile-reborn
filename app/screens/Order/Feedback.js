@@ -19,29 +19,37 @@ const Feedback = ({ navigation, route }) => {
 
     const requestId = route.params?.requestId;
 
-    const [, setContent] = useState('');
-    const [imageUrls, setImageUrls] = useState(null);
+    const [content, setContent] = useState('');
+    const [imageUrls, setImageUrls] = useState([]);
     const [ratings, setRatings] = useState(1);
 
     const sendFeedbackHandler = () => {
         // console.log(feedbackForm);
         console.log(imageUrls);
         const data = new FormData();
-
+        console.log('abc');
+        if (imageUrls.length > 0) {
+            imageUrls.forEach(img => {
+                data.append('images', img);
+            });
+        }
         // data.append('content', content);
-        imageUrls.forEach(img => {
-            data.append('images', img);
-        });
+
+        data.append('ratings', ratings);
+        data.append('content', content);
+
         // data.append('ratings', ratings);
         console.log(data);
         axios
-            .post(`requests/${1}/feedbacks`, data, {
+            .post(`requests/${requestId}/feedbacks`, data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     // Accept: 'application/json',
                 },
             })
             .then(rs => {
+                console.log(rs.data);
+
                 if (rs.status === 200) {
                     Alert.alert('Success');
                     navigation.pop();
