@@ -5,12 +5,18 @@ import { TouchableOpacity } from 'react-native';
 import { Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
+import * as Location from 'expo-location';
+import * as _ from 'lodash';
+
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
 
 const PickingProvider = ({ navigation, route }) => {
     const selectedServicesType = route.params?.selectedServicesType ?? [];
-    console.log('serviceType', selectedServicesType);
+    const selectedMilestone = route.params?.selectedMilestone ?? {};
+    const selectedSections = route.params?.selectedSections ?? [];
+
+    // console.log('serviceType', selectedServicesType);
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const [providers, setProviders] = useState([]);
@@ -87,21 +93,60 @@ const PickingProvider = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        let serviceTypes = selectedServicesType.map(ser => ser.id) ?? [];
-        axios
-            .post('providers/type-details', {
-                currentPos: {
-                    latitude: 0,
-                    longitude: 0,
-                },
-                modelId: vehicles.model.id,
-                serviceDetailIds: serviceTypes,
-            })
-            .then(rs => {
-                setProviders(rs.data);
-                setSearchProviders(rs.data);
-            });
-    }, [selectedServicesType, vehicles.model.id]);
+        (async () => {
+            let location = await Location.getCurrentPositionAsync({});
+            if (selectedServicesType.length > 0) {
+                let serviceTypes = selectedServicesType.map(ser => ser.id) ?? [];
+                axios
+                    .post('providers/type-details', {
+                        currentPos: {
+                            latitude: location.coords.latitude,
+                            longitude: location.coords.longitude,
+                        },
+                        modelId: vehicles.model.id,
+                        serviceDetailIds: serviceTypes,
+                    })
+                    .then(rs => {
+                        setProviders(rs.data);
+                        setSearchProviders(rs.data);
+                    });
+            }
+
+            if (!_.isEmpty(selectedMilestone)) {
+                let milestone = selectedMilestone?.id ?? '';
+                axios
+                    .post(
+                        `maintenance-packages/milestones/${milestone}/models/${vehicles.model.id}`,
+                        {
+                            currentPos: {
+                                latitude: location.coords.latitude,
+                                longitude: location.coords.longitude,
+                            },
+                        },
+                    )
+                    .then(rs => {
+                        setProviders(rs.data);
+                        setSearchProviders(rs.data);
+                    });
+            }
+            if (selectedSections.length > 0) {
+                let sectionIds = selectedSections.map(sec => sec.sectionId) ?? [];
+
+                axios
+                    .post(`maintenance-packages/models/${vehicles.model.id}`, {
+                        currentLocation: {
+                            latitude: location.coords.latitude,
+                            longitude: location.coords.longitude,
+                        },
+                        sectionIds: sectionIds,
+                    })
+                    .then(rs => {
+                        setProviders(rs.data);
+                        setSearchProviders(rs.data);
+                    });
+            }
+        })();
+    }, [selectedMilestone, selectedSections, selectedServicesType, vehicles.model.id]);
     return (
         <View>
             <View>

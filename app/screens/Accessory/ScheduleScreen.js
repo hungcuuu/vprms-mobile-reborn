@@ -12,6 +12,8 @@ const ScheduleScreen = ({ navigation, route }) => {
 
     const detail = route.params.detail ?? [];
     const serviceList = route.params.serviceList ?? [];
+    const packageList = route.params.packageList ?? [];
+
     const [currentDay, setCurrentDay] = useState(new Date().toISOString().split('T')[0]);
     const [timeList, setTimeList] = useState([]);
     const [currentEpoch, setCurrentEpoch] = useState(null);
@@ -21,7 +23,8 @@ const ScheduleScreen = ({ navigation, route }) => {
             Alert.alert('Please choose time');
         } else {
             let serviceIds = serviceList.map(x => x.id);
-            console.log('ser', serviceIds);
+            let packageIds = packageList.map(x => x.id);
+
             try {
                 axios
                     .post('requests', {
@@ -30,7 +33,7 @@ const ScheduleScreen = ({ navigation, route }) => {
                         bookingTime: currentEpoch,
                         providerId: detail.provider.id,
                         vehicleId: vehicles.id,
-                        packageIds: [],
+                        packageIds: packageIds,
                         note: '',
                     })
                     .then(rs => {

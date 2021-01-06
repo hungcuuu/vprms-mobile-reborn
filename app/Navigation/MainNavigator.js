@@ -96,6 +96,7 @@ const VehicleNavigator = ({ navigation }) => (
             name="VehicleDetail"
             component={VehicleDetailScreen}
         />
+        <VehicleStackNavigator.Screen name="Feedback" component={Feedback} />
         <VehicleStackNavigator.Screen name="BookingDetail" component={BookingDetail} />
     </VehicleStackNavigator.Navigator>
 );

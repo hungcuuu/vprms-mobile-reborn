@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useCallback } from 'react';
 import { PermissionsAndroid } from 'react-native';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Rating } from 'react-native-elements';
+import * as Location from 'expo-location';
+import { AirbnbRating, Rating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { formatMoney } from '../../utils';
@@ -37,13 +38,16 @@ const AccessoriesScreen = ({ navigation, route }) => {
     //     }
     // };
 
-    const getAllAccessories = useCallback(() => {
+    const getAllAccessories = useCallback(async () => {
         console.log('type', accessoryType);
+        let location = await Location.getCurrentPositionAsync({});
+
+        setLocation(location);
         return axios.post('providers/part-categories', {
             categoryIds: [accessoryType],
             currentPos: {
-                latitude: 0,
-                longitude: 0,
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
             },
             modelId: vehicles.model.id ?? '',
         });
@@ -98,7 +102,12 @@ const AccessoriesScreen = ({ navigation, route }) => {
     const renderGarageList = itemData => {
         return (
             <View style={styles.items}>
-                <View>
+                <View
+                    style={{
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
                     <Text
                         style={{
                             textAlign: 'center',
@@ -106,19 +115,19 @@ const AccessoriesScreen = ({ navigation, route }) => {
                             // maxWidth: 100,
                         }}>
                         {''}
-                        {itemData.item.name}{' '}
-                        <Rating
-                            // ratingBackgroundColor={'red'}
-                            // showRating
-                            // tintColor="blue"
-                            // ratingBackgroundColor="red"
-                            ratingCount={1}
-                            // fractions={5}
-                            startingValue={5}
-                            imageSize={15}
-                        />{' '}
-                        {5} {'  '} {(itemData.item.distance / 1000).toFixed(1)} km
+                        {itemData.item.name} {'  '}{' '}
                     </Text>
+                    <Text>
+                        <AirbnbRating
+                            count={1}
+                            size={15}
+                            reviews={false}
+                            showRating={false}
+                        />
+                        {itemData.item.ratings > -1 ? itemData.item.ratings : 'none'}{' '}
+                    </Text>
+
+                    <Text> {(itemData.item.distance / 1000).toFixed(1)} km </Text>
                 </View>
                 <View style={styles.separator} />
                 <View style={{ marginTop: 20, marginHorizontal: 10 }}>
