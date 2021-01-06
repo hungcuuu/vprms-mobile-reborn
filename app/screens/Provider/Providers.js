@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { AirbnbRating, SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
@@ -27,17 +27,12 @@ const Providers = ({ navigation }) => {
         return (
             <TouchableOpacity
                 style={{
-                    // height: 170,
-                    // width: '40%',
                     alignItems: 'center',
-                    // flex: 0.5,
+
                     flexDirection: 'row',
                     borderWidth: 1,
                     margin: 8,
-                    // backgroundColor:
-                    //     selectedServices.findIndex((ser) => ser.id === section.id) > -1
-                    //         ? '#D5E8D4'
-                    //         : 'white',
+
                     borderRadius: 24,
                 }}
                 onPress={() =>
@@ -68,40 +63,29 @@ const Providers = ({ navigation }) => {
                         style={{ width: '100%', height: '100%' }}
                     />
                 </View>
-                <View>
-                    <Text
+                <View
+                    style={{
+                        textAlign: 'center',
+                        fontSize: 16,
+                        margin: 10,
+                        // width: '70%',
+                        // height: 20,
+                        // maxWidth: '70%',
+                    }}>
+                    <Text>{provider.name}</Text>
+                    <Text>{`${(provider.distance / 1000).toFixed(1)} km`}</Text>
+                    <View
                         style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
+                            flexDirection: 'row',
                         }}>
-                        {provider.name}
-                    </Text>
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
-                        }}>
-                        {`${(provider.distance / 1000).toFixed(1)} km`}
-                    </Text>
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
-                        }}>
-                        {`${provider.ratings}`}
-                    </Text>
+                        <AirbnbRating
+                            count={1}
+                            size={15}
+                            reviews={false}
+                            showRating={false}
+                        />
+                        <Text>{provider.ratings > -1 ? provider.ratings : 'none'}</Text>
+                    </View>
                 </View>
             </TouchableOpacity>
         );

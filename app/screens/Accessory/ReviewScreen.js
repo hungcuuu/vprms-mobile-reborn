@@ -9,7 +9,7 @@ const ReviewScreen = ({ navigation, route }) => {
     let serviceList = route.params.serviceList ?? [];
     let packageList = route.params.packageList ?? [];
     console.log('detail', detail);
-    console.log('part', serviceList);
+    console.log('package', packageList);
     const [totalPrice, setTotalPrice] = useState({});
 
     const renderParts = part => {
@@ -117,20 +117,20 @@ const ReviewScreen = ({ navigation, route }) => {
                     style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        paddingHorizontal: 16,
+                        paddingHorizontal: 8,
                     }}>
                     <Text
                         style={{
                             color: 'red',
-                            fontSize: 15,
+                            // fontSize: 13,
                             fontWeight: 'bold',
                         }}>{`${pac.name} `}</Text>
                     <Text
                         style={{
                             color: 'red',
-                            fontSize: 15,
+                            // fontSize: 15,
                             fontWeight: 'bold',
-                        }}>{`${formatMoney(pac.price)} `}</Text>
+                        }}>{`${formatMoney(pac.totalPrice)} `}</Text>
                 </View>
 
                 <FlatList
@@ -143,8 +143,8 @@ const ReviewScreen = ({ navigation, route }) => {
         );
     };
     useEffect(() => {
-        setTotalPrice(calculateReviewPrice(serviceList));
-    }, [serviceList]);
+        setTotalPrice(calculateReviewPrice(serviceList, packageList));
+    }, [packageList, serviceList]);
     return (
         <View style={{ flex: 1 }}>
             <View>
@@ -188,6 +188,11 @@ const ReviewScreen = ({ navigation, route }) => {
                         fontWeight: 'bold',
                         alignSelf: 'flex-end',
                     }}>{`Parts Price: ${formatMoney(totalPrice.partsPrice)}`}</Text>
+                <Text
+                    style={{
+                        fontWeight: 'bold',
+                        alignSelf: 'flex-end',
+                    }}>{`Package Price: ${formatMoney(totalPrice.packagePrice)}`}</Text>
                 <Text
                     style={{
                         fontWeight: 'bold',

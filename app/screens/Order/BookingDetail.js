@@ -1,15 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { Card } from 'react-native-elements';
 import moment from 'moment';
 
 import { STATUS, STATUS_TAG_COLORS } from '../../constants';
-import { calculateRequestPrice, formatMoney } from '../../utils/index';
+import {
+    calculatePackagePrice,
+    calculateServicePrice,
+    formatMoney,
+} from '../../utils/index';
 import axios from '../../axios';
 import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
-    console.log('ser', detail.services);
+    const [totalServicePrice, setTotalServicePrice] = useState(0);
+    const [totalPackagePrice, setTotalPackagePrice] = useState(0);
+
     const getStatusTagColor = status => {
         switch (status) {
             case STATUS.Accepted:
@@ -49,7 +55,7 @@ const BookingDetail = ({ navigation, route }) => {
                             resizeMode="contain"
                             source={{
                                 uri:
-                                    part.partImageUrls[0] ??
+                                    part.imageUrls[0] ??
                                     'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                                 height: '100%',
                                 width: '100%',
@@ -65,7 +71,7 @@ const BookingDetail = ({ navigation, route }) => {
                                 width: '100%',
                                 textAlign: 'right',
                             }}>{`x ${part.quantity}`}</Text>
-                        <Text>{` ${formatMoney(part.priceEach)}`}</Text>
+                        <Text>{` ${formatMoney(part.price)}`}</Text>
                     </View>
                 </View>
             </>
@@ -75,13 +81,31 @@ const BookingDetail = ({ navigation, route }) => {
         return (
             // ${formatMoney(service.price)}
             <>
-                <View>
-                    <Text
-                        style={{
-                            color: 'red',
-                            fontSize: 18,
-                            fontWeight: 'bold',
-                        }}>{`${service.serviceName} `}</Text>
+                <View
+                    style={{
+                        borderWidth: 1,
+                        marginVertical: 5,
+                        borderRadius: 8,
+                        padding: 8,
+                    }}>
+                    <View
+                        style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text
+                            style={{
+                                color: 'black',
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                // borderWidth: 1,
+                            }}>
+                            {`${service.serviceName} `}
+                        </Text>
+                        {!service.isActive && (
+                            <Text style={{ color: 'red', fontWeight: 'bold' }}>
+                                Canceled
+                            </Text>
+                        )}
+                    </View>
+
                     <FlatList
                         // listKey={`${moment.unix.toString()}`}
                         data={service.parts ?? []}
@@ -98,21 +122,26 @@ const BookingDetail = ({ navigation, route }) => {
         return (
             // ${formatMoney(service.price)}
             <>
-                <View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 8,
+                    }}>
                     <Text
                         style={{
-                            color: 'black',
-                            fontSize: 18,
-                            // fontWeight: 'bold',
-                        }}>{`+ ${packages.packageName} `}</Text>
-                    {/* <FlatList
-                        // listKey={`${moment.unix.toString()}`}
-                        data={packages.services ?? []}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item: ser }) => renderServices(ser)}
-                        scrollEnabled={false}
-                        nestedScrollEnabled={false}
-                    /> */}
+                            color: 'red',
+                            // fontSize: 13,
+                            fontWeight: 'bold',
+                        }}>{`${packages.packageName} `}</Text>
+                    <Text
+                        style={{
+                            color: 'red',
+                            // fontSize: 15,
+                            fontWeight: 'bold',
+                        }}>{`${formatMoney(
+                        calculateServicePrice(packages.services).total,
+                    )} `}</Text>
                 </View>
             </>
         );
@@ -161,8 +190,9 @@ const BookingDetail = ({ navigation, route }) => {
     }, [detail.id, detail.status, navigation, onCancel]);
     useEffect(() => {
         navigation.setOptions({ headerTitle: `request #${detail.id}` });
-        // console.log(detail.services[0].parts);
-    }, [detail.id, navigation]);
+        setTotalServicePrice(calculateServicePrice(detail.services));
+        setTotalPackagePrice(calculatePackagePrice(detail.packages));
+    }, [detail, detail.id, navigation]);
 
     return (
         <View style={styles.container}>
@@ -222,6 +252,14 @@ const BookingDetail = ({ navigation, route }) => {
                             <Text>Technician:</Text>
                             <Text>{` ${detail.technician?.fullname ?? 'none'}`}</Text>
                         </View>
+                        <Text
+                            style={{
+                                color: 'green',
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                            }}>
+                            Services:
+                        </Text>
                     </>
                 }
                 ListFooterComponent={
@@ -245,6 +283,36 @@ const BookingDetail = ({ navigation, route }) => {
                                     </Text>
                                 </>
                             }
+                            ListFooterComponent={
+                                <>
+                                    <FlatList
+                                        ListHeaderComponent={
+                                            <>
+                                                <Text
+                                                    style={{
+                                                        color: 'green',
+                                                        fontSize: 18,
+                                                        fontWeight: 'bold',
+                                                    }}>
+                                                    Expense:
+                                                </Text>
+                                            </>
+                                        }
+                                        data={
+                                            detail.services.filter(
+                                                ser => ser.isIncurred,
+                                            ) ?? []
+                                        }
+                                        keyExtractor={(item, index) => index.toString()}
+                                        renderItem={({ item: ser }) =>
+                                            renderServices(ser)
+                                        }
+                                        initialNumToRender={3}
+                                        showsVerticalScrollIndicator={false}
+                                        nestedScrollEnabled
+                                    />
+                                </>
+                            }
                         />
                         <View
                             style={{
@@ -255,27 +323,27 @@ const BookingDetail = ({ navigation, route }) => {
                                 style={{
                                     fontWeight: 'bold',
                                     alignSelf: 'flex-end',
-                                }}>{`Service: ${formatMoney(
-                                calculateRequestPrice(detail).services,
+                                }}>{`Service Price: ${formatMoney(
+                                totalServicePrice.total,
                             )}`}</Text>
                             <Text
                                 style={{
                                     fontWeight: 'bold',
                                     alignSelf: 'flex-end',
-                                }}>{`Parts Price: ${formatMoney(
-                                calculateRequestPrice(detail).partsPrice,
+                                }}>{`Package Price: ${formatMoney(
+                                totalPackagePrice.total,
                             )}`}</Text>
                             <Text
                                 style={{
                                     fontWeight: 'bold',
                                     alignSelf: 'flex-end',
                                 }}>{`Total: ${formatMoney(
-                                calculateRequestPrice(detail).total,
-                            )}`}</Text>
+                                totalServicePrice.total + totalPackagePrice.total,
+                            )} `}</Text>
                         </View>
                     </>
                 }
-                data={detail.services ?? []}
+                data={detail.services.filter(ser => !ser.isIncurred) ?? []}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item: service }) => renderServices(service)}
                 initialNumToRender={3}
