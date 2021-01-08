@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -7,13 +7,26 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { STATUS, STATUS_TAG_COLORS } from '../../constants/index';
+import { RefreshControl } from 'react-native';
 
 const OrderHistory = ({ navigation, route }) => {
     const OrderStatus = route.params?.OrderStatus ?? '';
 
     const user = useSelector(state => state.auth.user ?? {});
     const [historyList, setHistoryList] = useState([]);
-
+    const [refreshing, setRefreshing] = useState(false);
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    };
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        axios.get(`requests/users/${user.id}`).then(rs => {
+            setHistoryList(rs.data);
+        });
+        wait(1000).then(() => setRefreshing(false));
+    }, [user.id]);
     const getStatusTagColor = status => {
         switch (status) {
             case STATUS.Accepted:
@@ -28,6 +41,8 @@ const OrderHistory = ({ navigation, route }) => {
                 return STATUS_TAG_COLORS.WorkCompleted;
             case STATUS.Finished:
                 return STATUS_TAG_COLORS.Finished;
+            case STATUS.CONFIRMED:
+                return STATUS_TAG_COLORS.Confirm;
         }
     };
 
@@ -133,13 +148,17 @@ const OrderHistory = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <FlatList
-                // refreshControl={
-                //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                // }
+                refreshControl={
+                    <RefreshControl
+                        colors={['#9Bd35A', '#689F38']}
+                        onRefresh={onRefresh}
+                        refreshing={refreshing}
+                    />
+                }
                 data={
                     OrderStatus === 'inProgress'
-                        ? historyList.filter(x => x.status === 'ACCEPTED')
-                        : historyList.filter(x => x.status !== 'ACCEPTED')
+                        ? historyList.filter(x => x.status !== 'FINISHED')
+                        : historyList.filter(x => x.status === 'FINISHED')
                 }
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item: history }) => renderHistory(history)}

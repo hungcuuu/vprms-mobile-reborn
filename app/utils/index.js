@@ -42,6 +42,7 @@ export const calculatePackagePrice = packageList => {
         total: packagePrice,
     };
 };
+
 export const calculateReviewPrice = (serviceList, packageList) => {
     const servicesPrice = serviceList.reduce((curr, service) => {
         const { price } = service;

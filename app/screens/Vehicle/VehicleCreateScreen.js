@@ -4,6 +4,7 @@ import { Picker } from '@react-native-community/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input, Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import * as actions from '../../store/actions';
 import axios from '../../axios';
@@ -12,12 +13,14 @@ const VehicleCreateScreen = ({ navigation }) => {
     const user = useSelector(state => state.auth.user ?? {});
 
     const dispatch = useDispatch();
-    const [modalVisible, setModalVisible] = useState(false);
+    // const [modalVisible, setModalVisible] = useState(false);
 
-    const [boughtDate, setBoughtDate] = useState(new Date());
     const [currentManu, setCurrentManu] = useState(1);
     const [manufactureList, setManufactureList] = useState();
     const [vehicleTypeList, setVehicleTypeList] = useState([]);
+    const [vehicleTypeName, setVehicleTypeName] = useState('CRV');
+    const [vehicleModelId, setVehicleModelId] = useState(1);
+
     const [currentVehicle, setCurrentVehicle] = useState({
         boughtDate: 0,
         color: 'red',
@@ -32,14 +35,12 @@ const VehicleCreateScreen = ({ navigation }) => {
                 navigation.goBack();
             }),
         );
-        // , () => {
-        // console.log('done');
     };
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate;
-        setModalVisible(false);
-        setBoughtDate(currentDate);
-    };
+    // const onChange = (event, selectedDate) => {
+    //     const currentDate = selectedDate;
+    //     setModalVisible(false);
+    //     setBoughtDate(currentDate);
+    // };
     const getManufactures = () => {
         axios
             .get('manufacturers/', {
@@ -48,18 +49,29 @@ const VehicleCreateScreen = ({ navigation }) => {
                     Accept: 'application/json',
                 },
             })
-            .then(rs => setManufactureList(rs.data))
+            .then(rs => {
+                setManufactureList(rs.data);
+            })
             .catch(err => Alert.alert(err));
     };
-    const getVehicleTypeList = async id => {
-        return axios
+
+    const getVehicleTypeList = id => {
+        axios
             .get('models/manufacturers/' + id, {
                 headers: {
                     'Content-Type': 'application/json ; charset=UTF-8',
                     Accept: 'application/json',
                 },
             })
-            .then(rs => setVehicleTypeList(rs.data))
+            .then(rs => {
+                setVehicleTypeName(rs.data.find(x => x)?.name);
+                setVehicleModelId(rs.data.find(x => x)?.id);
+                setVehicleTypeList(rs.data);
+                setCurrentVehicle(currentVehicle => ({
+                    ...currentVehicle,
+                    modelId: rs.data.find(x => x)?.id,
+                }));
+            })
             .catch(er => Alert.alert(er));
     };
 
@@ -97,8 +109,8 @@ const VehicleCreateScreen = ({ navigation }) => {
                     selectedValue={currentManu}
                     style={{ height: 50 }}
                     onValueChange={(itemValue, itemIndex) => {
-                        setCurrentManu(itemValue);
                         getVehicleTypeList(itemValue);
+                        setCurrentManu(itemValue);
                     }}>
                     {manufactureList
                         ? manufactureList.map(m => (
@@ -108,12 +120,41 @@ const VehicleCreateScreen = ({ navigation }) => {
                 </Picker>
             </View>
             <View>
-                <Text>Model</Text>
-                {vehicleTypeList !== undefined ? (
+                <Text>Name</Text>
+                {vehicleTypeList !== undefined && (
                     <View>
                         <Picker
                             mode="dropdown"
-                            selectedValue={+currentVehicle.modelId}
+                            selectedValue={vehicleTypeName}
+                            style={{ height: 50 }}
+                            onValueChange={(itemValue, itemIndex) => {
+                                setVehicleTypeName(itemValue);
+
+                                setCurrentVehicle(currentVehicle => ({
+                                    ...currentVehicle,
+                                    modelId: vehicleTypeList.find(
+                                        x => x.name === itemValue,
+                                    )?.id,
+                                }));
+                            }}>
+                            {_.uniqBy(vehicleTypeList, 'name').map(t => (
+                                <Picker.Item
+                                    key={t.id}
+                                    label={`${t.name} `}
+                                    value={t.name}
+                                />
+                            ))}
+                        </Picker>
+                    </View>
+                )}
+            </View>
+            <View>
+                <Text>Model</Text>
+                {vehicleTypeList !== undefined && (
+                    <View>
+                        <Picker
+                            mode="dropdown"
+                            selectedValue={vehicleModelId}
                             style={{ height: 50 }}
                             onValueChange={(itemValue, itemIndex) => {
                                 setCurrentVehicle(currentVehicle => ({
@@ -121,19 +162,20 @@ const VehicleCreateScreen = ({ navigation }) => {
                                     modelId: itemValue ? itemValue.toString() : '',
                                 }));
                             }}>
-                            {vehicleTypeList.map(t => (
-                                <Picker.Item
-                                    key={t.id}
-                                    label={t.name + ' ' + t.year}
-                                    value={t.id}
-                                />
-                            ))}
+                            {vehicleTypeList
+                                .filter(x => x.name === vehicleTypeName)
+                                .map(t => (
+                                    <Picker.Item
+                                        key={t.id}
+                                        label={`${t.name} ${t.fuelType} ${t.gearbox} (${t.year})`}
+                                        value={t.id}
+                                    />
+                                ))}
                         </Picker>
                     </View>
-                ) : null}
+                )}
             </View>
-
-            <View>
+            {/* <View>
                 <Text>Color</Text>
                 <Picker
                     mode="dropdown"
@@ -159,14 +201,14 @@ const VehicleCreateScreen = ({ navigation }) => {
                     <Picker.Item label="silver" value="silver" />
                     <Picker.Item label="white" value="white" />
                 </Picker>
-            </View>
-            <View>
+            </View> */}
+            {/* <View>
                 <Button
                     onPress={() => setModalVisible(true)}
                     title="Pick your bought date"
                 />
-            </View>
-            <View>
+            </View> */}
+            {/* <View>
                 <Input
                     value={
                         '' +
@@ -178,9 +220,9 @@ const VehicleCreateScreen = ({ navigation }) => {
                         })
                     }
                 />
-            </View>
+            </View> */}
 
-            {modalVisible && (
+            {/* {modalVisible && (
                 <DateTimePicker
                     testID="dateTimePicker"
                     value={boughtDate}
@@ -190,7 +232,7 @@ const VehicleCreateScreen = ({ navigation }) => {
                     display="default"
                     onChange={(event, value) => onChange(event, value)}
                 />
-            )}
+            )} */}
             <View>
                 <Button
                     title="Add"

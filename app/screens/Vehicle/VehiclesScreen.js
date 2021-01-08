@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
 const VehiclesScreen = ({ navigation, route }) => {
     const dispatch = useDispatch();
+    const provider = route.params?.provider ?? [];
+
     const path = route.params?.path ?? '';
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
     const renderVehicleItem = itemData => (
@@ -18,7 +20,10 @@ const VehiclesScreen = ({ navigation, route }) => {
                         path === 'provider'
                             ? dispatch(
                                   actions.updateCurrentVehicle(itemData.item, () =>
-                                      navigation.navigate('Providers'),
+                                      navigation.navigate('ProviderServices', {
+                                          provider: provider,
+                                          path: 'provider',
+                                      }),
                                   ),
                               )
                             : navigation.navigate('VehicleDetail', itemData.item)
@@ -29,14 +34,14 @@ const VehiclesScreen = ({ navigation, route }) => {
                         </View>
 
                         <View style={{ flex: 1, paddingLeft: 16, display: 'flex' }}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                                {itemData.item.name}
+                            <Text style={{ fontSize: 16 }}>
+                                Model: {itemData.item.model.name}
                             </Text>
                             <Text style={{ fontSize: 16 }}>
-                                {itemData.item.model.name}
+                                VIN: {itemData.item.vinNumber}
                             </Text>
                             <Text style={{ fontSize: 16 }}>
-                                {itemData.item.vinNumber}
+                                Plate: {itemData.item.plateNumber}
                             </Text>
                         </View>
                     </View>

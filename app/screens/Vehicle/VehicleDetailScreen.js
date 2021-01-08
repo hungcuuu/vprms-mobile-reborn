@@ -14,6 +14,7 @@ import { STATUS, STATUS_TAG_COLORS } from '../../constants/index';
 import { Image } from 'react-native';
 import { formatMoney } from '../../utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { RefreshControl } from 'react-native';
 
 const VehicleDetailScreen = ({ route, navigation }) => {
     const vehicle = route.params;
@@ -28,7 +29,25 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     const [maxDate, setMaxDate] = useState(new Date());
     const [currentDate, setCurrentDate] = useState(new Date());
     const [reminderId, setReminderId] = useState('');
-    const [check, setCheck] = useState(false);
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    };
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        axios.get(`requests/vehicles/${vehicle.id}`).then(rs => {
+            setHistoryList(rs.data);
+            // console.log(rs.data);
+        });
+        axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
+            setPartList(rs.data);
+        });
+        wait(1000).then(() => setRefreshing(false));
+    }, [vehicle.id]);
     const cancelUpdateHandler = () => {
         setCurrentVehicle(vehicle);
 
@@ -55,25 +74,26 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 return STATUS_TAG_COLORS.WorkCompleted;
             case STATUS.Finished:
                 return STATUS_TAG_COLORS.Finished;
+            case STATUS.CONFIRMED:
+                return STATUS_TAG_COLORS.Confirm;
         }
     };
-    const deleteVehicle = useCallback(
-        id => {
-            Alert.alert('', 'Do u want to Delete this Vehicle?', [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        dispatch(actions.deleteVehicle(id, () => navigation.pop()));
-                    },
-                },
-            ]);
-        },
-        [dispatch, navigation],
-    );
+
+    // const deleteVehicle = id => {
+    //     Alert.alert('', 'Do u want to Delete this Vehicle?', [
+    //         {
+    //             text: 'Cancel',
+    //             style: 'cancel',
+    //         },
+    //         {
+    //             text: 'OK',
+    //             onPress: () => {
+    //                 dispatch(actions.deleteVehicle(id, () => navigation.pop()));
+    //             },
+    //         },
+    //     ]);
+    // };
+
     const openDatePicker = (maxDate, remideDate, id) => {
         setShow(true);
         setMaxDate(new Date(maxDate));
@@ -84,9 +104,10 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         console.log(date);
         let newDate = moment(new Date(date)).unix();
         console.log(newDate);
-        axios.get(`accessories/reminders/${reminderId}/time/${newDate}`);
-        setShow(false);
-        setCheck(!check);
+        axios.get(`accessories/reminders/${reminderId}/time/${newDate}`).then(() => {
+            setShow(false);
+            onRefresh();
+        });
     };
     const modalUpdate = () => {
         return (
@@ -150,7 +171,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                         source={{
                             uri:
                                 part.part.imageUrls[0] ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
@@ -330,6 +351,10 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     <Text style={styles.label}>VIN: </Text>
                     <Text style={styles.textInput}>{currentVehicle.vinNumber}</Text>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.label}>Plate Number: </Text>
+                    <Text style={styles.textInput}>{currentVehicle.plateNumber}</Text>
+                </View>
             </View>
         </View>
     );
@@ -342,23 +367,47 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
             setPartList(rs.data);
         });
-    }, [vehicle.id, check]);
+    }, [vehicle.id]);
 
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <Button
-                    onPress={() => deleteVehicle(vehicle.id)}
+                    onPress={() => {
+                        Alert.alert('', 'Do u want to Delete this Vehicle?', [
+                            {
+                                text: 'Cancel',
+                                style: 'cancel',
+                            },
+                            {
+                                text: 'OK',
+                                onPress: () => {
+                                    dispatch(
+                                        actions.deleteVehicle(vehicle.id, () =>
+                                            navigation.pop(),
+                                        ),
+                                    );
+                                },
+                            },
+                        ]);
+                    }}
                     title="Delete"
                     buttonStyle={{ backgroundColor: 'red' }}
                 />
             ),
             headerTitle: vehicle.model.name,
         });
-    }, [deleteVehicle, navigation, vehicle.id, vehicle.model.name]);
+    }, [dispatch, navigation, vehicle.id, vehicle.model.name]);
     return (
         <View style={styles.container}>
             <FlatList
+                refreshControl={
+                    <RefreshControl
+                        colors={['#9Bd35A', '#689F38']}
+                        onRefresh={onRefresh}
+                        refreshing={refreshing}
+                    />
+                }
                 ListHeaderComponent={
                     <>
                         {renderVehicleInfo}

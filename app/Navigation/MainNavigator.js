@@ -349,13 +349,11 @@ const ProviderNavigator = ({ navigation }) => (
             headerTitleAlign: 'center',
         }}>
         <ProviderStackNavigator.Screen
-            name="VehiclesScreen"
-            component={VehiclesScreen}
-            initialParams={{ path: 'provider' }}
+            name="Providers"
+            component={Providers}
             options={{
                 // headerLeft: <Ionicons name="md-home" />,
-                title: 'Vehicle',
-
+                title: 'Providers',
                 headerLeft: () => (
                     <Ionicons
                         name="menu-outline"
@@ -366,6 +364,15 @@ const ProviderNavigator = ({ navigation }) => (
             }}
         />
         <ProviderStackNavigator.Screen
+            name="VehiclesScreen"
+            component={VehiclesScreen}
+            initialParams={{ path: 'provider' }}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Vehicle',
+            }}
+        />
+        <ProviderStackNavigator.Screen
             name="CreateVehicle"
             component={VehicleCreateScreen}
             options={{
@@ -373,14 +380,7 @@ const ProviderNavigator = ({ navigation }) => (
                 title: 'Providers',
             }}
         />
-        <ProviderStackNavigator.Screen
-            name="Providers"
-            component={Providers}
-            options={{
-                // headerLeft: <Ionicons name="md-home" />,
-                title: 'Providers',
-            }}
-        />
+
         <ProviderStackNavigator.Screen
             name="ProviderServices"
             component={ProviderServices}

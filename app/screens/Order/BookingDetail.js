@@ -13,8 +13,10 @@ import axios from '../../axios';
 import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
-    const [totalServicePrice, setTotalServicePrice] = useState(0);
-    const [totalPackagePrice, setTotalPackagePrice] = useState(0);
+    const totalServicePrice = calculateServicePrice(
+        detail.services.filter(ser => ser.isActive),
+    );
+    const totalPackagePrice = calculatePackagePrice(detail.packages);
 
     const getStatusTagColor = status => {
         switch (status) {
@@ -30,6 +32,8 @@ const BookingDetail = ({ navigation, route }) => {
                 return STATUS_TAG_COLORS.WorkCompleted;
             case STATUS.Finished:
                 return STATUS_TAG_COLORS.Finished;
+            case STATUS.CONFIRMED:
+                return STATUS_TAG_COLORS.Confirm;
         }
     };
     const renderParts = part => {
@@ -56,7 +60,7 @@ const BookingDetail = ({ navigation, route }) => {
                             source={{
                                 uri:
                                     part.imageUrls[0] ??
-                                    'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                                 height: '100%',
                                 width: '100%',
                             }}
@@ -99,9 +103,13 @@ const BookingDetail = ({ navigation, route }) => {
                             }}>
                             {`${service.serviceName} `}
                         </Text>
-                        {!service.isActive && (
+                        {!service.isActive ? (
                             <Text style={{ color: 'red', fontWeight: 'bold' }}>
                                 Canceled
+                            </Text>
+                        ) : (
+                            <Text style={{ color: 'black', fontWeight: 'bold' }}>
+                                {`${formatMoney(service.servicePrice)}`}
                             </Text>
                         )}
                     </View>
@@ -190,8 +198,6 @@ const BookingDetail = ({ navigation, route }) => {
     }, [detail.id, detail.status, navigation, onCancel]);
     useEffect(() => {
         navigation.setOptions({ headerTitle: `request #${detail.id}` });
-        setTotalServicePrice(calculateServicePrice(detail.services));
-        setTotalPackagePrice(calculatePackagePrice(detail.packages));
     }, [detail, detail.id, navigation]);
 
     return (

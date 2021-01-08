@@ -221,19 +221,17 @@ const CatalogScreen = ({ navigation }) => {
                         width: 80,
                     }}>
                     <Image
-                        resizeMethod="resize"
+                        resizeMethod="auto"
                         resizeMode="contain"
                         source={{
                             uri:
                                 itemData.item.sectionImageUrl ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
                         style={{
                             borderRadius: 50,
-                            width: '100%',
-                            height: '100%',
                             borderColor: 'red',
                         }}
                     />
@@ -256,11 +254,7 @@ const CatalogScreen = ({ navigation }) => {
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
-            // console.log(location.coords.latitude, location.coords.longitude);
-            // getProvidersByLocation(
-            //     location.coords.latitude,
-            //     location.coords.longitude,
-            // ).then(rs => setProviderList(rs.data));
+
             console.log(location.coords.latitude);
             console.log(location.coords.longitude);
         })();

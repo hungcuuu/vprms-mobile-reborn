@@ -36,7 +36,7 @@ const Providers = ({ navigation }) => {
                     borderRadius: 24,
                 }}
                 onPress={() =>
-                    navigation.navigate('ProviderServices', {
+                    navigation.navigate('VehiclesScreen', {
                         provider: provider,
                         path: 'provider',
                     })
@@ -45,18 +45,18 @@ const Providers = ({ navigation }) => {
                     style={{
                         marginTop: 8,
                         marginLeft: 8,
-                        borderWidth: 1,
+                        // borderWidth: 1,
                         // flex: 1,
                         height: 100,
                         width: 100,
                     }}>
                     <Image
                         resizeMethod="resize"
-                        resizeMode="cover"
+                        resizeMode="contain"
                         source={{
                             uri:
                                 provider.imageUrls[0] ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}

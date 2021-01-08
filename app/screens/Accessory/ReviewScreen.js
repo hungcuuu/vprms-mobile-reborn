@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { FlatList, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
-import { calculateReviewPrice, formatMoney } from '../../utils';
+import { calculateReviewPrice, calculateServicePrice, formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
@@ -10,7 +10,7 @@ const ReviewScreen = ({ navigation, route }) => {
     let packageList = route.params.packageList ?? [];
     console.log('detail', detail);
     console.log('package', packageList);
-    const [totalPrice, setTotalPrice] = useState({});
+    const totalPrice = calculateReviewPrice(serviceList, packageList);
 
     const renderParts = part => {
         return (
@@ -36,7 +36,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             source={{
                                 uri:
                                     part.imageUrls[0] ??
-                                    'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                                 height: '100%',
                                 width: '100%',
                             }}
@@ -105,7 +105,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             color: 'black',
                             fontSize: 15,
                             // fontWeight: 'bold',
-                        }}>{`+${service.name} `}</Text>
+                        }}>{`- ${service.name} `}</Text>
                 </View>
             </View>
         );
@@ -142,14 +142,14 @@ const ReviewScreen = ({ navigation, route }) => {
             </View>
         );
     };
-    useEffect(() => {
-        setTotalPrice(calculateReviewPrice(serviceList, packageList));
-    }, [packageList, serviceList]);
+    // useEffect(() => {
+    //     setTotalPrice(calculateReviewPrice(serviceList, packageList));
+    // }, [packageList, serviceList]);
     return (
         <View style={{ flex: 1 }}>
-            <View>
+            <View style={{ padding: 16 }}>
                 <View>
-                    <Text>{detail.provider.name}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>{detail.provider.name}</Text>
                 </View>
                 <View>
                     <Text>{detail.provider.address}</Text>
@@ -177,27 +177,44 @@ const ReviewScreen = ({ navigation, route }) => {
                 style={{
                     marginVertical: 8,
                     borderTopWidth: 1,
+                    padding: 16,
                 }}>
-                <Text
-                    style={{
-                        fontWeight: 'bold',
-                        alignSelf: 'flex-end',
-                    }}>{`Service: ${formatMoney(totalPrice.services)}`}</Text>
-                <Text
-                    style={{
-                        fontWeight: 'bold',
-                        alignSelf: 'flex-end',
-                    }}>{`Parts Price: ${formatMoney(totalPrice.partsPrice)}`}</Text>
-                <Text
-                    style={{
-                        fontWeight: 'bold',
-                        alignSelf: 'flex-end',
-                    }}>{`Package Price: ${formatMoney(totalPrice.packagePrice)}`}</Text>
-                <Text
-                    style={{
-                        fontWeight: 'bold',
-                        alignSelf: 'flex-end',
-                    }}>{`Total: ${formatMoney(totalPrice.total)}`}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                        }}>{`Service: `}</Text>
+                    <Text>{`${formatMoney(totalPrice.services)}`}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                        }}>
+                        {`Parts Price: `}
+                    </Text>
+                    <Text>{`${formatMoney(totalPrice.partsPrice)}`}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                            alignSelf: 'flex-start',
+                        }}>
+                        {`Package Price: `}
+                    </Text>
+                    <Text>{`${formatMoney(totalPrice.packagePrice)}`}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                            alignSelf: 'flex-start',
+                        }}>
+                        {`Total: `}
+                    </Text>
+                    <Text>{`${formatMoney(totalPrice.total)}`}</Text>
+                </View>
             </View>
 
             <Button

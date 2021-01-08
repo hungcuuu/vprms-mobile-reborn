@@ -10,15 +10,17 @@ export const STATUS = {
     WorkCompleted: 'WORK COMPLETED',
     Finished: 'FINISHED',
     Canceled: 'CANCELED',
+    CONFIRMED: 'CONFIRMED',
 };
 
 export const STATUS_TAG_COLORS = {
-    Accepted: '#4dffff',
-    Arrived: '#66ffcc',
-    InProgress: '#cccc00',
-    WorkCompleted: '#5cd65c',
-    Finished: '#66ff33',
-    Canceled: '#ff4242',
+    Accepted: '#ccc',
+    Arrived: '#0094FF',
+    InProgress: '#0026FF',
+    WorkCompleted: '#00FF90',
+    Finished: '#00FF21',
+    Canceled: '#FF6F6F',
+    Confirm: '#FF6A00',
 };
 
 export const moneyFormat = {

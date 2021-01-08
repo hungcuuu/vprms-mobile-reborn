@@ -50,11 +50,11 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                             ? selectedSections.findIndex(
                                   ser => ser.sectionId === section.sectionId,
                               ) > -1
-                                ? '#D5E8D4'
+                                ? '#99d6ff'
                                 : 'white'
                             : selectedServices.findIndex(ser => ser.id === section.id) >
                               -1
-                            ? '#D5E8D4'
+                            ? '#99d6ff'
                             : 'white',
                     borderRadius: 24,
                 }}
@@ -66,7 +66,7 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                 <View
                     style={{
                         marginTop: 8,
-                        borderWidth: 1,
+                        // borderWidth: 1,
                         // flex: 1,
                         height: 100,
                         width: 100,
@@ -77,7 +77,7 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                         source={{
                             uri:
                                 section.sectionImageUrl ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
@@ -106,7 +106,7 @@ const ServiceTypeDetail = ({ navigation, route }) => {
             keyExtractor={item => item.id.toString()}
             renderItem={({ item }) => (
                 <View style={{}}>
-                    <Text> {item.name} </Text>
+                    <Text style={{ fontSize: 20, margin: 20 }}> {item.name} </Text>
                     <View style={{}}>
                         <FlatList
                             data={sectionList.filter(sec => sec.typeName === item.name)}
@@ -149,7 +149,7 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                     borderWidth: 1,
                     margin: 8,
                     backgroundColor:
-                        selectedMilestone.id === milestone.id ? '#D5E8D4' : 'white',
+                        selectedMilestone.id === milestone.id ? '#99d6ff' : 'white',
                     borderRadius: 24,
                 }}
                 onPress={() => setSelectedMilestone(milestone)}>
@@ -167,7 +167,7 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                         source={{
                             uri:
                                 milestone.sectionImageUrl ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
