@@ -36,7 +36,7 @@ const Providers = ({ navigation }) => {
                     borderRadius: 24,
                 }}
                 onPress={() =>
-                    navigation.navigate('ProviderServices', {
+                    navigation.navigate('VehiclesScreen', {
                         provider: provider,
                         path: 'provider',
                     })
@@ -45,14 +45,14 @@ const Providers = ({ navigation }) => {
                     style={{
                         marginTop: 8,
                         marginLeft: 8,
-                        borderWidth: 1,
+                        // borderWidth: 1,
                         // flex: 1,
                         height: 100,
                         width: 100,
                     }}>
                     <Image
                         resizeMethod="resize"
-                        resizeMode="cover"
+                        resizeMode="contain"
                         source={{
                             uri:
                                 provider.imageUrls[0] ??

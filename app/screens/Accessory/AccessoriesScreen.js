@@ -73,21 +73,23 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     </View>
                     <View
                         style={{
-                            borderWidth: 1,
+                            // borderWidth: 1,
                             // flex: 1,
                             marginRight: 8,
                             // alignSelf: 'flex-end',
                             // alignContent: 'flex-end',
-                            height: 100,
-                            width: '40%',
+                            height: 80,
+                            width: 80,
+                            // borderRadius: 16,
+                            // borderWidth: 1,
                         }}>
                         <Image
                             resizeMethod="resize"
-                            resizeMode="cover"
+                            resizeMode="contain"
                             source={{
                                 uri: part.imageUrls[0],
-                                height: '100%',
-                                width: '100%',
+                                // height: '100%',
+                                // width: '100%',
                             }}
                             style={{ width: '100%', height: '100%' }}
                         />
@@ -105,8 +107,8 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 <View
                     style={{
                         flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
                     }}>
                     <Text
                         style={{

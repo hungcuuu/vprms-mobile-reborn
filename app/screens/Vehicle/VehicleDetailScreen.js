@@ -14,6 +14,7 @@ import { STATUS, STATUS_TAG_COLORS } from '../../constants/index';
 import { Image } from 'react-native';
 import { formatMoney } from '../../utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { RefreshControl } from 'react-native';
 
 const VehicleDetailScreen = ({ route, navigation }) => {
     const vehicle = route.params;
@@ -28,7 +29,18 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     const [maxDate, setMaxDate] = useState(new Date());
     const [currentDate, setCurrentDate] = useState(new Date());
     const [reminderId, setReminderId] = useState('');
-    const [check, setCheck] = useState(false);
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    };
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        wait(1000).then(() => setRefreshing(false));
+    }, []);
     const cancelUpdateHandler = () => {
         setCurrentVehicle(vehicle);
 
@@ -55,6 +67,8 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 return STATUS_TAG_COLORS.WorkCompleted;
             case STATUS.Finished:
                 return STATUS_TAG_COLORS.Finished;
+            case STATUS.CONFIRMED:
+                return STATUS_TAG_COLORS.Confirm;
         }
     };
     const deleteVehicle = useCallback(
@@ -84,9 +98,10 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         console.log(date);
         let newDate = moment(new Date(date)).unix();
         console.log(newDate);
-        axios.get(`accessories/reminders/${reminderId}/time/${newDate}`);
-        setShow(false);
-        setCheck(!check);
+        axios.get(`accessories/reminders/${reminderId}/time/${newDate}`).then(() => {
+            setShow(false);
+            onRefresh();
+        });
     };
     const modalUpdate = () => {
         return (
@@ -330,6 +345,10 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                     <Text style={styles.label}>VIN: </Text>
                     <Text style={styles.textInput}>{currentVehicle.vinNumber}</Text>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.label}>Plate Number: </Text>
+                    <Text style={styles.textInput}>{currentVehicle.plateNumber}</Text>
+                </View>
             </View>
         </View>
     );
@@ -342,7 +361,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
             setPartList(rs.data);
         });
-    }, [vehicle.id, check]);
+    }, [vehicle.id]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -359,6 +378,13 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <FlatList
+                refreshControl={
+                    <RefreshControl
+                        colors={['#9Bd35A', '#689F38']}
+                        onRefresh={onRefresh}
+                        refreshing={refreshing}
+                    />
+                }
                 ListHeaderComponent={
                     <>
                         {renderVehicleInfo}

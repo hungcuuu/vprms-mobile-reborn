@@ -221,7 +221,7 @@ const CatalogScreen = ({ navigation }) => {
                         width: 80,
                     }}>
                     <Image
-                        resizeMethod="resize"
+                        resizeMethod="auto"
                         resizeMode="contain"
                         source={{
                             uri:
@@ -232,8 +232,8 @@ const CatalogScreen = ({ navigation }) => {
                         }}
                         style={{
                             borderRadius: 50,
-                            width: '100%',
-                            height: '100%',
+                            // width: '100%',
+                            // height: '100%',
                             borderColor: 'red',
                         }}
                     />
@@ -256,11 +256,7 @@ const CatalogScreen = ({ navigation }) => {
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
-            // console.log(location.coords.latitude, location.coords.longitude);
-            // getProvidersByLocation(
-            //     location.coords.latitude,
-            //     location.coords.longitude,
-            // ).then(rs => setProviderList(rs.data));
+
             console.log(location.coords.latitude);
             console.log(location.coords.longitude);
         })();

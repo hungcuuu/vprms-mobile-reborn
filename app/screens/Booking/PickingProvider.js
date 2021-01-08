@@ -3,7 +3,7 @@ import { FlatList } from 'react-native';
 import { Image } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { Text, View } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { AirbnbRating, SearchBar } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import * as Location from 'expo-location';
 import * as _ from 'lodash';
@@ -58,9 +58,9 @@ const PickingProvider = ({ navigation, route }) => {
                     style={{
                         marginTop: 8,
                         marginLeft: 8,
-                        borderWidth: 1,
+                        // borderWidth: 1,
                         // flex: 1,
-                        height: 100,
+                        height: '90%',
                         width: 100,
                     }}>
                     <Image
@@ -73,21 +73,32 @@ const PickingProvider = ({ navigation, route }) => {
                             height: '100%',
                             width: '100%',
                         }}
-                        style={{ width: '100%', height: '100%' }}
+                        style={{ width: '100%', height: '100%', borderRadius: 16 }}
                     />
                 </View>
-                <View>
-                    <Text
+                <View
+                    style={{
+                        textAlign: 'center',
+                        fontSize: 16,
+                        margin: 10,
+                        // width: '70%',
+                        // height: 20,
+                        // maxWidth: '70%',
+                    }}>
+                    <Text>{provider.name}</Text>
+                    <Text>{`${(provider.distance / 1000).toFixed(1)} km`}</Text>
+                    <View
                         style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
+                            flexDirection: 'row',
                         }}>
-                        {provider.name}
-                    </Text>
+                        <AirbnbRating
+                            count={1}
+                            size={15}
+                            reviews={false}
+                            showRating={false}
+                        />
+                        <Text>{provider.ratings > -1 ? provider.ratings : 'none'}</Text>
+                    </View>
                 </View>
             </TouchableOpacity>
         );

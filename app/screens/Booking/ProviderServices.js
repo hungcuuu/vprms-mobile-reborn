@@ -409,8 +409,9 @@ const ProviderServices = ({ navigation, route }) => {
                                 <Text
                                     style={{
                                         textAlign: 'center',
-                                        fontSize: 16,
+                                        fontSize: 24,
                                         margin: 10,
+                                        fontWeight: 'bold',
                                         // width: '70%',
                                         // height: 20,
                                         // maxWidth: '70%',

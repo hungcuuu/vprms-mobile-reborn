@@ -27,11 +27,17 @@ const PickingVehicleScreen = ({ navigation }) => {
                 </View>
 
                 <View style={{ flex: 1, paddingLeft: 16, display: 'flex' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                        {vehicle.model.name}
+                    <Text
+                        style={{
+                            fontSize: 16,
+                            // fontWeight: 'bold'
+                        }}>
+                        Name: {vehicle.model.name}
                     </Text>
-                    <Text style={{ fontSize: 16 }}>{vehicle.plateNumber}</Text>
-                    <Text style={{ fontSize: 16 }}>{vehicle.vinNumber}</Text>
+                    <Text style={{ fontSize: 16 }}>
+                        Plate Number: {vehicle.plateNumber}
+                    </Text>
+                    <Text style={{ fontSize: 16 }}>VIN: {vehicle.vinNumber}</Text>
                 </View>
             </View>
         </TouchableOpacity>
