@@ -14,7 +14,7 @@ import * as Location from 'expo-location';
 import { Card } from 'react-native-elements';
 
 const AccessoryTypeScreen = ({ navigation, route }) => {
-    const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
+    const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
 
     const sectionId = route.params ?? 0;
     const [categories, setCategories] = useState([]);
@@ -23,7 +23,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
         <TouchableOpacity
             onPress={() =>
                 navigation.navigate('AccessoryDetail', {
-                    part: part.suggestedPart,
+                    part: part.part,
                     provider: part,
                 })
             }
@@ -38,7 +38,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                     resizeMode="contain"
                     source={{
                         uri:
-                            part.suggestedPart.imageUrls[0] ??
+                            part.part.imageUrls[0] ??
                             'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
                         height: '100%',
                         width: '100%',
@@ -54,7 +54,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                         maxWidth: '100%',
                     }}>
                     {' '}
-                    {part.suggestedPart.name}{' '}
+                    {part.part.name}{' '}
                 </Text>
                 <Text
                     style={{
@@ -118,7 +118,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                     setCategories(rs.data);
                 });
             axios
-                .post(`parts/sections/${sectionId}/models/${1}`, {
+                .post(`parts/sections/${sectionId}/models/${currentVehicle.model.id}`, {
                     latitude: location.coords.latitude,
                     longitude: location.coords.longitude,
                 })
