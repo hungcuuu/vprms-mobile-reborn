@@ -78,23 +78,22 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 return STATUS_TAG_COLORS.Confirm;
         }
     };
-    const deleteVehicle = useCallback(
-        id => {
-            Alert.alert('', 'Do u want to Delete this Vehicle?', [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        dispatch(actions.deleteVehicle(id, () => navigation.pop()));
-                    },
-                },
-            ]);
-        },
-        [dispatch, navigation],
-    );
+
+    // const deleteVehicle = id => {
+    //     Alert.alert('', 'Do u want to Delete this Vehicle?', [
+    //         {
+    //             text: 'Cancel',
+    //             style: 'cancel',
+    //         },
+    //         {
+    //             text: 'OK',
+    //             onPress: () => {
+    //                 dispatch(actions.deleteVehicle(id, () => navigation.pop()));
+    //             },
+    //         },
+    //     ]);
+    // };
+
     const openDatePicker = (maxDate, remideDate, id) => {
         setShow(true);
         setMaxDate(new Date(maxDate));
@@ -172,7 +171,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                         source={{
                             uri:
                                 part.part.imageUrls[0] ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
@@ -374,14 +373,31 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         navigation.setOptions({
             headerRight: () => (
                 <Button
-                    onPress={() => deleteVehicle(vehicle.id)}
+                    onPress={() => {
+                        Alert.alert('', 'Do u want to Delete this Vehicle?', [
+                            {
+                                text: 'Cancel',
+                                style: 'cancel',
+                            },
+                            {
+                                text: 'OK',
+                                onPress: () => {
+                                    dispatch(
+                                        actions.deleteVehicle(vehicle.id, () =>
+                                            navigation.pop(),
+                                        ),
+                                    );
+                                },
+                            },
+                        ]);
+                    }}
                     title="Delete"
                     buttonStyle={{ backgroundColor: 'red' }}
                 />
             ),
             headerTitle: vehicle.model.name,
         });
-    }, [deleteVehicle, navigation, vehicle.id, vehicle.model.name]);
+    }, [dispatch, navigation, vehicle.id, vehicle.model.name]);
     return (
         <View style={styles.container}>
             <FlatList

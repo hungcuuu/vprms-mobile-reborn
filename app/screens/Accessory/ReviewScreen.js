@@ -36,7 +36,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             source={{
                                 uri:
                                     part.imageUrls[0] ??
-                                    'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                                 height: '100%',
                                 width: '100%',
                             }}

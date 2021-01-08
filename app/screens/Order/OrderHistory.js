@@ -157,8 +157,8 @@ const OrderHistory = ({ navigation, route }) => {
                 }
                 data={
                     OrderStatus === 'inProgress'
-                        ? historyList.filter(x => x.status === 'ACCEPTED')
-                        : historyList.filter(x => x.status !== 'ACCEPTED')
+                        ? historyList.filter(x => x.status !== 'FINISHED')
+                        : historyList.filter(x => x.status === 'FINISHED')
                 }
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item: history }) => renderHistory(history)}

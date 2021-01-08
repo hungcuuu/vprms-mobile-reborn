@@ -226,14 +226,12 @@ const CatalogScreen = ({ navigation }) => {
                         source={{
                             uri:
                                 itemData.item.sectionImageUrl ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
                         style={{
                             borderRadius: 50,
-                            // width: '100%',
-                            // height: '100%',
                             borderColor: 'red',
                         }}
                     />

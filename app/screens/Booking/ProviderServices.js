@@ -29,7 +29,7 @@ const ProviderServices = ({ navigation, route }) => {
     //     'https://storage.googleapis.com/vrms-290212.appspot.com/b993e482-b7d7-4cc6-b5e3-160a61243c1fpreview.jpg?GoogleAccessId=firebase-adminsdk-y2tzh@vrms-290212.iam.gserviceaccount.com&Expires=2472004708&Signature=JROFokSik32lYHppJedh5R5SzcLMEVq5egeErrWRLDqgAKOUpyeqvs1uUWgpYQf8%2B%2BhuGAm%2Fh3E1iKKSdmOSP%2FMwz9ro%2FVco%2B36FKj6RCyqduDDGznFyKSMr9rj6JTNOMUd3OYRkJl%2BJAijRztV%2Bk9p9RxucRFxfDIRJXblp59nHaccrklX%2FnoexQvgRI3lNbcEKRlG0oTwaek8ErAglg5GFgVWItTv2PvaJIhHan%2FBaYIis1btQaIZnVMwfLe08heUbTSVqmtQB30g3oJRf8s67ZsIk7UoNbycEPw5j%2BYkIsZSFlQIwm28InPuzVRKfiHw4lAI8VqFGv5uHi9K%2F6g%3D%3D',
     //     'https://lh5.googleusercontent.com/p/AF1QipP_rnwWXIAorYxSJuScmKlfJdLJ65SXGLOA60HA=w426-h240-k-no',
 
-    //     'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+    //     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
     // ];
     const onSelectServiceChecked = service => {
         setServiceList(curr => {
@@ -70,7 +70,7 @@ const ProviderServices = ({ navigation, route }) => {
                         source={{
                             uri:
                                 part.imageUrls[0] ??
-                                'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                             height: '100%',
                             width: '100%',
                         }}
@@ -394,10 +394,10 @@ const ProviderServices = ({ navigation, route }) => {
                                     circleLoop
                                     images={
                                         provider.imageUrls ?? [
-                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
-                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
+                                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
 
-                                            'https://i.vimeocdn.com/portrait/58832_300x300.jpg',
+                                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
                                         ]
                                     }
                                     autoplay
