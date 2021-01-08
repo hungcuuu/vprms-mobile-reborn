@@ -1,5 +1,6 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 import * as actionTypes from '../actions/actionTypes';
 import * as actions from '../actions';
@@ -8,8 +9,10 @@ import axios from '../../axios';
 function* login(action) {
     const { phoneNumber, password } = action;
     try {
+        const deviceToken = yield messaging().getToken();
+
         const data = yield axios
-            .post('/users', { phoneNumber, password })
+            .post('/users', { phoneNumber, password, deviceToken })
             .then(({ data }) => data);
         yield AsyncStorage.setItem('user', JSON.stringify(data));
         yield put(actions.loginSuccess(data));
