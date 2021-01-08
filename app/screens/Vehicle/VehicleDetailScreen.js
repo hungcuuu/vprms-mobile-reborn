@@ -39,8 +39,15 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     };
     const onRefresh = useCallback(() => {
         setRefreshing(true);
+        axios.get(`requests/vehicles/${vehicle.id}`).then(rs => {
+            setHistoryList(rs.data);
+            // console.log(rs.data);
+        });
+        axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
+            setPartList(rs.data);
+        });
         wait(1000).then(() => setRefreshing(false));
-    }, []);
+    }, [vehicle.id]);
     const cancelUpdateHandler = () => {
         setCurrentVehicle(vehicle);
 

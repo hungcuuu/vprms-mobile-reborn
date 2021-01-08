@@ -22,8 +22,11 @@ const OrderHistory = ({ navigation, route }) => {
     };
     const onRefresh = useCallback(() => {
         setRefreshing(true);
+        axios.get(`requests/users/${user.id}`).then(rs => {
+            setHistoryList(rs.data);
+        });
         wait(1000).then(() => setRefreshing(false));
-    }, []);
+    }, [user.id]);
     const getStatusTagColor = status => {
         switch (status) {
             case STATUS.Accepted:

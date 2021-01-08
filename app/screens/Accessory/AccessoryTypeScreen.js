@@ -127,7 +127,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                 });
         })();
         // console.log('vehicle', currentVehicle);
-    }, [sectionId]);
+    }, [currentVehicle.model.id, sectionId]);
     return (
         <FlatList
             ListHeaderComponent={
