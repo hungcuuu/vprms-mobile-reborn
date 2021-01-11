@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,7 +20,6 @@ import CatalogScreen from '../screens/Accessory/CatalogScreen';
 import AccessoryTypeScreen from '../screens/Accessory/AccessoryTypeScreen';
 import AccessoriesScreen from '../screens/Accessory/AccessoriesScreen';
 import AccessoryDetailScreen from '../screens/Accessory/AccessoryDetailScreen';
-import ProviderAccessoriesScreen from '../screens/Accessory/ProviderAccessoriesScreen';
 import AccessoryServicesScreen from '../screens/Accessory/AccessoryServicesScreen';
 import ReviewScreen from '../screens/Accessory/ReviewScreen';
 import ScheduleScreen from '../screens/Accessory/ScheduleScreen';
@@ -34,9 +33,11 @@ import BookingDetail from '../screens/Order/BookingDetail';
 import Feedback from '../screens/Order/Feedback';
 import { useDispatch } from 'react-redux';
 
+import messaging from '@react-native-firebase/messaging';
+
 import * as actions from '../store/actions';
-import { Text, View } from 'react-native';
 import ProfileScreen from '../screens/ProfileScreen';
+import { Alert } from 'react-native';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -64,7 +65,7 @@ const VehicleNavigator = ({ navigation }) => (
         initialRouteName="VehicleOverview"
         screenOptions={{
             headerStyle: {
-                backgroundColor: '#f4511e',
+                backgroundColor: '#66b3ff',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -104,7 +105,18 @@ const VehicleNavigator = ({ navigation }) => (
 const BookingStackNavigator = createStackNavigator();
 
 const BookingNavigator = ({ navigation }) => (
-    <BookingStackNavigator.Navigator initialRouteName="PickingVehicle">
+    <BookingStackNavigator.Navigator
+        initialRouteName="PickingVehicle"
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: '#66b3ff',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerTitleAlign: 'center',
+        }}>
         <BookingStackNavigator.Screen
             name="PickingVehicle"
             component={PickingVehicleScreen}
@@ -188,7 +200,7 @@ const AccessoryNavigator = ({ navigation }) => (
         initialRouteName="AccessoryOverview"
         screenOptions={{
             headerStyle: {
-                backgroundColor: '#f4511e',
+                backgroundColor: '#66b3ff',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -201,7 +213,7 @@ const AccessoryNavigator = ({ navigation }) => (
             component={CatalogScreen}
             options={{
                 // headerLeft: <Ionicons name="md-home" />,
-                title: 'Main',
+                title: '',
 
                 headerLeft: () => (
                     <Ionicons
@@ -210,6 +222,24 @@ const AccessoryNavigator = ({ navigation }) => (
                         onPress={() => navigation.toggleDrawer()}
                     />
                 ),
+            }}
+        />
+        <AccessoryStackNavigator.Screen
+            name="PickingVehicle"
+            component={PickingVehicleScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Type',
+                headerTitleAlign: 'center',
+            }}
+        />
+        <AccessoryStackNavigator.Screen
+            name="CreateVehicle"
+            component={VehicleCreateScreen}
+            options={{
+                // headerLeft: <Ionicons name="md-home" />,
+                title: 'Type',
+                headerTitleAlign: 'center',
             }}
         />
         <AccessoryStackNavigator.Screen
@@ -239,7 +269,7 @@ const AccessoryNavigator = ({ navigation }) => (
                 headerTitleAlign: 'center',
             }}
         />
-        <AccessoryStackNavigator.Screen
+        {/* <AccessoryStackNavigator.Screen
             name="ProviderAccessories"
             component={ProviderAccessoriesScreen}
             options={{
@@ -247,7 +277,7 @@ const AccessoryNavigator = ({ navigation }) => (
                 title: '',
                 headerTitleAlign: 'center',
             }}
-        />
+        /> */}
         <AccessoryStackNavigator.Screen
             name="AccessoryServices"
             component={AccessoryServicesScreen}
@@ -293,7 +323,7 @@ const OrderNavigator = ({ navigation }) => (
     <OrderStackNavigator.Navigator
         screenOptions={{
             headerStyle: {
-                backgroundColor: '#f4511e',
+                backgroundColor: '#66b3ff',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -340,7 +370,7 @@ const ProviderNavigator = ({ navigation }) => (
     <ProviderStackNavigator.Navigator
         screenOptions={{
             headerStyle: {
-                backgroundColor: '#f4511e',
+                backgroundColor: '#66b3ff',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -416,7 +446,9 @@ function OrderTab() {
             tabBarOptions={{
                 // labelStyle: { fontSize: 12 },
                 // tabStyle: { width: 100 },
-                style: { backgroundColor: 'powderblue' },
+                style: { backgroundColor: '#e6e600' },
+                pressColor: 'red',
+                // activeTintColor: 'red',
             }}>
             <Tab.Screen
                 name="InProgress"
@@ -441,7 +473,7 @@ const ProfileNavigator = ({ navigation }) => (
     <ProfileStackNavigator.Navigator
         screenOptions={{
             headerStyle: {
-                backgroundColor: '#f4511e',
+                backgroundColor: '#66b3ff',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -470,6 +502,7 @@ const ProfileNavigator = ({ navigation }) => (
 const Drawer = createDrawerNavigator();
 export function SideDrawer({ navigation }) {
     const dispatch = useDispatch();
+
     return (
         <Drawer.Navigator
             drawerContent={props => {
@@ -504,7 +537,7 @@ export function SideDrawer({ navigation }) {
                         <Ionicons
                             name="md-home"
                             size={size}
-                            color={focused ? '#7cc' : '#ccc'}
+                            color={focused ? '#66b3ff' : '#ccc'}
                         />
                     ),
                 }}
@@ -523,7 +556,7 @@ export function SideDrawer({ navigation }) {
                 }}
             />
             <Drawer.Screen
-                name="Vehicle"
+                name="My Vehicle"
                 component={VehicleNavigator}
                 options={{
                     drawerIcon: ({ focused, size }) => (

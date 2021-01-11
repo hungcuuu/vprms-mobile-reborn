@@ -35,12 +35,12 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
     };
     useEffect(() => {
         navigation.setOptions({
-            headerTitle: `${user.fullName ?? ''}`,
+            headerTitle: 'Profile',
             headerRight: () => (
                 <Button
                     onPress={() => setIsVisible(true)}
                     title="Edit"
-                    buttonStyle={{ backgroundColor: 'red' }}
+                    buttonStyle={{ backgroundColor: 'transparent', marginRight: 8 }}
                 />
             ),
         });
@@ -79,8 +79,8 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                 {/* <Text style={styles.title}> {user?.fullName} </Text> */}
                 <Card.Divider />
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text>Phone Number: </Text>
-                    <Text>{user?.phoneNumber}</Text>
+                    <Text>Name: </Text>
+                    <Text>{user?.fullName}</Text>
                 </View>
 
                 <Card.Divider />

@@ -383,26 +383,33 @@ const ProviderServices = ({ navigation, route }) => {
                         <>
                             <View
                                 style={{
-                                    marginTop: 8,
-                                    marginLeft: 8,
+                                    margin: 8,
+                                    // marginLeft: 8,
                                     borderWidth: 1,
                                     // flex: 1,
                                     height: 200,
                                     // width: 100,
                                 }}>
-                                <SliderBox
-                                    circleLoop
-                                    images={
-                                        provider.imageUrls ?? [
-                                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
+                                <Image
+                                    // circleLoop
+                                    // images={
+                                    //     provider.imageUrls ?? [
+                                    //         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
+                                    //         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
 
+                                    //         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
+                                    //     ]
+                                    // }
+                                    // autoplay
+                                    // dotColor="#FFEE58"
+                                    // inactiveDotColor="#90A4AE"
+                                    source={{
+                                        uri:
+                                            provider.imageUrls[0] ??
                                             'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                                        ]
-                                    }
-                                    autoplay
-                                    dotColor="#FFEE58"
-                                    inactiveDotColor="#90A4AE"
+                                        height: '100%',
+                                        width: '100%',
+                                    }}
                                 />
                             </View>
                             <View>

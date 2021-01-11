@@ -134,9 +134,6 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                             }))
                         }
                     />
-
-                    <Card.Divider />
-                    <Text>Màu xe</Text>
                 </Card>
                 <View>
                     <Button title="Cancel" onPress={() => cancelUpdateHandler()} />

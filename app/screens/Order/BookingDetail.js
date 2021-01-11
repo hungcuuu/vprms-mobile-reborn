@@ -138,15 +138,15 @@ const BookingDetail = ({ navigation, route }) => {
                     }}>
                     <Text
                         style={{
-                            color: 'red',
+                            color: 'black',
                             // fontSize: 13,
-                            fontWeight: 'bold',
+                            // fontWeight: 'bold',
                         }}>{`${packages.packageName} `}</Text>
                     <Text
                         style={{
-                            color: 'red',
+                            color: 'black',
                             // fontSize: 15,
-                            fontWeight: 'bold',
+                            // fontWeight: 'bold',
                         }}>{`${formatMoney(
                         calculateServicePrice(packages.services).total,
                     )} `}</Text>
@@ -191,7 +191,11 @@ const BookingDetail = ({ navigation, route }) => {
         detail.status === 'ACCEPTED'
             ? navigation.setOptions({
                   headerRight: () => (
-                      <Button title="Cancel" onPress={() => onCancel(detail.id)} />
+                      <Button
+                          title="Cancel"
+                          color="red"
+                          onPress={() => onCancel(detail.id)}
+                      />
                   ),
               })
             : null;
@@ -279,14 +283,16 @@ const BookingDetail = ({ navigation, route }) => {
                             nestedScrollEnabled
                             ListHeaderComponent={
                                 <>
-                                    <Text
-                                        style={{
-                                            color: 'green',
-                                            fontSize: 18,
-                                            fontWeight: 'bold',
-                                        }}>
-                                        Maintenance-Packages:
-                                    </Text>
+                                    {detail.packages.length > 0 ? (
+                                        <Text
+                                            style={{
+                                                color: '#999900',
+                                                fontSize: 18,
+                                                fontWeight: 'bold',
+                                            }}>
+                                            Maintenance-Packages:
+                                        </Text>
+                                    ) : null}
                                 </>
                             }
                             ListFooterComponent={
@@ -294,14 +300,18 @@ const BookingDetail = ({ navigation, route }) => {
                                     <FlatList
                                         ListHeaderComponent={
                                             <>
-                                                <Text
-                                                    style={{
-                                                        color: 'green',
-                                                        fontSize: 18,
-                                                        fontWeight: 'bold',
-                                                    }}>
-                                                    Expense:
-                                                </Text>
+                                                {detail.services.filter(
+                                                    ser => ser.isIncurred,
+                                                ).length > 0 ? (
+                                                    <Text
+                                                        style={{
+                                                            color: 'red',
+                                                            fontSize: 18,
+                                                            fontWeight: 'bold',
+                                                        }}>
+                                                        Expense:
+                                                    </Text>
+                                                ) : null}
                                             </>
                                         }
                                         data={

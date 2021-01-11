@@ -5,16 +5,25 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
-const PickingVehicleScreen = ({ navigation }) => {
+const PickingVehicleScreen = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
-
+    const { path, sectionId } = route.params ?? {};
+    console.log('path', path);
     const pickingVehicleHandler = vehicle => {
-        dispatch(
-            actions.updateCurrentVehicle(vehicle, () => {
-                navigation.navigate('ServiceType');
-            }),
-        );
+        if (path === 'catalog') {
+            dispatch(
+                actions.updateCurrentVehicle(vehicle, () => {
+                    navigation.navigate('AccessoryType', sectionId);
+                }),
+            );
+        } else {
+            dispatch(
+                actions.updateCurrentVehicle(vehicle, () => {
+                    navigation.navigate('ServiceType');
+                }),
+            );
+        }
     };
     console.log(vehicles);
     const renderVehicleItem = vehicle => (
@@ -47,7 +56,7 @@ const PickingVehicleScreen = ({ navigation }) => {
         <View style={styles.container}>
             {/* <Text>Vehicle Screen</Text> */}
             <View>
-                <Text>Please choose car</Text>
+                <Text style={{ fontSize: 26 }}>Please choose car</Text>
             </View>
             <FlatList
                 data={vehicles}

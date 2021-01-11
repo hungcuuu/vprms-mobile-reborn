@@ -114,6 +114,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
                         style={{
                             textAlign: 'center',
                             fontSize: 16,
+                            fontWeight: 'bold',
                             // maxWidth: 100,
                         }}>
                         {''}

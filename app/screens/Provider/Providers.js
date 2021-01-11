@@ -92,7 +92,7 @@ const Providers = ({ navigation }) => {
     };
     useEffect(() => {
         navigation.setOptions({
-            title: currentVehicle.model.name,
+            title: 'Providers',
         });
     }, [currentVehicle.model.name, navigation]);
     useEffect(() => {

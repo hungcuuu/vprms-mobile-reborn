@@ -141,7 +141,7 @@ const CatalogScreen = ({ navigation }) => {
                         </Picker>
                     </View>
                 ) : (
-                    <Text>cac</Text>
+                    <Text> </Text>
                 )}
             </View>
         </View>
@@ -202,7 +202,10 @@ const CatalogScreen = ({ navigation }) => {
 
             <TouchableOpacity
                 onPress={() =>
-                    navigation.navigate('AccessoryType', itemData.item.sectionId)
+                    navigation.navigate('PickingVehicle', {
+                        sectionId: itemData.item.sectionId,
+                        path: 'catalog',
+                    })
                 }
                 style={{
                     // justifyContent: 'center',
@@ -279,10 +282,7 @@ const CatalogScreen = ({ navigation }) => {
                 <FlatList
                     ListHeaderComponent={
                         <>
-                            <View>
-                                {/* <View>
-                        <Button title="Choose Image" onPress={pickImage} />
-                    </View> */}
+                            {/* <View>
                                 <View>
                                     <Button
                                         title={
@@ -295,14 +295,20 @@ const CatalogScreen = ({ navigation }) => {
                                         onPress={() => setIsVisible(true)}
                                     />
                                 </View>
-                            </View>
-                            <View style={{ width: '100%', height: 150 }}>
+                            </View> */}
+                            <View
+                                style={{
+                                    width: '100%',
+                                    height: 200,
+                                    marginTop: 16,
+                                    marginBottom: 32,
+                                }}>
                                 <Image
                                     resizeMethod="resize"
                                     resizeMode="cover"
                                     source={{
                                         uri:
-                                            'https://i.ytimg.com/vi/PPHMI63FHm0/maxresdefault.jpg',
+                                            'https://i.pinimg.com/736x/1c/33/12/1c33121f0041bf40ad6e69d74ea2fcaf.jpg',
                                         height: '100%',
                                         width: '100%',
                                     }}
@@ -333,7 +339,7 @@ const styles = StyleSheet.create({
         width: '100%',
         // paddingVertical: 8,
         // paddingHorizontal: 8,
-        borderWidth: 1,
+        // borderWidth: 1,
         // flexDirection: 'row',
         // flexWrap: 'nowrap',
     },

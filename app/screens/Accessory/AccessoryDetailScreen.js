@@ -15,7 +15,9 @@ const AccessoryDetailScreen = ({ navigation, route }) => {
             <ScrollView
                 style={{ paddingVertical: 16 }}
                 showsVerticalScrollIndicator={false}>
-                <Text style={{ textAlign: 'center' }}>{detail.provider.name}</Text>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 22 }}>
+                    {detail.provider.name}
+                </Text>
 
                 <Text>{detail.provider.address}</Text>
 
@@ -62,7 +64,10 @@ const AccessoryDetailScreen = ({ navigation, route }) => {
 
                 <Card.Divider />
                 <View style={{ height: 50 }}>
-                    <Text style={{ color: 'red' }}>{formatMoney(detail.part.price)}</Text>
+                    <Text style={{ color: 'red' }}>
+                        {' '}
+                        Price: {formatMoney(detail.part.price)}
+                    </Text>
                 </View>
             </ScrollView>
             <Button

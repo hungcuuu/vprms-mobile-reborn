@@ -10,7 +10,7 @@ import cartReducer from './cart';
 const authPersistConfig = {
     key: 'auth',
     storage: AsyncStorage,
-    blacklist: ['loading'],
+    blacklist: ['loading', 'error'],
 };
 
 const vehiclesPersistConfig = {
