@@ -24,6 +24,7 @@ function* login(action) {
 
 function* logout(action) {
     yield AsyncStorage.clear();
+    yield put(actions.removeCurrentVehicle());
     yield put(actions.logout());
 }
 

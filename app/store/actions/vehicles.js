@@ -91,3 +91,9 @@ export const updateVehicleFail = error => {
         error,
     };
 };
+
+export const removeCurrentVehicle = () => {
+    return {
+        type: actionTypes.REMOVE_CURRENT_VEHICLE,
+    };
+};

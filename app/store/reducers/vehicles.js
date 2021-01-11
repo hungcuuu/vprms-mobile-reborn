@@ -99,6 +99,14 @@ const updateVehicleFail = (state, action) => {
         loading: false,
     });
 };
+
+const removeCurrentVehicle = (state, action) => {
+    return updateObject(state, {
+        vehicles: [],
+        currentVehicle: null,
+    });
+};
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.FETCH_VEHICLE:
@@ -127,6 +135,8 @@ const reducer = (state = initialState, action) => {
             return updateCurrentVehicle(state, action);
         case actionTypes.UPDATE_CURRENT_VEHICLE_SUCCESS:
             return updateCurrentVehicleSuccess(state, action);
+        case actionTypes.REMOVE_CURRENT_VEHICLE:
+            return removeCurrentVehicle(state, action);
         default:
             return state;
     }

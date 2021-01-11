@@ -45,6 +45,8 @@ export const UPDATE_CURRENT_VEHICLE = 'UPDATE_CURRENT_VEHICLE';
 
 export const UPDATE_CURRENT_VEHICLE_SUCCESS = 'UPDATE_CURRENT_VEHICLE_SUCCESS';
 
+export const REMOVE_CURRENT_VEHICLE = 'REMOVE_CURRENT_VEHICLE';
+
 /////////////////////////////////////////////////////////////////
 
 export const ADD_PROVIDER = 'ADD_PROVIDER';

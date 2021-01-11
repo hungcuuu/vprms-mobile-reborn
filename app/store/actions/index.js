@@ -25,6 +25,7 @@ export {
     updateVehicleFail,
     updateCurrentVehicle,
     updateCurrentVehicleSuccess,
+    removeCurrentVehicle,
 } from './vehicles';
 
 export { fetchCart } from './cart';
