@@ -30,11 +30,15 @@ const VehicleCreateScreen = ({ navigation }) => {
         vinNumber: '',
     });
     const createVehicleHandler = () => {
-        dispatch(
-            actions.createVehicle(currentVehicle, () => {
-                navigation.goBack();
-            }),
-        );
+        if (currentVehicle.vinNumber.length === 17) {
+            dispatch(
+                actions.createVehicle(currentVehicle, () => {
+                    navigation.goBack();
+                }),
+            );
+        } else {
+            Alert.alert('VIN must contain 17 digits');
+        }
     };
     // const onChange = (event, selectedDate) => {
     //     const currentDate = selectedDate;
@@ -94,6 +98,8 @@ const VehicleCreateScreen = ({ navigation }) => {
             <View>
                 <Input
                     placeholder="VIN"
+                    keyboardType="number-pad"
+                    maxLength={17}
                     onChangeText={value => {
                         setCurrentVehicle(currentVehicle => ({
                             ...currentVehicle,
