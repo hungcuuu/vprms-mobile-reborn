@@ -70,7 +70,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
     );
     const renderAccessoryTypeList = type => (
         <TouchableOpacity
-            onPress={() => navigation.navigate('Accessories', type.id)}
+            onPress={() => navigation.navigate('Accessories', { typeId: type.id })}
             style={styles.items}>
             <View
                 style={{

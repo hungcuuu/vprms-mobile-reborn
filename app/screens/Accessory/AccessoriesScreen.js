@@ -13,36 +13,15 @@ import { formatMoney } from '../../utils';
 const AccessoriesScreen = ({ navigation, route }) => {
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
-    const accessoryType = route.params;
-    const [garageList, setGarageList] = useState([]);
-    const [location, setLocation] = useState();
-    // const requestLocationPermission = async () => {
-    //     try {
-    //         const granted = await PermissionsAndroid.request(
-    //             PermissionsAndroid.PERMISSIONS.CAMERA,
-    //             {
-    //                 title: 'VRMS App Camera Permission',
-    //                 message: 'VRMS App needs access to your location ',
-    //                 buttonNeutral: 'Ask Me Later',
-    //                 buttonNegative: 'Cancel',
-    //                 buttonPositive: 'OK',
-    //             },
-    //         );
-    //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    //             // geolocation;
+    const accessoryType = route.params.typeId ?? '';
+    const detect = route.params.detect ?? {};
 
-    //         } else {
-    //         }
-    //     } catch (err) {
-    //         console.warn(err);
-    //     }
-    // };
+    const [garageList, setGarageList] = useState([]);
 
     const getAllAccessories = useCallback(async () => {
         console.log('type', accessoryType);
         let location = await Location.getCurrentPositionAsync({});
 
-        setLocation(location);
         return axios.post('providers/part-categories', {
             categoryIds: [accessoryType],
             currentPos: {
@@ -147,11 +126,15 @@ const AccessoriesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        getAllAccessories().then(rs => {
-            console.log(rs.data);
-            setGarageList(rs.data);
-        });
-    }, [getAllAccessories]);
+        if (detect) {
+            setGarageList(detect);
+        } else {
+            getAllAccessories().then(rs => {
+                console.log(rs.data);
+                setGarageList(rs.data);
+            });
+        }
+    }, [detect, getAllAccessories]);
     return (
         <View style={styles.container}>
             <View style={styles.itemsContainer}>

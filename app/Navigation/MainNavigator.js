@@ -269,15 +269,7 @@ const AccessoryNavigator = ({ navigation }) => (
                 headerTitleAlign: 'center',
             }}
         />
-        {/* <AccessoryStackNavigator.Screen
-            name="ProviderAccessories"
-            component={ProviderAccessoriesScreen}
-            options={{
-                // headerLeft: <Ionicons name="md-home" />,
-                title: '',
-                headerTitleAlign: 'center',
-            }}
-        /> */}
+
         <AccessoryStackNavigator.Screen
             name="AccessoryServices"
             component={AccessoryServicesScreen}

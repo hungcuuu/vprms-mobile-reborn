@@ -6,8 +6,8 @@ import axios from 'axios';
 
 // const url = '192.168.1.89';
 
-// const url = '192.168.0.185';
-const url = '192.168.0.186';
+const url = '192.168.0.185';
+// const url = '192.168.0.186';
 
 export default axios.create({
     baseURL: `http://${url}:8080`,
