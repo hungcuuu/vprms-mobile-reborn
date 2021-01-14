@@ -307,6 +307,11 @@ const AccessoryNavigator = ({ navigation }) => (
                 headerTitleAlign: 'center',
             }}
         />
+        <AccessoryStackNavigator.Screen
+            name="BookingDetail"
+            initialParams={{ OrderStatus: 'all' }}
+            component={BookingDetail}
+        />
     </AccessoryStackNavigator.Navigator>
 );
 

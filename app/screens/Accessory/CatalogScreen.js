@@ -16,12 +16,15 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
+import messaging from '@react-native-firebase/messaging';
 
 import axios from '../../axios';
 import { ActivityIndicator } from 'react-native';
 
 const CatalogScreen = ({ navigation }) => {
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
+    const user = useSelector(state => state.auth.user ?? []);
+
     const dispatch = useDispatch();
     // console.log(useSelector((state) => state.vehicles.currentVehicle));
     const [isVisible, setIsVisible] = useState(false);
@@ -336,6 +339,10 @@ const CatalogScreen = ({ navigation }) => {
     );
 
     useEffect(() => {
+        let { status } = Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            // setErrorMsg('Permission to access location was denied');
+        }
         navigation.setOptions({
             headerRight: () => (
                 <Ionicons
@@ -354,6 +361,42 @@ const CatalogScreen = ({ navigation }) => {
             setCatalog(rs.data);
         });
     }, []);
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(
+                JSON.stringify(remoteMessage.notification.title),
+                remoteMessage.notification.body,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            let id = remoteMessage.notification.android.clickAction
+                                .split('_')
+                                .pop();
+                            axios
+                                .get(`requests/users/${user.id}`)
+                                .then(rs => rs.data)
+                                .then(
+                                    rs => {
+                                        navigation.navigate('BookingDetail', {
+                                            detail: rs.find(x => x.id === +id),
+                                        });
+                                    },
+                                    // console.log(rs.find(x => x.id === 6).services),
+                                );
+                            // navigation.navigate('BookingDetail');
+                        },
+                    },
+                ],
+            );
+        });
+
+        return unsubscribe;
+    }, [navigation, user.id]);
     return (
         <View style={styles.container} nestedScrollEnabled={true}>
             <View style={styles.itemsContainer}>

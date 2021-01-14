@@ -8,13 +8,16 @@ import { store, persistor } from './app/store';
 import AppNavigator from './app/navigation/AppNavigator';
 
 const App = () => {
-    useEffect(() => {
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-            Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-        });
+    // useEffect(() => {
+    //     const unsubscribe = messaging().onMessage(async remoteMessage => {
+    //         Alert.alert(
+    //             JSON.stringify(remoteMessage.notification.title),
+    //             JSON.stringify(remoteMessage.notification.body),
+    //         );
+    //     });
 
-        return unsubscribe;
-    }, []);
+    //     return unsubscribe;
+    // }, []);
     return (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>

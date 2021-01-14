@@ -29,7 +29,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     const [maxDate, setMaxDate] = useState(new Date());
     const [currentDate, setCurrentDate] = useState(new Date());
     const [reminderId, setReminderId] = useState('');
-
+    // const [renderNum, setRenderNum] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
 
     const wait = timeout => {
@@ -44,6 +44,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             // console.log(rs.data);
         });
         axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
+            // console.log('data', rs.data);
             setPartList(rs.data);
         });
         wait(1000).then(() => setRefreshing(false));
@@ -93,7 +94,9 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     //         },
     //     ]);
     // };
-
+    // const seeMoreHandler = () => {
+    //     setRenderNum(renderNum + 1);
+    // };
     const openDatePicker = (maxDate, remideDate, id) => {
         setShow(true);
         setMaxDate(new Date(maxDate));
@@ -184,8 +187,9 @@ const VehicleDetailScreen = ({ route, navigation }) => {
 
                     <Text>
                         <Ionicons name="alarm-outline" size={20} />
-                        Remind Date: <Text>{` ${part.reminder.remindDate}`}</Text>
+                        Remind Date: <Text>{part.reminder?.remindDate}</Text>
                     </Text>
+
                     <Text>
                         {' '}
                         <Ionicons name="md-calendar" size={20} />
@@ -193,7 +197,9 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                         <Text
                             style={{
                                 textAlign: 'right',
-                            }}>{` ${part.reminder.maintenanceDate}`}</Text>
+                            }}>
+                            {part.reminder?.maintenanceDate}
+                        </Text>
                     </Text>
                 </View>
                 <Button
@@ -215,12 +221,10 @@ const VehicleDetailScreen = ({ route, navigation }) => {
             <>
                 <TouchableOpacity
                     useForeground
-                    onPress={
-                        () =>
-                            navigation.navigate('BookingDetail', {
-                                detail: history,
-                            })
-                        // console.log("asjdkawd")
+                    onPress={() =>
+                        navigation.navigate('BookingDetail', {
+                            detail: history,
+                        })
                     }>
                     <View
                         style={{
@@ -408,17 +412,32 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 ListHeaderComponent={
                     <>
                         {renderVehicleInfo}
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', padding: 8 }}>
+                            History
+                        </Text>
                         <FlatList
                             // ListHeaderComponent={renderVehicleInfo}
                             data={historyList.slice(0, 3)}
                             keyExtractor={item => item.id.toString()}
                             renderItem={({ item: history }) => renderHistory(history)}
-                            // contentContainerStyle={{ borderWidth: 1 }}
                             scrollEnabled={false}
                             // style={{ borderWidth: 1, borderColor: 'green' }}
+                            // ListFooterComponent={
+                            //     <>
+                            //         <Text
+                            //             onPress={() => seeMoreHandler()}
+                            //             style={{ textAlign: 'right' }}>
+                            //             See more
+                            //         </Text>
+                            //     </>
+                            // }
                         />
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', padding: 8 }}>
+                            Part
+                        </Text>
                     </>
                 }
+                ListHeaderComponentStyle={{ marginVertical: 15 }}
                 data={partList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item: part }) => renderParts(part)}
