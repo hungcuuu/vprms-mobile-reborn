@@ -5,9 +5,13 @@ import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
 import * as Location from 'expo-location';
+import messaging from '@react-native-firebase/messaging';
+import { Alert } from 'react-native';
 
 const Providers = ({ navigation }) => {
     const vehicle = useSelector(state => state.vehicles.currentVehicle ?? []);
+    const user = useSelector(state => state.auth.user ?? []);
+
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
     const [currentVehicle] = useState(vehicle);
@@ -112,6 +116,42 @@ const Providers = ({ navigation }) => {
         })();
         // console.log('vehicle', currentVehicle);
     }, []);
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(
+                JSON.stringify(remoteMessage.notification.title),
+                remoteMessage.notification.body,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            let id = remoteMessage.notification.android.clickAction
+                                .split('_')
+                                .pop();
+                            axios
+                                .get(`requests/users/${user.id}`)
+                                .then(rs => rs.data)
+                                .then(
+                                    rs => {
+                                        navigation.navigate('BookingDetail', {
+                                            detail: rs.find(x => x.id === +id),
+                                        });
+                                    },
+                                    // console.log(rs.find(x => x.id === 6).services),
+                                );
+                            // navigation.navigate('BookingDetail');sadsadasd
+                        },
+                    },
+                ],
+            );
+        });
+
+        return unsubscribe;
+    }, [navigation, user.id]);
     return (
         <View>
             <View>

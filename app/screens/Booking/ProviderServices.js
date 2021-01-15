@@ -408,9 +408,10 @@ const ProviderServices = ({ navigation, route }) => {
             axios.get(url).then(rs => setServices(rs.data));
             axios
                 .get(
-                    'maintenance-packages/providers/' + provider.id,
-                    // '/models/' +
-                    // modelId,
+                    'maintenance-packages/providers/' +
+                        provider.id +
+                        '/models/' +
+                        modelId,
                 )
                 .then(rs => setPackages(rs.data));
             // setServices(data);

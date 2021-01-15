@@ -388,7 +388,7 @@ const CatalogScreen = ({ navigation }) => {
                                     },
                                     // console.log(rs.find(x => x.id === 6).services),
                                 );
-                            // navigation.navigate('BookingDetail');
+                            // navigation.navigate('BookingDetail');sadsadasd
                         },
                     },
                 ],

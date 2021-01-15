@@ -432,6 +432,15 @@ const ProviderNavigator = ({ navigation }) => (
                 title: 'Schedule',
             }}
         />
+        <ProviderStackNavigator.Screen
+            name="BookingDetail"
+            component={BookingDetail}
+            options={
+                {
+                    // headerLeft: <Ionicons name="md-home" />,
+                }
+            }
+        />
     </ProviderStackNavigator.Navigator>
 );
 const Tab = createMaterialTopTabNavigator();
