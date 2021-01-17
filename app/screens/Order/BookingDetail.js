@@ -82,6 +82,12 @@ const BookingDetail = ({ navigation, route }) => {
         );
     };
     const renderServices = service => {
+        const totalPrice =
+            service.servicePrice +
+            service.parts.reduce(
+                (accumulated, part) => accumulated + part.price * part.quantity,
+                0,
+            );
         return (
             // ${formatMoney(service.price)}
             <>
@@ -109,7 +115,7 @@ const BookingDetail = ({ navigation, route }) => {
                             </Text>
                         ) : (
                             <Text style={{ color: 'black', fontWeight: 'bold' }}>
-                                {`${formatMoney(service.servicePrice)}`}
+                                {`${formatMoney(totalPrice)}`}
                             </Text>
                         )}
                     </View>
