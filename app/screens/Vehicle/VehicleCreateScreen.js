@@ -130,7 +130,6 @@ const VehicleCreateScreen = ({ navigation }) => {
             <View>
                 <Input
                     placeholder="VIN"
-                    keyboardType="number-pad"
                     maxLength={17}
                     onChangeText={value => {
                         setCurrentVehicle(currentVehicle => ({
