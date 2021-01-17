@@ -11,6 +11,7 @@ const VehiclesScreen = ({ navigation, route }) => {
 
     const path = route.params?.path ?? '';
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
+    console.log(vehicles);
     const renderVehicleItem = itemData => (
         <View style={{}}>
             <View style={{ flex: 1 }}>
@@ -35,7 +36,8 @@ const VehiclesScreen = ({ navigation, route }) => {
 
                         <View style={{ flex: 1, paddingLeft: 16, display: 'flex' }}>
                             <Text style={{ fontSize: 16 }}>
-                                Model: {itemData.item.model.name}
+                                Model:{' '}
+                                {`${itemData.item.model.name} ${itemData.item.model.fuelType} ${itemData.item.model.gearbox} ${itemData.item.model.year}`}
                             </Text>
                             <Text style={{ fontSize: 16 }}>
                                 VIN: {itemData.item.vinNumber}

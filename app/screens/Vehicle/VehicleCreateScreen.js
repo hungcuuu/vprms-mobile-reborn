@@ -18,7 +18,6 @@ const VehicleCreateScreen = ({ navigation }) => {
     const [manufactureList, setManufactureList] = useState();
     const [vehicleTypeList, setVehicleTypeList] = useState([]);
     const [vehicleTypeName, setVehicleTypeName] = useState('CRV');
-    const [vehicleModelId, setVehicleModelId] = useState(1);
     const [error, setError] = useState({
         errorVIN: '',
         errorPlate: '',
@@ -100,7 +99,7 @@ const VehicleCreateScreen = ({ navigation }) => {
             })
             .then(rs => {
                 setVehicleTypeName(rs.data.find(x => x)?.name);
-                setVehicleModelId(rs.data.find(x => x)?.id);
+                // setVehicleModelId(rs.data.find(x => x)?.id);
                 setVehicleTypeList(rs.data);
                 setCurrentVehicle(currentVehicle => ({
                     ...currentVehicle,
@@ -194,13 +193,14 @@ const VehicleCreateScreen = ({ navigation }) => {
                     <View>
                         <Picker
                             mode="dropdown"
-                            selectedValue={vehicleModelId}
+                            selectedValue={currentVehicle.modelId}
                             style={{ height: 50 }}
                             onValueChange={(itemValue, itemIndex) => {
                                 setCurrentVehicle(currentVehicle => ({
                                     ...currentVehicle,
-                                    modelId: itemValue ? itemValue.toString() : '',
+                                    modelId: itemValue ? itemValue : '',
                                 }));
+                                // setVehicleModelId(itemValue);
                             }}>
                             {vehicleTypeList
                                 .filter(x => x.name === vehicleTypeName)
