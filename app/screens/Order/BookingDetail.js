@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Alert, Button, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { Card } from 'react-native-elements';
 import moment from 'moment';
@@ -74,7 +74,7 @@ const BookingDetail = ({ navigation, route }) => {
                             style={{
                                 width: '100%',
                                 textAlign: 'right',
-                            }}>{`x ${part.quantity}`}</Text>
+                            }}>{`x ${part.quantity ?? 0}`}</Text>
                         <Text>{` ${formatMoney(part.price)}`}</Text>
                     </View>
                 </View>
@@ -122,7 +122,16 @@ const BookingDetail = ({ navigation, route }) => {
 
                     <FlatList
                         // listKey={`${moment.unix.toString()}`}
-                        data={service.parts ?? []}
+                        data={[
+                            ...(service.parts ?? []),
+                            {
+                                partId: 0,
+                                partName: 'Wages',
+                                quantity: 1,
+                                imageUrls: [],
+                                price: service.servicePrice,
+                            },
+                        ]}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item: part }) => renderParts(part)}
                         scrollEnabled={false}
@@ -133,6 +142,16 @@ const BookingDetail = ({ navigation, route }) => {
         );
     };
     const renderPackages = packages => {
+        const totalPrice = packages.services.reduce(
+            (accumulated, service) =>
+                accumulated +
+                service.servicePrice +
+                service.parts.reduce(
+                    (accumulated, part) => accumulated + part.price * part.quantity,
+                    0,
+                ),
+            0,
+        );
         return (
             // ${formatMoney(service.price)}
             <>
@@ -153,9 +172,7 @@ const BookingDetail = ({ navigation, route }) => {
                             color: 'black',
                             // fontSize: 15,
                             // fontWeight: 'bold',
-                        }}>{`${formatMoney(
-                        calculateServicePrice(packages.services).total,
-                    )} `}</Text>
+                        }}>{`${formatMoney(totalPrice)} `}</Text>
                 </View>
             </>
         );
