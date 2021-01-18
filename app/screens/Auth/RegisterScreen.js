@@ -18,8 +18,9 @@ const RegisterScreen = ({ navigation, ...rest }) => {
     const [confirm, setConfirm] = useState(null);
 
     const registerHandler = () => {
+        const firebasePhone = formatPhoneNumber(phoneInput);
         auth()
-            .signInWithPhoneNumber(phoneInput)
+            .signInWithPhoneNumber(firebasePhone)
             .then(confirmation => {
                 setConfirm(confirmation);
             });
@@ -29,6 +30,7 @@ const RegisterScreen = ({ navigation, ...rest }) => {
         confirm
             .confirm(code)
             .then(({ user }) => {
+                // console.log(user.uid, phoneInput);
                 const newUser = {
                     fullName: fullnameInput,
                     gender: true,
@@ -61,9 +63,7 @@ const RegisterScreen = ({ navigation, ...rest }) => {
                             placeholder="Phone Number"
                             inputContainerStyle={styles.input}
                             leftIcon={{ type: 'font-awesome', name: 'phone' }}
-                            onChangeText={value =>
-                                setPhoneInput(formatPhoneNumber(value))
-                            }
+                            onChangeText={value => setPhoneInput(value)}
                         />
 
                         <Input

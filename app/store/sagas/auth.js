@@ -30,8 +30,9 @@ function* logout(action) {
 
 function* register(action) {
     try {
+        const deviceToken = yield messaging().getToken();
         const data = yield axios
-            .post('/users/signup', action.payload)
+            .post('/users/signup', { deviceToken, ...action.payload })
             .then(({ data }) => data);
         yield AsyncStorage.setItem('user', JSON.stringify(data));
         yield put(actions.loginSuccess(data));
