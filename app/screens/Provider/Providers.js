@@ -5,17 +5,20 @@ import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
 import * as Location from 'expo-location';
+import { Picker } from '@react-native-community/picker';
+import _ from 'lodash';
+
 import messaging from '@react-native-firebase/messaging';
 import { Alert } from 'react-native';
 
 const Providers = ({ navigation }) => {
-    const vehicle = useSelector(state => state.vehicles.currentVehicle ?? []);
+    // const vehicle = useSelector(state => state.vehicles.currentVehicle ?? []);
     const user = useSelector(state => state.auth.user ?? []);
 
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
-    const [currentVehicle] = useState(vehicle);
     const [searchText, setSearchText] = useState('');
+    const [sortBy, setSortBy] = useState(['ratings', 'desc']);
     const searchHandler = text => {
         setSearchText(text);
         if (!text || text === '') {
@@ -98,7 +101,7 @@ const Providers = ({ navigation }) => {
         navigation.setOptions({
             title: 'Providers',
         });
-    }, [currentVehicle.model.name, navigation]);
+    }, [navigation]);
     useEffect(() => {
         (async () => {
             let location = await Location.getCurrentPositionAsync({});
@@ -154,7 +157,7 @@ const Providers = ({ navigation }) => {
     }, [navigation, user.id]);
     return (
         <View>
-            <View>
+            <View style={{ flexDirection: 'row' }}>
                 <SearchBar
                     value={searchText}
                     placeholder="Search Here..."
@@ -164,12 +167,31 @@ const Providers = ({ navigation }) => {
                     autoCorrect={false}
                     blurOnSubmit={false}
                     clearButtonMode="always"
+                    containerStyle={{ width: '70%', flex: 1 }}
                 />
+                <Picker
+                    mode="dropdown"
+                    selectedValue={sortBy[0]}
+                    style={{
+                        // height: 50,
+                        width: '30%',
+                    }}
+                    accessibilityLabel="Sort By"
+                    onValueChange={(itemValue, itemIndex) => {
+                        if (itemValue === 'ratings') {
+                            setSortBy([itemValue, 'desc']);
+                        } else {
+                            setSortBy([itemValue, 'asc']);
+                        }
+                    }}>
+                    <Picker.Item label={'Rating'} value={'ratings'} />
+                    <Picker.Item label={'Distance'} value={'distance'} />
+                </Picker>
             </View>
 
             <View>
                 <FlatList
-                    data={searchProviders}
+                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item: provider }) => renderProviders(provider)}
                     showsVerticalScrollIndicator={false}

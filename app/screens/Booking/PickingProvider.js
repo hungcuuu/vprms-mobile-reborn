@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
+import { Picker } from '@react-native-community/picker';
 
 const PickingProvider = ({ navigation, route }) => {
     const selectedServicesType = route.params?.selectedServicesType ?? [];
@@ -21,6 +22,7 @@ const PickingProvider = ({ navigation, route }) => {
 
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
+    const [sortBy, setSortBy] = useState(['ratings', 'desc']);
 
     const [searchText, setSearchText] = useState('');
     const searchHandler = text => {
@@ -160,22 +162,38 @@ const PickingProvider = ({ navigation, route }) => {
     }, [selectedMilestone, selectedSections, selectedServicesType, vehicles.model.id]);
     return (
         <View>
-            <View>
+            <View style={{ flexDirection: 'row' }}>
                 <SearchBar
                     value={searchText}
                     placeholder="Search Here..."
                     lightTheme
                     round
+                    containerStyle={{ width: '70%', flex: 1 }}
                     onChangeText={text => searchHandler(text)}
                     autoCorrect={false}
                     blurOnSubmit={false}
                     clearButtonMode="always"
                 />
+                <Picker
+                    mode="dropdown"
+                    selectedValue={sortBy[0]}
+                    style={{ height: 50, width: '30%' }}
+                    accessibilityLabel="Sort By"
+                    onValueChange={(itemValue, itemIndex) => {
+                        if (itemValue === 'ratings') {
+                            setSortBy([itemValue, 'desc']);
+                        } else {
+                            setSortBy([itemValue, 'asc']);
+                        }
+                    }}>
+                    <Picker.Item label={'Rating'} value={'ratings'} />
+                    <Picker.Item label={'Distance'} value={'distance'} />
+                </Picker>
             </View>
 
             <View>
                 <FlatList
-                    data={searchProviders}
+                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item: provider }) => renderProviders(provider)}
                     showsVerticalScrollIndicator={false}
