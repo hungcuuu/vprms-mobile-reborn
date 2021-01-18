@@ -269,15 +269,7 @@ const AccessoryNavigator = ({ navigation }) => (
                 headerTitleAlign: 'center',
             }}
         />
-        {/* <AccessoryStackNavigator.Screen
-            name="ProviderAccessories"
-            component={ProviderAccessoriesScreen}
-            options={{
-                // headerLeft: <Ionicons name="md-home" />,
-                title: '',
-                headerTitleAlign: 'center',
-            }}
-        /> */}
+
         <AccessoryStackNavigator.Screen
             name="AccessoryServices"
             component={AccessoryServicesScreen}
@@ -314,6 +306,11 @@ const AccessoryNavigator = ({ navigation }) => (
                 title: 'Schedule',
                 headerTitleAlign: 'center',
             }}
+        />
+        <AccessoryStackNavigator.Screen
+            name="BookingDetail"
+            initialParams={{ OrderStatus: 'all' }}
+            component={BookingDetail}
         />
     </AccessoryStackNavigator.Navigator>
 );
@@ -434,6 +431,15 @@ const ProviderNavigator = ({ navigation }) => (
                 // headerLeft: <Ionicons name="md-home" />,
                 title: 'Schedule',
             }}
+        />
+        <ProviderStackNavigator.Screen
+            name="BookingDetail"
+            component={BookingDetail}
+            options={
+                {
+                    // headerLeft: <Ionicons name="md-home" />,
+                }
+            }
         />
     </ProviderStackNavigator.Navigator>
 );

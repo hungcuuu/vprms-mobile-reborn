@@ -11,6 +11,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
     // const selections = route.params.selections ?? [];
 
     let detail = route.params.detail ?? [];
+    console.log('detail', detail);
     const [services, setServices] = useState();
     const [selectedService, setSelectedService] = useState([]);
 
@@ -128,6 +129,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
             .then(rs => {
                 // console.log('data', rs.data);
                 setServices(rs.data);
+                console.log('data', rs.data);
                 // const partList = selections
                 //     .reduce(
                 //         (curr, part) => [
@@ -167,12 +169,12 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 <Button
                     title="See More"
                     onPress={() =>
-                        selectedService
+                        selectedService.length > 0
                             ? navigation.navigate('ProviderServices', {
                                   provider: detail.provider,
                                   selectedService: selectedService,
                               })
-                            : Alert.alert('You have to choose one service')
+                            : Alert.alert('You have to choose at least one service')
                     }
                 />
             </View>
@@ -180,7 +182,7 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 <Button
                     title="Next"
                     onPress={() =>
-                        selectedService
+                        selectedService.length > 0
                             ? navigation.navigate('Review', {
                                   serviceList: selectedService,
                                   detail: detail,

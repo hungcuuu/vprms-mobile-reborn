@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { Alert } from 'react-native';
-import { FlatList, Text, View, ScrollView, Modal, Button } from 'react-native';
+import { FlatList, Text, View, ScrollView, Modal } from 'react-native';
 
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Button } from 'react-native-elements';
 import { SliderBox } from 'react-native-image-slider-box';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -93,29 +93,25 @@ const ProviderServices = ({ navigation, route }) => {
     const renderModal = () => {
         return (
             <Modal
-                animationType="slide"
                 transparent={true}
-                // presentationStyle="formSheet"
                 visible={visible}
-                onRequestClose={() => setVisible(false)}>
+                onRequestClose={() => setVisible(false)}
+                style={{}}>
                 <View
                     style={{
                         flex: 1,
-                        // flexDirection: 'column',
+                        flexDirection: 'column',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        alignSelf: 'center',
-
-                        backgroundColor: '#f2f2f2',
-                        height: '70%',
-                        width: '80%',
-                        borderRadius: 15,
-                        borderWidth: 1,
-                        borderColor: '#000000',
-                        // marginTop: 40,
-                        marginVertical: 20,
+                        backgroundColor: 'rgba(0,0,0,0.3)',
+                        // opacity: 0.5,
                     }}>
-                    <View style={{ height: 500 }}>
+                    <View
+                        style={{
+                            width: '100%',
+                            height: '50%',
+                            backgroundColor: '#ccc',
+                        }}>
                         <FlatList
                             listKey={'modal'}
                             data={partList}
@@ -123,14 +119,58 @@ const ProviderServices = ({ navigation, route }) => {
                             renderItem={({ item: detail }) => renderParts(detail)}
                             initialNumToRender={7}
                         />
-                    </View>
 
-                    <View>
-                        <Button title="Close" onPress={() => setVisible(false)} />
+                        <View>
+                            <Button
+                                buttonStyle={{}}
+                                title="Close"
+                                onPress={() => setVisible(false)}
+                            />
+                        </View>
                     </View>
                 </View>
             </Modal>
         );
+        // return (
+        //     <Modal
+        //         animationType="slide"
+        //         // statusBarTranslucent={false}
+        //         transparent={true}
+        //         // presentationStyle="formSheet"
+        //         visible={visible}
+        //         onRequestClose={() => setVisible(false)}>
+        //         <View
+        //             style={{
+        //                 flex: 1,
+        //                 // flexDirection: 'column',
+        //                 justifyContent: 'center',
+        //                 alignItems: 'center',
+        //                 alignSelf: 'center',
+
+        //                 backgroundColor: '#f2f2f2',
+        //                 height: 10,
+        //                 width: '80%',
+        //                 borderRadius: 15,
+        //                 borderWidth: 1,
+        //                 borderColor: '#000000',
+        //                 // marginVertical: 20,
+        //             }}>
+        //             <View style={{ height: 50 }}>
+        //                 <FlatList
+        //                     listKey={'modal'}
+        //                     data={partList}
+        //                     keyExtractor={(item, index) => item.id.toString()}
+        //                     renderItem={({ item: detail }) => renderParts(detail)}
+        //                     initialNumToRender={7}
+        //                 />
+        //             </View>
+
+        //             <View>
+        //                 <Button title="Close" onPress={() => setVisible(false)} />
+        //             </View>
+        //         </View>
+        //     </Modal>
+        // );
     };
     const renderDetail = detail => {
         return (
@@ -176,13 +216,15 @@ const ProviderServices = ({ navigation, route }) => {
                 </View>
 
                 <View style={{ justifyContent: 'center', marginRight: 8 }}>
-                    <Button
-                        title="detail"
-                        onPress={() => {
-                            setPartList(detail.parts);
-                            setVisible(true);
-                        }}
-                    />
+                    {detail.parts.length > 0 && (
+                        <Button
+                            title="detail"
+                            onPress={() => {
+                                setPartList(detail.parts);
+                                setVisible(true);
+                            }}
+                        />
+                    )}
                 </View>
             </View>
         );
@@ -366,9 +408,10 @@ const ProviderServices = ({ navigation, route }) => {
             axios.get(url).then(rs => setServices(rs.data));
             axios
                 .get(
-                    'maintenance-packages/providers/' + provider.id,
-                    // '/models/' +
-                    // modelId,
+                    'maintenance-packages/providers/' +
+                        provider.id +
+                        '/models/' +
+                        modelId,
                 )
                 .then(rs => setPackages(rs.data));
             // setServices(data);

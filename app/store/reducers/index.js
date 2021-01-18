@@ -13,16 +13,10 @@ const authPersistConfig = {
     blacklist: ['loading', 'error'],
 };
 
-const vehiclesPersistConfig = {
-    key: 'vehicles',
-    storage: AsyncStorage,
-    whitelist: ['vehicles'],
-};
-
 const rootReducer = combineReducers({
     auth: persistReducer(authPersistConfig, authReducer),
     services: servicesReducer,
-    vehicles: persistReducer(vehiclesPersistConfig, vehiclesReducer),
+    vehicles: vehiclesReducer,
     cart: cartReducer,
 });
 

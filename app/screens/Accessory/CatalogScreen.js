@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     FlatList,
     Image,
@@ -16,19 +16,22 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
+import messaging from '@react-native-firebase/messaging';
 
 import axios from '../../axios';
+import { ActivityIndicator } from 'react-native';
 
 const CatalogScreen = ({ navigation }) => {
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
+    const user = useSelector(state => state.auth.user ?? []);
+
     const dispatch = useDispatch();
-    const [location, setLocation] = useState();
     // console.log(useSelector((state) => state.vehicles.currentVehicle));
     const [isVisible, setIsVisible] = useState(false);
     // const [currentVehicle, setCurrentVehicle] = useState();
     const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
     const [, setCapturedPhoto] = useState(null);
-
+    const [loading, setLoading] = useState(false);
     // useSelector((state) => state.vehicles?.vehicles[0]),
     const [currentManu, setCurrentManu] = useState(1);
     const [manufactureList, setManufactureList] = useState();
@@ -69,27 +72,61 @@ const CatalogScreen = ({ navigation }) => {
     };
     const changeVehicle = vehicle => {
         // console.log(vehicle);
-        dispatch(actions.updateCurrentVehicle(vehicle));
+        dispatch(actions.updateCurrentVehicle(vehicle, () => null));
         // console.log('1');
     };
-
-    const pickImage = async () => {
-        return await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1,
-            //base64: true,
-        })
-            .then(result => {
-                if (!result.cancelled) {
-                    const { uri } = result;
-
-                    setCapturedPhoto(uri);
-                }
-            })
-            .catch(() => {
-                Alert.alert('Error', 'Something wrong with Camera');
-            });
+    const wait = timeout => {
+        return new Promise(resolve => {
+            setTimeout(() => setLoading(false), timeout);
+        });
     };
+    const pickImage = useCallback(async () => {
+        let { status } = await Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            // setErrorMsg('Permission to access location was denied');
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        console.log(currentVehicle);
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+            });
+
+            if (!result.cancelled) {
+                setLoading(true);
+                let localUri = result.uri;
+                let filename = localUri.split('/').pop();
+
+                // Infer the type of the image
+                let match = /\.(\w+)$/.exec(filename);
+                let type = match ? `image/${match[1]}` : 'image';
+                const data = new FormData();
+                data.append('file', { uri: localUri, name: filename, type });
+                data.append('latitude', location.coords.latitude);
+                data.append('longitude', location.coords.longitude);
+
+                // wait(2000).then(() => setLoading(false));
+
+                axios
+                    .post(`detections/models/${currentVehicle.model.id}/parts/`, data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            // Accept: 'application/json',
+                        },
+                    })
+                    .then(rs => {
+                        setLoading(false);
+                        // console.log(rs.data);
+                        navigation.navigate('Accessories', { detect: rs.data });
+                    });
+                //     .catch(err => Alert.alert(err));
+            }
+        } catch (e) {
+            Alert.alert('Error', 'Something wrong with Camera');
+        }
+    }, [currentVehicle, navigation]);
     const renderOtherPicker = () => (
         <View style={{ width: '100%' }}>
             <View>
@@ -148,15 +185,70 @@ const CatalogScreen = ({ navigation }) => {
     );
     const modalPickVehicle = () => {
         return (
-            <Modal visible={isVisible} animationType="fade">
-                <View>
+            <Modal
+                visible={isVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setIsVisible(false)}>
+                <View
+                    style={{
+                        flex: 1,
+                        // flexDirection: 'column',
+                        // justifyContent: 'center',
+                        // alignItems: 'center',
+                        alignSelf: 'center',
+
+                        backgroundColor: '#f2f2f2',
+                        height: '90%',
+                        width: '90%',
+                        borderRadius: 15,
+                        borderWidth: 1,
+                        borderColor: '#000000',
+                        // marginTop: 40,
+                        marginVertical: 20,
+                    }}>
+                    <Text>Choose vehicle to continue</Text>
                     <FlatList
                         data={vehicles}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={renderVehicleList}
+                        ListFooterComponent={
+                            <>
+                                <Button
+                                    title="Create New Vehicle"
+                                    onPress={() => {
+                                        setIsVisible(false);
+                                        navigation.navigate('CreateVehicle');
+                                    }}
+                                />
+                            </>
+                        }
                     />
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            paddingHorizontal: 50,
+                            paddingBottom: 50,
+                        }}>
+                        <Button
+                            title="cancel"
+                            onPress={() => {
+                                setIsVisible(false);
+                            }}
+                        />
+                        <Button
+                            buttonStyle={{ width: 100 }}
+                            title="done"
+                            onPress={() => {
+                                setIsVisible(false);
+                                pickImage();
+                            }}
+                        />
+                    </View>
                 </View>
-                <View style={{ justifyContent: 'center', margin: 20 }}>
+                {/* <View style={{ justifyContent: 'center', margin: 20 }}>
                     <CheckBox
                         key={'other'}
                         checkedIcon="dot-circle-o"
@@ -170,10 +262,7 @@ const CatalogScreen = ({ navigation }) => {
                         }}
                     />
                     {renderOtherPicker()}
-                </View>
-                <View>
-                    <Button title="done" onPress={() => setIsVisible(false)} />
-                </View>
+                </View> */}
             </Modal>
         );
     };
@@ -248,54 +337,72 @@ const CatalogScreen = ({ navigation }) => {
             </TouchableOpacity>
         </View>
     );
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                // setErrorMsg('Permission to access location was denied');
-            }
 
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
-
-            console.log(location.coords.latitude);
-            console.log(location.coords.longitude);
-        })();
-    }, []);
     useEffect(() => {
+        let { status } = Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            // setErrorMsg('Permission to access location was denied');
+        }
         navigation.setOptions({
             headerRight: () => (
-                <Ionicons name="camera" color="white" size={50} onPress={pickImage} />
+                <Ionicons
+                    name="camera"
+                    color="white"
+                    size={50}
+                    onPress={() => setIsVisible(true)}
+                />
             ),
         });
         // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    }, [navigation]);
+    }, [navigation, pickImage]);
     useEffect(() => {
         getManufactures();
         getCatalog().then(rs => {
             setCatalog(rs.data);
         });
     }, []);
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert(
+                JSON.stringify(remoteMessage.notification.title),
+                remoteMessage.notification.body,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            let id = remoteMessage.notification.android.clickAction
+                                .split('_')
+                                .pop();
+                            axios
+                                .get(`requests/users/${user.id}`)
+                                .then(rs => rs.data)
+                                .then(
+                                    rs => {
+                                        navigation.navigate('BookingDetail', {
+                                            detail: rs.find(x => x.id === +id),
+                                        });
+                                    },
+                                    // console.log(rs.find(x => x.id === 6).services),
+                                );
+                            // navigation.navigate('BookingDetail');sadsadasd
+                        },
+                    },
+                ],
+            );
+        });
+
+        return unsubscribe;
+    }, [navigation, user.id]);
     return (
         <View style={styles.container} nestedScrollEnabled={true}>
             <View style={styles.itemsContainer}>
                 <FlatList
                     ListHeaderComponent={
                         <>
-                            {/* <View>
-                                <View>
-                                    <Button
-                                        title={
-                                            currentVehicle
-                                                ? currentVehicle.model?.name ??
-                                                  '' + ' ' + currentVehicle.model?.year ??
-                                                  ''
-                                                : 'You dont have car'
-                                        }
-                                        onPress={() => setIsVisible(true)}
-                                    />
-                                </View>
-                            </View> */}
                             <View
                                 style={{
                                     width: '100%',
@@ -315,6 +422,19 @@ const CatalogScreen = ({ navigation }) => {
                                     // style={{ width: '100%', height: '100%' }}
                                 />
                             </View>
+                            <ActivityIndicator
+                                size="large"
+                                color="#0000ff"
+                                animating={loading}
+                                onTouchCancel={() => setLoading(false)}
+                                style={{
+                                    zIndex: 1000,
+                                    justifyContent: 'center',
+                                    // flex: 1,
+                                    height: 0,
+                                }}
+                                hidesWhenStopped
+                            />
                         </>
                     }
                     showsVerticalScrollIndicator={false}
@@ -326,6 +446,7 @@ const CatalogScreen = ({ navigation }) => {
                     nestedScrollEnabled={true}
                 />
             </View>
+
             <View>{modalPickVehicle()}</View>
         </View>
     );
@@ -337,11 +458,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        // paddingVertical: 8,
-        // paddingHorizontal: 8,
-        // borderWidth: 1,
-        // flexDirection: 'row',
-        // flexWrap: 'nowrap',
     },
     items: {
         flex: 1,

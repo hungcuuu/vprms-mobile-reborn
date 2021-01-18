@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { Picker } from '@react-native-community/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input, Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -19,8 +18,10 @@ const VehicleCreateScreen = ({ navigation }) => {
     const [manufactureList, setManufactureList] = useState();
     const [vehicleTypeList, setVehicleTypeList] = useState([]);
     const [vehicleTypeName, setVehicleTypeName] = useState('CRV');
-    const [vehicleModelId, setVehicleModelId] = useState(1);
-
+    const [error, setError] = useState({
+        errorVIN: '',
+        errorPlate: '',
+    });
     const [currentVehicle, setCurrentVehicle] = useState({
         boughtDate: 0,
         color: 'red',
@@ -30,14 +31,43 @@ const VehicleCreateScreen = ({ navigation }) => {
         vinNumber: '',
     });
     const createVehicleHandler = () => {
-        if (currentVehicle.vinNumber.length === 17) {
+        let check = true;
+        if (currentVehicle.vinNumber.length === 0) {
+            setError(cur => ({
+                ...cur,
+                errorVIN: 'VIN can not be blank!',
+            }));
+            check = false;
+        } else if (currentVehicle.vinNumber.length !== 17) {
+            setError(cur => ({
+                ...cur,
+                errorVIN: 'VIN must has 17 digits!',
+            }));
+            check = false;
+        } else {
+            setError(cur => ({
+                ...cur,
+                errorVIN: '',
+            }));
+        }
+        if (currentVehicle.plateNumber.length === 0) {
+            setError(cur => ({
+                ...cur,
+                errorPlate: 'Plate number can not be blank!',
+            }));
+            check = false;
+        } else {
+            setError(cur => ({
+                ...cur,
+                errorPlate: '',
+            }));
+        }
+        if (check) {
             dispatch(
                 actions.createVehicle(currentVehicle, () => {
                     navigation.goBack();
                 }),
             );
-        } else {
-            Alert.alert('VIN must contain 17 digits');
         }
     };
     // const onChange = (event, selectedDate) => {
@@ -69,7 +99,7 @@ const VehicleCreateScreen = ({ navigation }) => {
             })
             .then(rs => {
                 setVehicleTypeName(rs.data.find(x => x)?.name);
-                setVehicleModelId(rs.data.find(x => x)?.id);
+                // setVehicleModelId(rs.data.find(x => x)?.id);
                 setVehicleTypeList(rs.data);
                 setCurrentVehicle(currentVehicle => ({
                     ...currentVehicle,
@@ -87,18 +117,19 @@ const VehicleCreateScreen = ({ navigation }) => {
             <View>
                 <Input
                     placeholder="License plate number"
+                    maxLength={15}
                     onChangeText={value => {
                         setCurrentVehicle(currentVehicle => ({
                             ...currentVehicle,
                             plateNumber: value,
                         }));
                     }}
+                    errorMessage={error.errorPlate}
                 />
             </View>
             <View>
                 <Input
                     placeholder="VIN"
-                    keyboardType="number-pad"
                     maxLength={17}
                     onChangeText={value => {
                         setCurrentVehicle(currentVehicle => ({
@@ -106,6 +137,7 @@ const VehicleCreateScreen = ({ navigation }) => {
                             vinNumber: value,
                         }));
                     }}
+                    errorMessage={error.errorVIN}
                 />
             </View>
             <View>
@@ -160,13 +192,14 @@ const VehicleCreateScreen = ({ navigation }) => {
                     <View>
                         <Picker
                             mode="dropdown"
-                            selectedValue={vehicleModelId}
+                            selectedValue={currentVehicle.modelId}
                             style={{ height: 50 }}
                             onValueChange={(itemValue, itemIndex) => {
                                 setCurrentVehicle(currentVehicle => ({
                                     ...currentVehicle,
-                                    modelId: itemValue ? itemValue.toString() : '',
+                                    modelId: itemValue ? itemValue : '',
                                 }));
+                                // setVehicleModelId(itemValue);
                             }}>
                             {vehicleTypeList
                                 .filter(x => x.name === vehicleTypeName)

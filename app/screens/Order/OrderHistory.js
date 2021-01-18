@@ -157,8 +157,12 @@ const OrderHistory = ({ navigation, route }) => {
                 }
                 data={
                     OrderStatus === 'inProgress'
-                        ? historyList.filter(x => x.status !== 'FINISHED')
-                        : historyList.filter(x => x.status === 'FINISHED')
+                        ? historyList.filter(
+                              x => x.status !== 'FINISHED' && x.status !== 'CANCELED',
+                          )
+                        : historyList.filter(
+                              x => x.status === 'FINISHED' || x.status === 'CANCELED',
+                          )
                 }
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item: history }) => renderHistory(history)}

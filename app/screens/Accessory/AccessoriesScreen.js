@@ -11,50 +11,33 @@ import { formatMoney } from '../../utils';
 // import { ACCESSORIES } from '../../data/accessories';
 
 const AccessoriesScreen = ({ navigation, route }) => {
+    console.log('Render ');
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
-    const accessoryType = route.params;
+    const accessoryType = route.params.typeId ?? '';
+    const detect = route.params.detect;
+
     const [garageList, setGarageList] = useState([]);
-    const [location, setLocation] = useState();
-    // const requestLocationPermission = async () => {
-    //     try {
-    //         const granted = await PermissionsAndroid.request(
-    //             PermissionsAndroid.PERMISSIONS.CAMERA,
-    //             {
-    //                 title: 'VRMS App Camera Permission',
-    //                 message: 'VRMS App needs access to your location ',
-    //                 buttonNeutral: 'Ask Me Later',
-    //                 buttonNegative: 'Cancel',
-    //                 buttonPositive: 'OK',
-    //             },
-    //         );
-    //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    //             // geolocation;
 
-    //         } else {
-    //         }
-    //     } catch (err) {
-    //         console.warn(err);
-    //     }
-    // };
-
-    const getAllAccessories = useCallback(async () => {
+    const getAllAccessories = useCallback(() => {
         console.log('type', accessoryType);
-        let location = await Location.getCurrentPositionAsync({});
-
-        setLocation(location);
-        return axios.post('providers/part-categories', {
-            categoryIds: [accessoryType],
-            currentPos: {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-            },
-            modelId: vehicles.model.id ?? '',
+        return Location.getCurrentPositionAsync({}).then(location => {
+            return axios.post('providers/part-categories', {
+                categoryIds: [accessoryType],
+                currentPos: {
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                },
+                modelId: vehicles.model.id ?? '',
+            });
         });
     }, [accessoryType, vehicles.model.id]);
+
     const renderParts = (part, provider) => {
         return (
             <View style={{}}>
+                <View style={styles.separator} />
+
                 <TouchableOpacity
                     onPress={() =>
                         navigation.navigate('AccessoryDetail', {
@@ -95,8 +78,6 @@ const AccessoriesScreen = ({ navigation, route }) => {
                         />
                     </View>
                 </TouchableOpacity>
-
-                <View style={styles.separator} />
             </View>
         );
     };
@@ -120,20 +101,25 @@ const AccessoriesScreen = ({ navigation, route }) => {
                         {''}
                         {itemData.item.name} {'  '}{' '}
                     </Text>
-                    <Text>
+                    <View style={{ flexDirection: 'row' }}>
                         <AirbnbRating
                             count={1}
                             size={15}
                             reviews={false}
                             showRating={false}
                         />
-                        {itemData.item.ratings > -1 ? itemData.item.ratings : 'none'}{' '}
-                    </Text>
+                        <Text style={{ fontSize: 16 }}>
+                            {itemData.item.ratings > -1 ? itemData.item.ratings : 'none'}{' '}
+                        </Text>
 
-                    <Text> {(itemData.item.distance / 1000).toFixed(1)} km </Text>
+                        <Text style={{ fontSize: 16 }}>
+                            {'  -  '}
+                            {(itemData.item.distance / 1000).toFixed(1)} km{' '}
+                        </Text>
+                    </View>
                 </View>
-                <View style={styles.separator} />
-                <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                {/* <View style={styles.separator} /> */}
+                <View style={{ marginTop: 0, marginHorizontal: 0 }}>
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         data={itemData.item.suggestedParts}
@@ -147,11 +133,15 @@ const AccessoriesScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        getAllAccessories().then(rs => {
-            console.log(rs.data);
-            setGarageList(rs.data);
-        });
-    }, [getAllAccessories]);
+        if (detect) {
+            setGarageList(detect);
+        } else {
+            getAllAccessories().then(rs => {
+                console.log(rs.data);
+                setGarageList(rs.data);
+            });
+        }
+    }, [detect, getAllAccessories]);
     return (
         <View style={styles.container}>
             <View style={styles.itemsContainer}>
@@ -174,20 +164,23 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         paddingVertical: 8,
-        paddingHorizontal: 16,
+        // paddingHorizontal: 16,
         borderWidth: 1,
 
         // flexDirection: '',
         // flexWrap: 'nowrap',
     },
     items: {
-        borderWidth: 1,
+        // borderWidth: 1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
         flex: 1,
         // width: Dimensions.get('screen').width * 0.4,
         // height: 500,
         // margin: 10,
         marginVertical: 10,
         width: '100%',
+        padding: 16,
         // alignItems: 'center',
     },
     itemsContainer: {

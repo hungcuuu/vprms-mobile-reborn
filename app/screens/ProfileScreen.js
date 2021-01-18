@@ -110,10 +110,19 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                     onPress={() => logoutHandler()}
                 />
             </Card>
-            <Modal visible={isVisible} animationType="fade">
-                <Card>
+            <Modal
+                visible={isVisible}
+                animationType="slide"
+                // transparent
+                style={{ flex: 1 }}
+                onRequestClose={() => setIsVisible(false)}>
+                <Card containerStyle={{ flex: 1 }}>
                     <Text> Fullname </Text>
-                    <Input value={fullName} onChangeText={value => setFullname(value)} />
+                    <Input
+                        maxLength={50}
+                        value={fullName}
+                        onChangeText={value => setFullname(value)}
+                    />
                     <Card.Divider />
                     <View>
                         <Picker
@@ -127,11 +136,19 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                             <Picker.Item label="Female" value="Female" />
                         </Picker>
                     </View>
+                    <View
+                        style={{
+                            marginVertical: 30,
+                            paddingVertical: 50,
+                        }}>
+                        <Button
+                            buttonStyle={{ marginVertical: 50 }}
+                            title="OK"
+                            onPress={() => updateUserInfo()}
+                        />
+                        {/* <Button title="Cancel" onPress={() => onCancelUpdate()} /> */}
+                    </View>
                 </Card>
-                <View>
-                    <Button title="OK" onPress={() => updateUserInfo()} />
-                    <Button title="Cancel" onPress={() => onCancelUpdate()} />
-                </View>
             </Modal>
         </ScrollView>
     );
