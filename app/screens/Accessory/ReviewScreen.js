@@ -1,120 +1,119 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Image } from 'react-native';
 import { FlatList, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
-import { calculateReviewPrice, calculateServicePrice, formatMoney } from '../../utils';
+
+import { calculateReviewPrice, formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
     let serviceList = route.params.serviceList ?? [];
     let packageList = route.params.packageList ?? [];
-    console.log('detail', detail);
-    console.log('package', packageList);
+
     const totalPrice = calculateReviewPrice(serviceList, packageList);
 
     const renderParts = part => {
         return (
-            <>
+            <View style={{ flexDirection: 'row', height: 80 }}>
+                <View style={{ width: '25%' }}>
+                    <Image
+                        resizeMethod="resize"
+                        resizeMode="cover"
+                        source={{
+                            width: '100%',
+                            height: '100%',
+                            uri:
+                                part.imageUrls[0] ??
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
+                        }}
+                    />
+                </View>
                 <View
                     style={{
-                        flex: 1,
-                        // borderWidth: 1,
                         marginHorizontal: 8,
-                        marginVertical: 4,
-                        flexDirection: 'row',
-                        // justifyContent: 'space-between',
+                        flex: 1,
+                        justifyContent: 'space-between',
                     }}>
-                    <View
-                        style={{
-                            // borderWidth: 1,
-                            minHeight: 70,
-                            width: '20%',
-                        }}>
-                        <Image
-                            resizeMethod="resize"
-                            resizeMode="contain"
-                            source={{
-                                uri:
-                                    part.imageUrls[0] ??
-                                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                                height: '100%',
-                                width: '100%',
-                            }}
-                            style={{ width: '100%', height: '100%' }}
-                        />
-                    </View>
-
-                    <View style={{ width: '80%' }}>
-                        <Text>{` ${part.name}   `}</Text>
-                        <Text
-                            style={{
-                                width: '100%',
-                                textAlign: 'right',
-                            }}>{`x ${part.quantity}`}</Text>
-                        <Text>{` ${formatMoney(part.price)}`}</Text>
-                    </View>
+                    <Text style={{ flexWrap: 'wrap' }}>{part.name}</Text>
+                    <Text>{formatMoney(part.price)}</Text>
                 </View>
-            </>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                    <Text>{part.quantity}</Text>
+                </View>
+            </View>
         );
     };
+
     const renderServices = service => {
         let parts = service.parts ?? [];
 
         return (
-            <View style={{ borderTopWidth: 1 }}>
+            <View style={{ padding: 8 }}>
                 <View
                     style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        paddingHorizontal: 16,
+                        alignItems: 'center',
+                        marginVertical: 8,
                     }}>
                     <Text
                         style={{
+                            width: '60%',
                             color: 'red',
                             fontSize: 15,
                             fontWeight: 'bold',
-                        }}>{`${service.name} `}</Text>
+                        }}>
+                        {service.name}
+                    </Text>
                     <Text
                         style={{
                             color: 'red',
                             fontSize: 15,
                             fontWeight: 'bold',
-                        }}>{`${formatMoney(service.price)} `}</Text>
+                        }}>
+                        {formatMoney(service.price)}
+                    </Text>
                 </View>
 
                 <FlatList
                     data={parts}
-                    initialNumToRender={7}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item: part }) => renderParts(part)}
                 />
             </View>
         );
     };
+
     const renderPackageServices = service => {
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 16,
+                }}>
+                <Text
+                    style={{
+                        color: 'black',
+                        fontSize: 15,
+                    }}>
+                    {service.name}
+                </Text>
+            </View>
+        );
+    };
+
+    const renderPackages = item => {
         return (
             <View>
                 <View
                     style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingHorizontal: 16,
-                    }}>
-                    <Text
-                        style={{
-                            color: 'black',
-                            fontSize: 15,
-                            // fontWeight: 'bold',
-                        }}>{`- ${service.name} `}</Text>
-                </View>
-            </View>
-        );
-    };
-    const renderPackages = pac => {
-        return (
-            <View style={{ borderTopWidth: 1 }}>
-                <View
-                    style={{
+                        borderTopWidth: 1,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         paddingHorizontal: 8,
@@ -122,29 +121,28 @@ const ReviewScreen = ({ navigation, route }) => {
                     <Text
                         style={{
                             color: 'red',
-                            // fontSize: 13,
+                            fontSize: 15,
                             fontWeight: 'bold',
-                        }}>{`${pac.name} `}</Text>
+                        }}>
+                        {item.name}
+                    </Text>
                     <Text
                         style={{
                             color: 'red',
-                            // fontSize: 15,
                             fontWeight: 'bold',
-                        }}>{`${formatMoney(pac.totalPrice)} `}</Text>
+                        }}>
+                        {formatMoney(item.totalPrice)}
+                    </Text>
                 </View>
-
                 <FlatList
-                    data={pac.packagedServices}
-                    initialNumToRender={7}
+                    data={item.packagedServices}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item: ser }) => renderPackageServices(ser)}
                 />
             </View>
         );
     };
-    // useEffect(() => {
-    //     setTotalPrice(calculateReviewPrice(serviceList, packageList));
-    // }, [packageList, serviceList]);
+
     return (
         <View style={{ flex: 1 }}>
             <View style={{ padding: 16 }}>
@@ -156,54 +154,45 @@ const ReviewScreen = ({ navigation, route }) => {
                 </View>
             </View>
 
-            <FlatList
-                data={serviceList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item: part }) => renderServices(part)}
-                ListFooterComponent={
-                    <View style={{ marginTop: 20 }}>
-                        <FlatList
-                            data={packageList}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item: Package }) => renderPackages(Package)}
-                        />
-                    </View>
-                }
-                // ListFooterComponentStyle={{ margin: 20, padding: 20 }}
-                contentContainerStyle={{ margin: 8, padding: 8 }}
-            />
+            {serviceList.length ? (
+                <FlatList
+                    data={serviceList}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: part }) => renderServices(part)}
+                />
+            ) : null}
+
+            {packageList ? (
+                <FlatList
+                    data={packageList}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item: Package }) => renderPackages(Package)}
+                />
+            ) : null}
 
             <View
                 style={{
                     marginVertical: 8,
                     borderTopWidth: 1,
-                    padding: 16,
+                    padding: 8,
                 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
                         style={{
                             fontWeight: 'bold',
-                        }}>{`Service: `}</Text>
-                    <Text>{`${formatMoney(totalPrice.services)}`}</Text>
+                        }}>
+                        Services Price:
+                    </Text>
+                    <Text>{formatMoney(totalPrice.services)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
                         style={{
                             fontWeight: 'bold',
                         }}>
-                        {`Parts Price: `}
+                        Parts Price:
                     </Text>
-                    <Text>{`${formatMoney(totalPrice.partsPrice)}`}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text
-                        style={{
-                            fontWeight: 'bold',
-                            alignSelf: 'flex-start',
-                        }}>
-                        {`Package Price: `}
-                    </Text>
-                    <Text>{`${formatMoney(totalPrice.packagePrice)}`}</Text>
+                    <Text>{formatMoney(totalPrice.partsPrice)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
@@ -211,9 +200,21 @@ const ReviewScreen = ({ navigation, route }) => {
                             fontWeight: 'bold',
                             alignSelf: 'flex-start',
                         }}>
-                        {`Total: `}
+                        Packages Price
                     </Text>
-                    <Text>{`${formatMoney(totalPrice.total)}`}</Text>
+                    <Text>{formatMoney(totalPrice.packagePrice)}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                            alignSelf: 'flex-start',
+                        }}>
+                        Total Price:
+                    </Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'blue' }}>
+                        {formatMoney(totalPrice.total)}
+                    </Text>
                 </View>
             </View>
 
