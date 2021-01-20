@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useCallback } from 'react';
-import { PermissionsAndroid } from 'react-native';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Location from 'expo-location';
-import { AirbnbRating, Rating } from 'react-native-elements';
+import { AirbnbRating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { formatMoney } from '../../utils';
-
-// import { ACCESSORIES } from '../../data/accessories';
+import { Picker } from '@react-native-community/picker';
 
 const AccessoriesScreen = ({ navigation, route }) => {
     console.log('Render ');
@@ -18,20 +15,25 @@ const AccessoriesScreen = ({ navigation, route }) => {
     const detect = route.params.detect;
 
     const [garageList, setGarageList] = useState([]);
-
-    const getAllAccessories = useCallback(() => {
-        console.log('type', accessoryType);
-        return Location.getCurrentPositionAsync({}).then(location => {
-            return axios.post('providers/part-categories', {
-                categoryIds: [accessoryType],
+    const [sortBy, setSortBy] = useState('price');
+    const getAllAccessories = async (types, modelId, sortBy) => {
+        console.log('type', types);
+        const location = await Location.getCurrentPositionAsync({});
+        axios
+            .post('providers/part-categories', {
+                categoryIds: [types],
                 currentPos: {
                     latitude: location.coords.latitude,
                     longitude: location.coords.longitude,
                 },
-                modelId: vehicles.model.id ?? '',
+                modelId: modelId ?? '',
+                sortBy: sortBy,
+            })
+            .then(rs => {
+                console.log(rs.data);
+                setGarageList(rs.data);
             });
-        });
-    }, [accessoryType, vehicles.model.id]);
+    };
 
     const renderParts = (part, provider) => {
         return (
@@ -136,14 +138,30 @@ const AccessoriesScreen = ({ navigation, route }) => {
         if (detect) {
             setGarageList(detect);
         } else {
-            getAllAccessories().then(rs => {
-                console.log(rs.data);
-                setGarageList(rs.data);
-            });
+            getAllAccessories(accessoryType, vehicles.model.id, 'price');
         }
-    }, [detect, getAllAccessories]);
+    }, [detect, accessoryType, vehicles.model.id]);
     return (
         <View style={styles.container}>
+            <Picker
+                mode="dropdown"
+                selectedValue={sortBy}
+                style={
+                    {
+                        // height: 50,
+                        // width: '30%',
+                    }
+                }
+                accessibilityLabel="Sort By"
+                onValueChange={itemValue => {
+                    getAllAccessories(accessoryType, vehicles.model.id, itemValue);
+                    setSortBy(itemValue);
+                }}>
+                <Picker.Item label={'Best Price'} value={'price'} />
+
+                <Picker.Item label={'Rating'} value={'rating'} />
+                <Picker.Item label={'Distance'} value={'distance'} />
+            </Picker>
             <View style={styles.itemsContainer}>
                 <FlatList
                     nestedScrollEnabled
