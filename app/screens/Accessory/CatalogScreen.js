@@ -398,54 +398,47 @@ const CatalogScreen = ({ navigation }) => {
         return unsubscribe;
     }, [navigation, user.id]);
     return (
-        <View style={styles.container} nestedScrollEnabled={true}>
-            <View style={styles.itemsContainer}>
-                <FlatList
-                    ListHeaderComponent={
-                        <>
-                            <View
-                                style={{
+        <View style={styles.container}>
+            <FlatList
+                ListHeaderComponent={
+                    <>
+                        <View
+                            style={{
+                                width: '100%',
+                                height: 150,
+                            }}>
+                            <Image
+                                resizeMethod="resize"
+                                resizeMode="cover"
+                                source={{
+                                    uri:
+                                        'https://i.pinimg.com/736x/1c/33/12/1c33121f0041bf40ad6e69d74ea2fcaf.jpg',
+                                    height: '100%',
                                     width: '100%',
-                                    height: 200,
-                                    marginTop: 16,
-                                    marginBottom: 32,
-                                }}>
-                                <Image
-                                    resizeMethod="resize"
-                                    resizeMode="cover"
-                                    source={{
-                                        uri:
-                                            'https://i.pinimg.com/736x/1c/33/12/1c33121f0041bf40ad6e69d74ea2fcaf.jpg',
-                                        height: '100%',
-                                        width: '100%',
-                                    }}
-                                    // style={{ width: '100%', height: '100%' }}
-                                />
-                            </View>
-                            <ActivityIndicator
-                                size="large"
-                                color="#0000ff"
-                                animating={loading}
-                                onTouchCancel={() => setLoading(false)}
-                                style={{
-                                    zIndex: 1000,
-                                    justifyContent: 'center',
-                                    // flex: 1,
-                                    height: 0,
                                 }}
-                                hidesWhenStopped
+                                // style={{ width: '100%', height: '100%' }}
                             />
-                        </>
-                    }
-                    showsVerticalScrollIndicator={false}
-                    data={Catalog.filter(cat => cat.typeName === 'Thay thế và lắp ráp')}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={renderAccessoryTypeList}
-                    numColumns={3}
-                    // scrollEnabled={false}
-                    nestedScrollEnabled={true}
-                />
-            </View>
+                        </View>
+                        <ActivityIndicator
+                            size="large"
+                            color="#0000ff"
+                            animating={loading}
+                            onTouchCancel={() => setLoading(false)}
+                            style={{
+                                zIndex: 1000,
+                                justifyContent: 'center',
+                                // flex: 1,
+                                height: 0,
+                            }}
+                            hidesWhenStopped
+                        />
+                    </>
+                }
+                data={Catalog.filter(cat => cat.typeName === 'Thay thế và lắp ráp')}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderAccessoryTypeList}
+                numColumns={3}
+            />
 
             <View>{modalPickVehicle()}</View>
         </View>
@@ -461,11 +454,7 @@ const styles = StyleSheet.create({
     },
     items: {
         flex: 1,
-        // borderWidth: 1,
-        // borderColor: 'red',
-        // alignItems: 'stretch',
-        // width: '40%',
-        // height: '100%',
+
         margin: 8,
         // height: 100,
         // margin: 10,
