@@ -47,6 +47,7 @@ const PickingProvider = ({ navigation, route }) => {
                     flexDirection: 'row',
                     borderWidth: 1,
                     margin: 8,
+                    padding: 8,
                     // backgroundColor:
                     //     selectedServices.findIndex((ser) => ser.id === section.id) > -1
                     //         ? '#D5E8D4'
@@ -58,11 +59,7 @@ const PickingProvider = ({ navigation, route }) => {
                 }>
                 <View
                     style={{
-                        marginTop: 8,
-                        marginLeft: 8,
-                        // borderWidth: 1,
-                        // flex: 1,
-                        height: '90%',
+                        height: 100,
                         width: 100,
                     }}>
                     <Image
@@ -82,7 +79,7 @@ const PickingProvider = ({ navigation, route }) => {
                     style={{
                         textAlign: 'center',
                         fontSize: 16,
-                        margin: 10,
+                        margin: 16,
                         // width: '70%',
                         // height: 20,
                         // maxWidth: '70%',
@@ -193,10 +190,10 @@ const PickingProvider = ({ navigation, route }) => {
 
             <View>
                 <FlatList
-                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
+                    data={searchProviders}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item: provider }) => renderProviders(provider)}
-                    showsVerticalScrollIndicator={false}
+                    // showsVerticalScrollIndicator={false}
                     // numColumns={2}
                 />
             </View>

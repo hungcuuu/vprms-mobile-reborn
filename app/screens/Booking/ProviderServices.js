@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Image } from 'react-native';
-import { Alert } from 'react-native';
-import { FlatList, Text, View, ScrollView, Modal } from 'react-native';
-
+import { FlatList, Text, View, Modal, Alert, Image, StyleSheet } from 'react-native';
 import { CheckBox, Button } from 'react-native-elements';
-import { SliderBox } from 'react-native-image-slider-box';
+
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { formatMoney } from '../../utils';
@@ -25,12 +22,10 @@ const ProviderServices = ({ navigation, route }) => {
     const [packageList, setPackageList] = useState([]);
     const [packageVisible, setPackageVisible] = useState(false);
 
-    // const images = [
-    //     'https://storage.googleapis.com/vrms-290212.appspot.com/b993e482-b7d7-4cc6-b5e3-160a61243c1fpreview.jpg?GoogleAccessId=firebase-adminsdk-y2tzh@vrms-290212.iam.gserviceaccount.com&Expires=2472004708&Signature=JROFokSik32lYHppJedh5R5SzcLMEVq5egeErrWRLDqgAKOUpyeqvs1uUWgpYQf8%2B%2BhuGAm%2Fh3E1iKKSdmOSP%2FMwz9ro%2FVco%2B36FKj6RCyqduDDGznFyKSMr9rj6JTNOMUd3OYRkJl%2BJAijRztV%2Bk9p9RxucRFxfDIRJXblp59nHaccrklX%2FnoexQvgRI3lNbcEKRlG0oTwaek8ErAglg5GFgVWItTv2PvaJIhHan%2FBaYIis1btQaIZnVMwfLe08heUbTSVqmtQB30g3oJRf8s67ZsIk7UoNbycEPw5j%2BYkIsZSFlQIwm28InPuzVRKfiHw4lAI8VqFGv5uHi9K%2F6g%3D%3D',
-    //     'https://lh5.googleusercontent.com/p/AF1QipP_rnwWXIAorYxSJuScmKlfJdLJ65SXGLOA60HA=w426-h240-k-no',
+    useEffect(() => {
+        navigation.setOptions({ headerTitle: 'Services' });
+    }, [navigation]);
 
-    //     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-    // ];
     const onSelectServiceChecked = service => {
         setServiceList(curr => {
             if (curr.findIndex(item => item.id === service.id) === -1) {
@@ -39,6 +34,7 @@ const ProviderServices = ({ navigation, route }) => {
             return curr.filter(item => item.id !== service.id);
         });
     };
+
     const onSelectPackageChecked = service => {
         setPackageList(curr => {
             if (curr.findIndex(item => item.id === service.id) === -1) {
@@ -47,6 +43,7 @@ const ProviderServices = ({ navigation, route }) => {
             return curr.filter(item => item.id !== service.id);
         });
     };
+
     const renderParts = part => {
         return (
             <View
@@ -90,13 +87,15 @@ const ProviderServices = ({ navigation, route }) => {
             </View>
         );
     };
+
     const renderModal = () => {
         return (
             <Modal
                 transparent={true}
                 visible={visible}
                 onRequestClose={() => setVisible(false)}
-                style={{}}>
+                animationType="slide"
+                ani>
                 <View
                     style={{
                         flex: 1,
@@ -104,7 +103,6 @@ const ProviderServices = ({ navigation, route }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: 'rgba(0,0,0,0.3)',
-                        // opacity: 0.5,
                     }}>
                     <View
                         style={{
@@ -115,9 +113,8 @@ const ProviderServices = ({ navigation, route }) => {
                         <FlatList
                             listKey={'modal'}
                             data={partList}
-                            keyExtractor={(item, index) => item.id.toString()}
+                            keyExtractor={item => item.id.toString()}
                             renderItem={({ item: detail }) => renderParts(detail)}
-                            initialNumToRender={7}
                         />
 
                         <View>
@@ -131,123 +128,92 @@ const ProviderServices = ({ navigation, route }) => {
                 </View>
             </Modal>
         );
-        // return (
-        //     <Modal
-        //         animationType="slide"
-        //         // statusBarTranslucent={false}
-        //         transparent={true}
-        //         // presentationStyle="formSheet"
-        //         visible={visible}
-        //         onRequestClose={() => setVisible(false)}>
-        //         <View
-        //             style={{
-        //                 flex: 1,
-        //                 // flexDirection: 'column',
-        //                 justifyContent: 'center',
-        //                 alignItems: 'center',
-        //                 alignSelf: 'center',
-
-        //                 backgroundColor: '#f2f2f2',
-        //                 height: 10,
-        //                 width: '80%',
-        //                 borderRadius: 15,
-        //                 borderWidth: 1,
-        //                 borderColor: '#000000',
-        //                 // marginVertical: 20,
-        //             }}>
-        //             <View style={{ height: 50 }}>
-        //                 <FlatList
-        //                     listKey={'modal'}
-        //                     data={partList}
-        //                     keyExtractor={(item, index) => item.id.toString()}
-        //                     renderItem={({ item: detail }) => renderParts(detail)}
-        //                     initialNumToRender={7}
-        //                 />
-        //             </View>
-
-        //             <View>
-        //                 <Button title="Close" onPress={() => setVisible(false)} />
-        //             </View>
-        //         </View>
-        //     </Modal>
-        // );
     };
+
     const renderDetail = detail => {
-        return (
-            <View
-                style={{
-                    borderWidth: 1,
-                    flexDirection: 'row',
-                    flex: 1,
-                    justifyContent: 'space-between',
-                    borderRadius: 8,
-                    margin: 8,
-                }}>
-                <View
-                    style={{
-                        // borderWidth: 1,
-                        flexDirection: 'row',
-                        flex: 1,
-                    }}>
-                    <View style={{ borderRightWidth: 1 }}>
-                        <CheckBox
-                            // key={detail.serviceId}
-                            center
-                            checkedIcon="check-square-o"
-                            uncheckedIcon="square-o"
-                            checked={serviceList.findIndex(s => s.id === detail.id) > -1}
-                            size={30}
-                            onPress={() => onSelectServiceChecked(detail)}
-                        />
-                    </View>
-                    <View style={{ width: '80%', marginHorizontal: 8 }}>
-                        {/* <Text>{detail.id}</Text> */}
-                        {/* <Text>{detail}</Text> */}
-                        <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
-                        <Text>{formatMoney(detail.price)}</Text>
-                        {/* {detail.parts
-                    ? detail.parts.map((x) => (
-                          <View key={x.id}>
-                              <Text>{x.name}</Text>
-                          </View>
-                      ))
-                    : null} */}
-                    </View>
-                </View>
+        const styles = StyleSheet.create({
+            container: {
+                width: '100%',
+                height: 80,
+                borderWidth: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderRadius: 4,
+                marginVertical: 8,
+                padding: 8,
+            },
+            checkbox: {
+                width: '10%',
+                height: '100%',
+                justifyContent: 'center',
+            },
+            content: {
+                width: '65%',
+                marginHorizontal: 8,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+            },
+        });
 
-                <View style={{ justifyContent: 'center', marginRight: 8 }}>
-                    {detail.parts.length > 0 && (
-                        <Button
-                            title="detail"
-                            onPress={() => {
-                                setPartList(detail.parts);
-                                setVisible(true);
-                            }}
-                        />
-                    )}
-                </View>
-            </View>
-        );
-    };
-    const renderServices = ser => {
+        const totalPrice =
+            detail.price +
+            detail.parts.reduce(
+                (accumulated, part) => accumulated + part.price * part.quantity,
+                0,
+            );
+
         return (
-            <View>
-                <View key={ser.typeDetail.id}>
-                    <Text style={{ color: 'red' }}>{ser.typeDetail.typeName}</Text>
-                    {ser.serviceDetails ? null : <Text>None</Text>}
-                    <FlatList
-                        // listKey={}
-                        data={ser.serviceDetails}
-                        keyExtractor={(item, index) => item.id.toString()}
-                        renderItem={({ item: detail }) => renderDetail(detail)}
-                        initialNumToRender={7}
-                        scrollEnabled={false}
-                        nestedScrollEnabled={true}
+            <View style={styles.container}>
+                <View style={styles.checkbox}>
+                    <CheckBox
+                        center
+                        checkedIcon="check-square-o"
+                        uncheckedIcon="square-o"
+                        checked={serviceList.findIndex(s => s.id === detail.id) > -1}
+                        onPress={() => onSelectServiceChecked(detail)}
+                    />
+                </View>
+                <View style={styles.content}>
+                    <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
+                    <Text>{formatMoney(totalPrice)}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                    <Button
+                        title="Details"
+                        onPress={() => {
+                            setPartList(detail.parts);
+                            setVisible(true);
+                        }}
                     />
                 </View>
             </View>
         );
     };
+
+    const renderServices = ser => {
+        const styles = StyleSheet.create({
+            services: {
+                margin: 8,
+            },
+        });
+        return (
+            <View>
+                <Text style={{ color: 'red' }}>
+                    {ser.typeDetail.typeName} {ser.typeDetail.sectionName}
+                </Text>
+                {ser.serviceDetails ? null : <Text>None</Text>}
+                <FlatList
+                    // contentContainerStyle={{ margin: 100 }}
+                    style={{ marginHorizontal: 8 }}
+                    data={ser.serviceDetails}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item: detail }) => renderDetail(detail)}
+                    // scrollEnabled={false}
+                />
+            </View>
+        );
+    };
+
     const renderPackageDetail = detail => {
         return (
             <View
@@ -265,7 +231,7 @@ const ProviderServices = ({ navigation, route }) => {
                 <FlatList
                     listKey={detail.id}
                     data={detail.parts}
-                    keyExtractor={(item, index) => item.id.toString()}
+                    keyExtractor={item => item.id.toString()}
                     renderItem={({ item: part }) => renderParts(part)}
                     initialNumToRender={3}
                     scrollEnabled={false}
@@ -273,12 +239,12 @@ const ProviderServices = ({ navigation, route }) => {
             </View>
         );
     };
+
     const renderPackageModal = () => {
         return (
             <Modal
                 animationType="slide"
                 transparent={true}
-                // presentationStyle="formSheet"
                 visible={packageVisible}
                 onRequestClose={() => setPackageVisible(false)}>
                 <View
@@ -302,7 +268,7 @@ const ProviderServices = ({ navigation, route }) => {
                         <FlatList
                             listKey={'package'}
                             data={modalPackage}
-                            keyExtractor={(item, index) => item.id.toString()}
+                            keyExtractor={item => item.id.toString()}
                             renderItem={({ item: detail }) => renderPackageDetail(detail)}
                             initialNumToRender={3}
                             nestedScrollEnabled={true}
@@ -316,52 +282,61 @@ const ProviderServices = ({ navigation, route }) => {
             </Modal>
         );
     };
-    const renderPackageList = detail => {
-        return (
-            <View
-                style={{
-                    borderWidth: 1,
-                    flexDirection: 'row',
-                    flex: 1,
-                    justifyContent: 'space-between',
-                    borderRadius: 8,
-                    margin: 8,
-                }}>
-                <View
-                    style={{
-                        // borderWidth: 1,
-                        flexDirection: 'row',
-                        flex: 1,
-                    }}>
-                    <View style={{ borderRightWidth: 1 }}>
-                        <CheckBox
-                            // key={detail.serviceId}
-                            center
-                            checkedIcon="check-square-o"
-                            uncheckedIcon="square-o"
-                            checked={packageList.findIndex(s => s.id === detail.id) > -1}
-                            size={30}
-                            onPress={() => onSelectPackageChecked(detail)}
-                        />
-                    </View>
-                    <View style={{ width: '80%', marginHorizontal: 8 }}>
-                        {/* <Text>{detail.id}</Text> */}
-                        {/* <Text>{detail}</Text> */}
-                        <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
-                        {/* <Text>{formatMoney(detail.price)}</Text>/  */}
-                        {/* {detail.parts
-                    ? detail.parts.map((x) => (
-                          <View key={x.id}>
-                              <Text>{x.name}</Text>
-                          </View>
-                      ))
-                    : null} */}
-                    </View>
-                </View>
 
-                <View style={{ justifyContent: 'center', marginRight: 8 }}>
+    const renderPackageList = detail => {
+        const styles = StyleSheet.create({
+            container: {
+                width: '100%',
+                height: 80,
+                borderWidth: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderRadius: 4,
+                marginVertical: 8,
+                paddingHorizontal: 8,
+            },
+            checkbox: {
+                width: '10%',
+                height: '100%',
+                justifyContent: 'center',
+            },
+            content: {
+                width: '65%',
+                marginHorizontal: 8,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+            },
+        });
+
+        const totalPrice = detail.packagedServices.reduce(
+            (accumulated, service) =>
+                accumulated +
+                service.price +
+                service.parts.reduce(
+                    (accumulated, part) => accumulated + part.price * part.quantity,
+                    0,
+                ),
+            0,
+        );
+
+        return (
+            <View style={styles.container}>
+                <View style={styles.checkbox}>
+                    <CheckBox
+                        center
+                        checkedIcon="check-square-o"
+                        uncheckedIcon="square-o"
+                        checked={packageList.findIndex(s => s.id === detail.id) > -1}
+                        onPress={() => onSelectPackageChecked(detail)}
+                    />
+                </View>
+                <View style={styles.content}>
+                    <Text style={{ fontWeight: 'bold' }}>{detail.name}</Text>
+                    <Text>{formatMoney(totalPrice)}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
                     <Button
-                        title="detail"
+                        title="Details"
                         onPress={() => {
                             setModalPackage(detail.packagedServices);
                             setPackageVisible(true);
@@ -372,27 +347,6 @@ const ProviderServices = ({ navigation, route }) => {
         );
     };
 
-    const renderPackages = () => {
-        return (
-            <View>
-                <View>
-                    <Text style={{ color: 'red' }}>{`${
-                        packages.length > 0 ? 'Maintenance-Packages' : ''
-                    }`}</Text>
-
-                    <FlatList
-                        // listKey={}
-                        data={packages}
-                        keyExtractor={(item, index) => item.id.toString()}
-                        renderItem={({ item: detail }) => renderPackageList(detail)}
-                        initialNumToRender={3}
-                        scrollEnabled={false}
-                        nestedScrollEnabled={true}
-                    />
-                </View>
-            </View>
-        );
-    };
     useEffect(() => {
         if (selectedService.length > 0) {
             axios
@@ -402,6 +356,7 @@ const ProviderServices = ({ navigation, route }) => {
             setServiceList(selectedService);
         }
     }, [provider.id, selectedService, modelId]);
+
     useEffect(() => {
         if (path === 'provider') {
             let url = `services/providers/${provider.id}/models/${modelId}`;
@@ -414,87 +369,73 @@ const ProviderServices = ({ navigation, route }) => {
                         modelId,
                 )
                 .then(rs => setPackages(rs.data));
-            // setServices(data);
-            // console.log(data);
         }
     }, [path, provider.id, modelId]);
+
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+            <View style={styles.provider}>
+                <View style={styles.image}>
+                    <Image
+                        source={{
+                            uri:
+                                provider.imageUrls[0] ??
+                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
+                            height: '100%',
+                            width: '100%',
+                        }}
+                    />
+                </View>
+                <View style={styles.providerContent}>
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 18,
+
+                            fontWeight: 'bold',
+                        }}>
+                        {provider.name}
+                    </Text>
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontSize: 14,
+                        }}>
+                        {provider.address}
+                    </Text>
+                </View>
+            </View>
+            <View style={styles.content}>
                 <FlatList
                     ListHeaderComponent={
+                        <FlatList
+                            data={services}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item: ser }) => renderServices(ser)}
+                        />
+                    }
+                    ListFooterComponent={
                         <>
-                            <View
-                                style={{
-                                    margin: 8,
-                                    // marginLeft: 8,
-                                    borderWidth: 1,
-                                    // flex: 1,
-                                    height: 200,
-                                    // width: 100,
-                                }}>
-                                <Image
-                                    // circleLoop
-                                    // images={
-                                    //     provider.imageUrls ?? [
-                                    //         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                                    //         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-
-                                    //         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                                    //     ]
-                                    // }
-                                    // autoplay
-                                    // dotColor="#FFEE58"
-                                    // inactiveDotColor="#90A4AE"
-                                    source={{
-                                        uri:
-                                            provider.imageUrls[0] ??
-                                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                                        height: '100%',
-                                        width: '100%',
-                                    }}
-                                />
-                            </View>
-                            <View>
-                                <Text
-                                    style={{
-                                        textAlign: 'center',
-                                        fontSize: 24,
-                                        margin: 10,
-                                        fontWeight: 'bold',
-                                        // width: '70%',
-                                        // height: 20,
-                                        // maxWidth: '70%',
-                                    }}>
-                                    {/* {provider.id} */}
-                                    {provider.name}
-                                </Text>
-                                <Text
-                                    style={{
-                                        textAlign: 'center',
-                                        fontSize: 16,
-                                        margin: 10,
-                                        // width: '70%',
-                                        // height: 20,
-                                        // maxWidth: '70%',
-                                    }}>
-                                    {provider.address}
-                                </Text>
-                            </View>
+                            <Text style={{ color: 'red' }}>
+                                {packages.length ? 'Maintenance Packages' : null}
+                            </Text>
+                            <FlatList
+                                data={packages}
+                                style={{ marginHorizontal: 8 }}
+                                keyExtractor={(item, index) => item.id.toString()}
+                                renderItem={({ item: detail }) =>
+                                    renderPackageList(detail)
+                                }
+                            />
                         </>
                     }
-                    data={services}
-                    listKey={'service'}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item: ser }) => renderServices(ser)}
-                    ListFooterComponent={renderPackages}
                 />
+                {renderModal()}
+                {renderPackageModal()}
             </View>
-            {renderModal()}
-            {renderPackageModal()}
-            <View style={{ justifyContent: 'flex-end' }}>
+            <View>
                 <Button
-                    title="next"
+                    title="Next"
                     onPress={() =>
                         serviceList.length > 0 || packageList.length > 0
                             ? navigation.navigate('Review', {
@@ -515,5 +456,30 @@ const ProviderServices = ({ navigation, route }) => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'space-between',
+    },
+    content: {
+        flex: 1,
+    },
+    provider: {
+        width: '100%',
+        height: '30%',
+    },
+    providerContent: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        paddingHorizontal: 8,
+    },
+    image: {
+        width: '100%',
+        height: '60%',
+    },
+});
 
 export default ProviderServices;
