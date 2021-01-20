@@ -85,47 +85,104 @@ const CatalogScreen = ({ navigation }) => {
         if (status !== 'granted') {
             // setErrorMsg('Permission to access location was denied');
         }
-
         let location = await Location.getCurrentPositionAsync({});
-        console.log(currentVehicle);
-        try {
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                quality: 1,
-            });
 
-            if (!result.cancelled) {
-                setLoading(true);
-                let localUri = result.uri;
-                let filename = localUri.split('/').pop();
+        Alert.alert('', 'Choose options', [
+            {
+                text: 'Camera',
+                onPress: () => {
+                    try {
+                        const result = ImagePicker.launchCameraAsync({
+                            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                            quality: 1,
+                        });
 
-                // Infer the type of the image
-                let match = /\.(\w+)$/.exec(filename);
-                let type = match ? `image/${match[1]}` : 'image';
-                const data = new FormData();
-                data.append('file', { uri: localUri, name: filename, type });
-                data.append('latitude', location.coords.latitude);
-                data.append('longitude', location.coords.longitude);
+                        if (!result.cancelled) {
+                            setLoading(true);
+                            let localUri = result.uri;
+                            let filename = localUri.split('/').pop();
 
-                // wait(2000).then(() => setLoading(false));
+                            // Infer the type of the image
+                            let match = /\.(\w+)$/.exec(filename);
+                            let type = match ? `image/${match[1]}` : 'image';
+                            const data = new FormData();
+                            data.append('file', { uri: localUri, name: filename, type });
+                            data.append('latitude', location.coords.latitude);
+                            data.append('longitude', location.coords.longitude);
 
-                axios
-                    .post(`detections/models/${currentVehicle.model.id}/parts/`, data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            // Accept: 'application/json',
-                        },
-                    })
-                    .then(rs => {
-                        setLoading(false);
-                        // console.log(rs.data);
-                        navigation.navigate('Accessories', { detect: rs.data });
-                    });
-                //     .catch(err => Alert.alert(err));
-            }
-        } catch (e) {
-            Alert.alert('Error', 'Something wrong with Camera');
-        }
+                            axios
+                                .post(
+                                    `detections/models/${currentVehicle.model.id}/parts/`,
+                                    data,
+                                    {
+                                        headers: {
+                                            'Content-Type': 'multipart/form-data',
+                                            // Accept: 'application/json',
+                                        },
+                                    },
+                                )
+                                .then(rs => {
+                                    setLoading(false);
+                                    // console.log(rs.data);
+                                    navigation.navigate('Accessories', {
+                                        detect: rs.data,
+                                    });
+                                });
+                        }
+                    } catch (e) {
+                        Alert.alert('Error', 'Something wrong with Camera');
+                    }
+                },
+            },
+            {
+                text: 'Gallery',
+                onPress: () => {
+                    try {
+                        const result = ImagePicker.launchImageLibraryAsync({
+                            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                            quality: 1,
+                        });
+
+                        if (!result.cancelled) {
+                            setLoading(true);
+                            let localUri = result.uri;
+                            let filename = localUri.split('/').pop();
+
+                            // Infer the type of the image
+                            let match = /\.(\w+)$/.exec(filename);
+                            let type = match ? `image/${match[1]}` : 'image';
+                            const data = new FormData();
+                            data.append('file', { uri: localUri, name: filename, type });
+                            data.append('latitude', location.coords.latitude);
+                            data.append('longitude', location.coords.longitude);
+
+                            axios
+                                .post(
+                                    `detections/models/${currentVehicle.model.id}/parts/`,
+                                    data,
+                                    {
+                                        headers: {
+                                            'Content-Type': 'multipart/form-data',
+                                            // Accept: 'application/json',
+                                        },
+                                    },
+                                )
+                                .then(rs => {
+                                    setLoading(false);
+                                    // console.log(rs.data);
+                                    navigation.navigate('Accessories', {
+                                        detect: rs.data,
+                                    });
+                                });
+                            //     .catch(err => Alert.alert(err));
+                        }
+                    } catch (e) {
+                        Alert.alert('Error', 'Something wrong with Camera');
+                    }
+                },
+            },
+        ]);
+        // console.log(currentVehicle);
     }, [currentVehicle, navigation]);
     const renderOtherPicker = () => (
         <View style={{ width: '100%' }}>
@@ -354,7 +411,7 @@ const CatalogScreen = ({ navigation }) => {
             ),
         });
         // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    }, [navigation, pickImage]);
+    }, [navigation]);
     useEffect(() => {
         getManufactures();
         getCatalog().then(rs => {
