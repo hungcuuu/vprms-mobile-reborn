@@ -113,10 +113,10 @@ const ReviewScreen = ({ navigation, route }) => {
             <View>
                 <View
                     style={{
-                        borderTopWidth: 1,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         paddingHorizontal: 8,
+                        marginVertical: 8,
                     }}>
                     <Text
                         style={{
@@ -153,22 +153,26 @@ const ReviewScreen = ({ navigation, route }) => {
                     <Text>{detail.provider.address}</Text>
                 </View>
             </View>
-
-            {serviceList.length ? (
-                <FlatList
-                    data={serviceList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item: part }) => renderServices(part)}
-                />
-            ) : null}
-
-            {packageList ? (
-                <FlatList
-                    data={packageList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item: Package }) => renderPackages(Package)}
-                />
-            ) : null}
+            <FlatList
+                ListHeaderComponent={
+                    serviceList.length ? (
+                        <FlatList
+                            data={serviceList}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item: part }) => renderServices(part)}
+                        />
+                    ) : null
+                }
+                ListFooterComponent={
+                    packageList ? (
+                        <FlatList
+                            data={packageList}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item: Package }) => renderPackages(Package)}
+                        />
+                    ) : null
+                }
+            />
 
             <View
                 style={{

@@ -18,7 +18,7 @@ const Providers = ({ navigation }) => {
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
     const [searchText, setSearchText] = useState('');
-    const [sortBy, setSortBy] = useState(['ratings', 'desc']);
+    const [sortBy, setSortBy] = useState(['distance', 'asc']);
     const searchHandler = text => {
         setSearchText(text);
         if (!text || text === '') {

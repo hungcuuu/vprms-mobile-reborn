@@ -94,7 +94,8 @@ const ProviderServices = ({ navigation, route }) => {
                 transparent={true}
                 visible={visible}
                 onRequestClose={() => setVisible(false)}
-                style={{}}>
+                animationType="slide"
+                ani>
                 <View
                     style={{
                         flex: 1,
@@ -139,6 +140,7 @@ const ProviderServices = ({ navigation, route }) => {
                 alignItems: 'center',
                 borderRadius: 4,
                 marginVertical: 8,
+                padding: 8,
             },
             checkbox: {
                 width: '10%',
@@ -196,18 +198,18 @@ const ProviderServices = ({ navigation, route }) => {
         });
         return (
             <View>
-                <View>
-                    <Text style={{ color: 'red' }}>
-                        {ser.typeDetail.typeName} {ser.typeDetail.sectionName}
-                    </Text>
-                    {ser.serviceDetails ? null : <Text>None</Text>}
-                    <FlatList
-                        contentContainerStyle={styles.services}
-                        data={ser.serviceDetails}
-                        keyExtractor={item => item.id.toString()}
-                        renderItem={({ item: detail }) => renderDetail(detail)}
-                    />
-                </View>
+                <Text style={{ color: 'red' }}>
+                    {ser.typeDetail.typeName} {ser.typeDetail.sectionName}
+                </Text>
+                {ser.serviceDetails ? null : <Text>None</Text>}
+                <FlatList
+                    // contentContainerStyle={{ margin: 100 }}
+                    style={{ marginHorizontal: 8 }}
+                    data={ser.serviceDetails}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item: detail }) => renderDetail(detail)}
+                    // scrollEnabled={false}
+                />
             </View>
         );
     };
@@ -404,27 +406,30 @@ const ProviderServices = ({ navigation, route }) => {
                 </View>
             </View>
             <View style={styles.content}>
-                {services.length ? (
-                    <FlatList
-                        data={services}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item: ser }) => renderServices(ser)}
-                    />
-                ) : null}
-                {packages.length ? (
-                    <View>
-                        <Text style={{ color: 'red' }}>
-                            {packages.length ? 'Maintenance Packages' : null}
-                        </Text>
-
+                <FlatList
+                    ListHeaderComponent={
                         <FlatList
-                            contentContainerStyle={{ marginHorizontal: 8 }}
-                            data={packages}
-                            keyExtractor={(item, index) => item.id.toString()}
-                            renderItem={({ item: detail }) => renderPackageList(detail)}
+                            data={services}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item: ser }) => renderServices(ser)}
                         />
-                    </View>
-                ) : null}
+                    }
+                    ListFooterComponent={
+                        <>
+                            <Text style={{ color: 'red' }}>
+                                {packages.length ? 'Maintenance Packages' : null}
+                            </Text>
+                            <FlatList
+                                data={packages}
+                                style={{ marginHorizontal: 8 }}
+                                keyExtractor={(item, index) => item.id.toString()}
+                                renderItem={({ item: detail }) =>
+                                    renderPackageList(detail)
+                                }
+                            />
+                        </>
+                    }
+                />
                 {renderModal()}
                 {renderPackageModal()}
             </View>

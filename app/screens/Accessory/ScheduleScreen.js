@@ -3,6 +3,7 @@ import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 import axios from '../../axios';
 import { toTimeString } from '../../utils';
@@ -128,7 +129,9 @@ const ScheduleScreen = ({ navigation, route }) => {
                     setCurrentEpoch(time.beginTime);
                 }}>
                 <View>
-                    <Text style={{ fontSize: 15 }}>{toTimeString(time.beginTime)}</Text>
+                    <Text style={{ fontSize: 15 }}>
+                        {moment.unix(time.beginTime).format('HH:mm')}
+                    </Text>
                 </View>
             </TouchableOpacity>
         );
@@ -140,17 +143,9 @@ const ScheduleScreen = ({ navigation, route }) => {
         );
     }, [currentDay, detail.provider.id]);
     return (
-        <View style={{ flex: 1, padding: 8 }}>
+        <View style={{ flex: 1 }}>
             <View>{renderCalendar()}</View>
-            {/* <View
-                style={{
-                    borderWidth: 1,
-                    flexDirection: 'row',
-                    height: '50%',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    // padding: 100,
-                }}> */}
+
             <FlatList
                 data={timeList}
                 keyExtractor={(item, index) => index.toString()}
