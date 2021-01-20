@@ -150,42 +150,17 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                     margin: 8,
                     backgroundColor:
                         selectedMilestone.id === milestone.id ? '#99d6ff' : 'white',
-                    borderRadius: 24,
+                    borderRadius: 8,
                 }}
                 onPress={() => setSelectedMilestone(milestone)}>
                 <View
                     style={{
-                        marginTop: 8,
-                        borderWidth: 1,
-                        // flex: 1,
                         height: 100,
-                        width: 100,
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}>
-                    <Image
-                        resizeMethod="resize"
-                        resizeMode="cover"
-                        source={{
-                            uri:
-                                milestone.sectionImageUrl ??
-                                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png',
-                            height: '100%',
-                            width: '100%',
-                        }}
-                        style={{ width: '100%', height: '100%' }}
-                    />
-                </View>
-                <View>
-                    <Text
-                        style={{
-                            textAlign: 'center',
-                            fontSize: 16,
-                            margin: 10,
-                            // width: '70%',
-                            // height: 20,
-                            // maxWidth: '70%',
-                        }}>
-                        {milestone.milestone}
-                    </Text>
+                    <Text style={{ fontSize: 18 }}>{milestone.milestone} KM</Text>
                 </View>
             </TouchableOpacity>
         );
