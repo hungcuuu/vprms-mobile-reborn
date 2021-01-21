@@ -30,7 +30,6 @@ const CatalogScreen = ({ navigation }) => {
     const [isVisible, setIsVisible] = useState(false);
     // const [currentVehicle, setCurrentVehicle] = useState();
     const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
-    const [, setCapturedPhoto] = useState(null);
     const [loading, setLoading] = useState(false);
     // useSelector((state) => state.vehicles?.vehicles[0]),
     const [currentManu, setCurrentManu] = useState(1);
@@ -90,15 +89,16 @@ const CatalogScreen = ({ navigation }) => {
         Alert.alert('', 'Choose options', [
             {
                 text: 'Camera',
-                onPress: () => {
+                onPress: async () => {
                     try {
-                        const result = ImagePicker.launchCameraAsync({
+                        const result = await ImagePicker.launchCameraAsync({
                             mediaTypes: ImagePicker.MediaTypeOptions.Images,
                             quality: 1,
                         });
 
                         if (!result.cancelled) {
                             setLoading(true);
+
                             let localUri = result.uri;
                             let filename = localUri.split('/').pop();
 
@@ -109,7 +109,7 @@ const CatalogScreen = ({ navigation }) => {
                             data.append('file', { uri: localUri, name: filename, type });
                             data.append('latitude', location.coords.latitude);
                             data.append('longitude', location.coords.longitude);
-
+                            console.log(type);
                             axios
                                 .post(
                                     `detections/models/${currentVehicle.model.id}/parts/`,
@@ -123,7 +123,7 @@ const CatalogScreen = ({ navigation }) => {
                                 )
                                 .then(rs => {
                                     setLoading(false);
-                                    // console.log(rs.data);
+                                    console.log(rs.data);
                                     navigation.navigate('Accessories', {
                                         detect: rs.data,
                                     });
@@ -136,9 +136,9 @@ const CatalogScreen = ({ navigation }) => {
             },
             {
                 text: 'Gallery',
-                onPress: () => {
+                onPress: async () => {
                     try {
-                        const result = ImagePicker.launchImageLibraryAsync({
+                        const result = await ImagePicker.launchImageLibraryAsync({
                             mediaTypes: ImagePicker.MediaTypeOptions.Images,
                             quality: 1,
                         });
@@ -147,7 +147,6 @@ const CatalogScreen = ({ navigation }) => {
                             setLoading(true);
                             let localUri = result.uri;
                             let filename = localUri.split('/').pop();
-
                             // Infer the type of the image
                             let match = /\.(\w+)$/.exec(filename);
                             let type = match ? `image/${match[1]}` : 'image';
@@ -169,14 +168,14 @@ const CatalogScreen = ({ navigation }) => {
                                 )
                                 .then(rs => {
                                     setLoading(false);
-                                    // console.log(rs.data);
+                                    console.log(rs.data);
                                     navigation.navigate('Accessories', {
                                         detect: rs.data,
                                     });
                                 });
                             //     .catch(err => Alert.alert(err));
                         }
-                    } catch (e) {
+                    } catch (err) {
                         Alert.alert('Error', 'Something wrong with Camera');
                     }
                 },

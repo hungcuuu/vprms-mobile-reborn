@@ -10,7 +10,8 @@ import axios from '../../axios';
 
 const VehicleCreateScreen = ({ navigation }) => {
     const user = useSelector(state => state.auth.user ?? {});
-
+    // const errorVehicle = useSelector(state => state.vehicles.error ?? 'a');
+    // console.log('errorr', errorVehicle);
     const dispatch = useDispatch();
     // const [modalVisible, setModalVisible] = useState(false);
 
@@ -54,6 +55,12 @@ const VehicleCreateScreen = ({ navigation }) => {
             setError(cur => ({
                 ...cur,
                 errorPlate: 'Plate number can not be blank!',
+            }));
+            check = false;
+        } else if (!currentVehicle.plateNumber.match(/^[0-9]{2}[A-Za-z]{1}[0-9]{4,5}$/)) {
+            setError(cur => ({
+                ...cur,
+                errorPlate: 'Plate number must match format',
             }));
             check = false;
         } else {
@@ -115,9 +122,12 @@ const VehicleCreateScreen = ({ navigation }) => {
     return (
         <View>
             <View>
+                {/* <Text>{errorVehicle}</Text> */}
                 <Input
-                    placeholder="License plate number"
-                    maxLength={15}
+                    placeholder="License plate number (30E12345 )"
+                    maxLength={8}
+                    value={currentVehicle.plateNumber}
+                    autoCapitalize="characters"
                     onChangeText={value => {
                         setCurrentVehicle(currentVehicle => ({
                             ...currentVehicle,
@@ -130,6 +140,7 @@ const VehicleCreateScreen = ({ navigation }) => {
             <View>
                 <Input
                     placeholder="VIN"
+                    autoCapitalize="characters"
                     maxLength={17}
                     onChangeText={value => {
                         setCurrentVehicle(currentVehicle => ({

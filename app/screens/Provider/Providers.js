@@ -104,8 +104,7 @@ const Providers = ({ navigation }) => {
     }, [navigation]);
     useEffect(() => {
         (async () => {
-            let location = await Location.getCurrentPositionAsync({});
-            // setLocation(location);
+            let location = await Location.getCurrentPositionAsync();
             axios
                 .post('providers/', {
                     latitude: location.coords.latitude,
@@ -114,7 +113,6 @@ const Providers = ({ navigation }) => {
                 .then(rs => {
                     setProviders(rs.data);
                     setSearchProviders(rs.data);
-                    console.log('data', rs.data);
                 });
         })();
         // console.log('vehicle', currentVehicle);

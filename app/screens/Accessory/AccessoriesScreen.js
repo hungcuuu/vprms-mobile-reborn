@@ -17,7 +17,6 @@ const AccessoriesScreen = ({ navigation, route }) => {
     const [garageList, setGarageList] = useState([]);
     const [sortBy, setSortBy] = useState('price');
     const getAllAccessories = async (types, modelId, sortBy) => {
-        console.log('type', types);
         const location = await Location.getCurrentPositionAsync({});
         axios
             .post('providers/part-categories', {
@@ -27,7 +26,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     longitude: location.coords.longitude,
                 },
                 modelId: modelId ?? '',
-                sortBy: sortBy,
+                // sortBy: 'price',
             })
             .then(rs => {
                 console.log(rs.data);
@@ -143,26 +142,32 @@ const AccessoriesScreen = ({ navigation, route }) => {
     }, [detect, accessoryType, vehicles.model.id]);
     return (
         <View style={styles.container}>
-            <Picker
-                mode="dropdown"
-                selectedValue={sortBy}
-                style={
-                    {
-                        // height: 50,
-                        // width: '30%',
-                    }
-                }
-                accessibilityLabel="Sort By"
-                onValueChange={itemValue => {
-                    getAllAccessories(accessoryType, vehicles.model.id, itemValue);
-                    setSortBy(itemValue);
+            <View
+                style={{
+                    // height: 50,
+                    // width: '30%',
+                    // flex: 1,
+                    borderWidth: 1,
+                    marginHorizontal: 8,
+                    borderRadius: 8,
                 }}>
-                <Picker.Item label={'Best Price'} value={'price'} />
+                <Picker
+                    mode="dropdown"
+                    selectedValue={sortBy}
+                    accessibilityLabel="Sort By"
+                    onValueChange={itemValue => {
+                        getAllAccessories(accessoryType, vehicles.model.id, itemValue);
+                        setSortBy(itemValue);
+                    }}>
+                    <Picker.Item label={'Best Price'} value={'price'} />
 
-                <Picker.Item label={'Rating'} value={'rating'} />
-                <Picker.Item label={'Distance'} value={'distance'} />
-            </Picker>
+                    <Picker.Item label={'Rating'} value={'rating'} />
+                    <Picker.Item label={'Distance'} value={'distance'} />
+                </Picker>
+            </View>
+
             <View style={styles.itemsContainer}>
+                {/* {garageList.length > 0 ? ( */}
                 <FlatList
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
@@ -170,6 +175,24 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderGarageList}
                 />
+                {/* ) : ( */}
+                {/* <View
+                        style={{
+                            margin: 30,
+                            flex: 1,
+                            alignSelf: 'center',
+                            alignContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                        <Text
+                            style={{
+                                textAlign: 'center',
+                                fontSize: 18,
+                            }}>
+                            No result found
+                        </Text>
+                    </View>
+                )} */}
             </View>
         </View>
     );
@@ -183,7 +206,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingVertical: 8,
         // paddingHorizontal: 16,
-        borderWidth: 1,
+        // borderWidth: 1,
 
         // flexDirection: '',
         // flexWrap: 'nowrap',
@@ -204,14 +227,12 @@ const styles = StyleSheet.create({
     itemsContainer: {
         // flex: 1,
 
-        // marginTop: 20,
+        marginTop: 20,
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        // justifyContent: 'flex-start',
         flexWrap: 'wrap',
         alignContent: 'center',
         alignItems: 'center',
-        // borderWidth: 2,
-        borderColor: 'red',
     },
 
     separator: {

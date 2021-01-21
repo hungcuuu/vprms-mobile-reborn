@@ -3,6 +3,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import * as actions from '../actions';
 import axios from '../../axios';
+import { Alert } from 'react-native';
 
 function* updateCurrentVehicle(action) {
     try {
@@ -41,8 +42,22 @@ function* createVehicle(action) {
         yield put(actions.createVehicleSuccess(data));
         action.callBack();
     } catch (error) {
-        // put(actions.createVehicleFail(error));
-        console.log(error);
+        if (error.response) {
+            put(actions.createVehicleFail(error.response.data.message));
+
+            Alert.alert('Something went wrong!', error.response.data.message);
+            // Request made and server responded
+            console.log(error.response.data.message);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request);
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log('Error', error.message);
+        }
+        // console.log(error);
     }
 }
 function* deleteVehicle(action) {
@@ -85,10 +100,12 @@ function* updateVehicle(action) {
                 },
             )
             .then(rs => rs.data);
+        // .catch(e => Alert.alert('Something went wrong!', 'asdasd'));
         yield put(actions.updateVehicleSuccess(data));
         action.callBack();
     } catch (error) {
         yield put(actions.updateVehicleFail(error));
+        // Alert.alert('Something went wrong!', 'asdasd');
     }
 }
 export default function* vehiclesSagas() {
