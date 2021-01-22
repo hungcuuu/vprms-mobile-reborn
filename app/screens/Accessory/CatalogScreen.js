@@ -274,7 +274,9 @@ const CatalogScreen = ({ navigation }) => {
                                     title="Create New Vehicle"
                                     onPress={() => {
                                         setIsVisible(false);
-                                        navigation.navigate('CreateVehicle');
+                                        vehicles.length < 4
+                                            ? navigation.navigate('CreateVehicle')
+                                            : Alert.alert('You must have only 4 cars');
                                     }}
                                 />
                             </>
