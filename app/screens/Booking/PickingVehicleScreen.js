@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
+import { Alert } from 'react-native';
 const PickingVehicleScreen = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
@@ -65,7 +66,11 @@ const PickingVehicleScreen = ({ navigation, route }) => {
             />
             <Button
                 title="Create new Vehicle"
-                onPress={() => navigation.navigate('CreateVehicle')}
+                onPress={() =>
+                    vehicles.length < 4
+                        ? navigation.navigate('CreateVehicle')
+                        : Alert.alert('You must have only 4 cars')
+                }
             />
         </View>
     );

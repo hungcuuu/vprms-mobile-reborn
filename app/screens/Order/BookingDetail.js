@@ -13,6 +13,10 @@ import axios from '../../axios';
 import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
+    console.log('time', detail.bookingTime);
+    // console.log('now', moment.now().toLocaleString());
+    console.log('now', moment.unix(detail.bookingTime).toNow(true));
+
     const totalServicePrice = calculateServicePrice(
         detail.services.filter(ser => ser.isActive),
     );
@@ -211,7 +215,9 @@ const BookingDetail = ({ navigation, route }) => {
         [cancelBooking],
     );
     useEffect(() => {
-        detail.status === 'ACCEPTED'
+        let a = moment.unix(detail.bookingTime).toNow(true);
+        let b = +a.substr(0, a.indexOf(' '));
+        detail.status === 'ACCEPTED' && b >= 4
             ? navigation.setOptions({
                   headerRight: () => (
                       <Button
@@ -222,7 +228,7 @@ const BookingDetail = ({ navigation, route }) => {
                   ),
               })
             : null;
-    }, [detail.id, detail.status, navigation, onCancel]);
+    }, [detail.bookingTime, detail.id, detail.status, navigation, onCancel]);
     useEffect(() => {
         navigation.setOptions({ headerTitle: `request #${detail.id}` });
     }, [detail, detail.id, navigation]);
