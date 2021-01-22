@@ -103,9 +103,14 @@ const BookingDetail = ({ navigation, route }) => {
                         padding: 8,
                     }}>
                     <View
-                        style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        style={{
+                            width: '100%',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}>
                         <Text
                             style={{
+                                width: '60%',
                                 color: 'black',
                                 fontSize: 14,
                                 fontWeight: 'bold',
@@ -127,14 +132,14 @@ const BookingDetail = ({ navigation, route }) => {
                     <FlatList
                         // listKey={`${moment.unix.toString()}`}
                         data={[
-                            ...(service.parts ?? []),
                             {
                                 partId: 0,
-                                partName: 'Wages',
+                                partName: 'Tiền công',
                                 quantity: 1,
                                 imageUrls: [],
                                 price: service.servicePrice,
                             },
+                            ...(service.parts ?? []),
                         ]}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item: part }) => renderParts(part)}
@@ -289,7 +294,7 @@ const BookingDetail = ({ navigation, route }) => {
                         <Card.Divider />
                         <View style={styles.rowInfo}>
                             <Text>Technician:</Text>
-                            <Text>{` ${detail.technician?.fullname ?? 'none'}`}</Text>
+                            <Text>{` ${detail.technician?.fullName ?? 'none'}`}</Text>
                         </View>
                         <Text
                             style={{
@@ -307,9 +312,6 @@ const BookingDetail = ({ navigation, route }) => {
                             data={detail.packages ?? []}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item: packages }) => renderPackages(packages)}
-                            initialNumToRender={3}
-                            showsVerticalScrollIndicator={false}
-                            nestedScrollEnabled
                             ListHeaderComponent={
                                 <>
                                     {detail.packages.length > 0 ? (
@@ -352,9 +354,6 @@ const BookingDetail = ({ navigation, route }) => {
                                         renderItem={({ item: ser }) =>
                                             renderServices(ser)
                                         }
-                                        initialNumToRender={3}
-                                        showsVerticalScrollIndicator={false}
-                                        nestedScrollEnabled
                                     />
                                 </>
                             }
@@ -364,27 +363,37 @@ const BookingDetail = ({ navigation, route }) => {
                                 marginVertical: 8,
                                 borderTopWidth: 1,
                             }}>
-                            <Text
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-end',
-                                }}>{`Service Price: ${formatMoney(
-                                totalServicePrice.total,
-                            )}`}</Text>
-                            <Text
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text style={{ fontWeight: 'bold' }}>Services:</Text>
+                                <Text>{formatMoney(totalServicePrice.total)}</Text>
+                            </View>
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-end',
-                                }}>{`Package Price: ${formatMoney(
-                                totalPackagePrice.total,
-                            )}`}</Text>
-                            <Text
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text style={{ fontWeight: 'bold' }}>Packages:</Text>
+                                <Text>{formatMoney(totalPackagePrice.total)}</Text>
+                            </View>
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-end',
-                                }}>{`Total: ${formatMoney(
-                                totalServicePrice.total + totalPackagePrice.total,
-                            )} `}</Text>
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text style={{ fontWeight: 'bold' }}>Total Price:</Text>
+                                <Text>
+                                    {formatMoney(
+                                        totalServicePrice.total + totalPackagePrice.total,
+                                    )}
+                                </Text>
+                            </View>
                         </View>
                     </>
                 }

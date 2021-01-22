@@ -10,7 +10,32 @@ const ReviewScreen = ({ navigation, route }) => {
     let serviceList = route.params.serviceList ?? [];
     let packageList = route.params.packageList ?? [];
 
-    const totalPrice = calculateReviewPrice(serviceList, packageList);
+    const packagePrice = packageList.reduce((accumulated, packageItem) => {
+        return (
+            accumulated +
+            packageItem.packagedServices.reduce((accumulated, service) => {
+                return (
+                    accumulated +
+                    service.price +
+                    service.parts.reduce((accumulated, part) => {
+                        return accumulated + part.price * part.quantity;
+                    }, 0)
+                );
+            }, 0)
+        );
+    }, 0);
+
+    const servicePrice = serviceList.reduce((accumulated, service) => {
+        return (
+            accumulated +
+            service.price +
+            service.parts.reduce((accumulated, part) => {
+                return accumulated + part.price * part.quantity;
+            }, 0)
+        );
+    }, 0);
+
+    const totalPrice = servicePrice + packagePrice;
 
     const renderParts = part => {
         return (
@@ -109,6 +134,15 @@ const ReviewScreen = ({ navigation, route }) => {
     };
 
     const renderPackages = item => {
+        const totalPrice = item.packagedServices.reduce((accumulated, service) => {
+            return (
+                accumulated +
+                service.price +
+                service.parts.reduce((accumulated, part) => {
+                    return accumulated + part.price * part.quantity;
+                }, 0)
+            );
+        }, 0);
         return (
             <View>
                 <View
@@ -131,7 +165,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             color: 'red',
                             fontWeight: 'bold',
                         }}>
-                        {formatMoney(item.totalPrice)}
+                        {formatMoney(totalPrice)}
                     </Text>
                 </View>
                 <FlatList
@@ -187,17 +221,9 @@ const ReviewScreen = ({ navigation, route }) => {
                         }}>
                         Services Price:
                     </Text>
-                    <Text>{formatMoney(totalPrice.services)}</Text>
+                    <Text>{formatMoney(servicePrice)}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text
-                        style={{
-                            fontWeight: 'bold',
-                        }}>
-                        Parts Price:
-                    </Text>
-                    <Text>{formatMoney(totalPrice.partsPrice)}</Text>
-                </View>
+
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
                         style={{
@@ -206,7 +232,7 @@ const ReviewScreen = ({ navigation, route }) => {
                         }}>
                         Packages Price
                     </Text>
-                    <Text>{formatMoney(totalPrice.packagePrice)}</Text>
+                    <Text>{formatMoney(packagePrice)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
@@ -217,7 +243,7 @@ const ReviewScreen = ({ navigation, route }) => {
                         Total Price:
                     </Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'blue' }}>
-                        {formatMoney(totalPrice.total)}
+                        {formatMoney(totalPrice)}
                     </Text>
                 </View>
             </View>

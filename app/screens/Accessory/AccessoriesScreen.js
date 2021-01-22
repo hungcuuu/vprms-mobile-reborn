@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Location from 'expo-location';
+import _ from 'lodash';
 import { AirbnbRating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -8,7 +9,6 @@ import { formatMoney } from '../../utils';
 import { Picker } from '@react-native-community/picker';
 
 const AccessoriesScreen = ({ navigation, route }) => {
-    console.log('Render ');
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const accessoryType = route.params.typeId ?? '';
@@ -16,6 +16,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
 
     const [garageList, setGarageList] = useState([]);
     const [sortBy, setSortBy] = useState('price');
+
     const getAllAccessories = async (types, modelId, sortBy) => {
         const location = await Location.getCurrentPositionAsync({});
         axios
@@ -29,7 +30,6 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 // sortBy: 'price',
             })
             .then(rs => {
-                console.log(rs.data);
                 setGarageList(rs.data);
             });
     };
@@ -140,6 +140,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
             getAllAccessories(accessoryType, vehicles.model.id, 'price');
         }
     }, [detect, accessoryType, vehicles.model.id]);
+
     return (
         <View style={styles.container}>
             <View
@@ -156,12 +157,11 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     selectedValue={sortBy}
                     accessibilityLabel="Sort By"
                     onValueChange={itemValue => {
-                        getAllAccessories(accessoryType, vehicles.model.id, itemValue);
                         setSortBy(itemValue);
                     }}>
                     <Picker.Item label={'Best Price'} value={'price'} />
 
-                    <Picker.Item label={'Rating'} value={'rating'} />
+                    <Picker.Item label={'Rating'} value={'ratings'} />
                     <Picker.Item label={'Distance'} value={'distance'} />
                 </Picker>
             </View>
@@ -171,7 +171,13 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 <FlatList
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                    data={garageList}
+                    data={
+                        sortBy !== 'price'
+                            ? _.sortBy(garageList, item => {
+                                  return item[sortBy];
+                              })
+                            : garageList
+                    }
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderGarageList}
                 />
