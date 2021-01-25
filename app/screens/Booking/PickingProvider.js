@@ -203,13 +203,17 @@ const PickingProvider = ({ navigation, route }) => {
     ]);
     return (
         <View>
-            <View style={{ flexDirection: 'row' }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}>
                 <SearchBar
                     value={searchText}
                     placeholder="Search Here..."
                     lightTheme
-                    round
-                    containerStyle={{ width: '70%', flex: 1 }}
+                    containerStyle={{ backgroundColor: 'transparent', width: '70%' }}
                     onChangeText={text => searchHandler(text)}
                     autoCorrect={false}
                     blurOnSubmit={false}
@@ -218,7 +222,7 @@ const PickingProvider = ({ navigation, route }) => {
                 <Picker
                     mode="dropdown"
                     selectedValue={sortBy[0]}
-                    style={{ height: 50, width: '30%' }}
+                    style={{ flex: 1 }}
                     accessibilityLabel="Sort By"
                     onValueChange={(itemValue, itemIndex) => {
                         if (itemValue === 'ratings') {
