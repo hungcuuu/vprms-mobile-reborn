@@ -3,7 +3,7 @@ import { Image } from 'react-native';
 import { FlatList, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import { calculateReviewPrice, formatMoney } from '../../utils';
+import { formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
@@ -39,7 +39,7 @@ const ReviewScreen = ({ navigation, route }) => {
 
     const renderParts = part => {
         return (
-            <View style={{ flexDirection: 'row', height: 80 }}>
+            <View style={{ flexDirection: 'row', height: 80, marginVertical: 8 }}>
                 <View style={{ width: '25%' }}>
                     <Image
                         resizeMethod="resize"
@@ -59,7 +59,7 @@ const ReviewScreen = ({ navigation, route }) => {
                         flex: 1,
                         justifyContent: 'space-between',
                     }}>
-                    <Text style={{ flexWrap: 'wrap' }}>{part.name}</Text>
+                    <Text>{part.name}</Text>
                     <Text>{formatMoney(part.price)}</Text>
                 </View>
                 <View
@@ -67,16 +67,31 @@ const ReviewScreen = ({ navigation, route }) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        marginLeft: 8,
                     }}>
-                    <Text>{part.quantity}</Text>
+                    <Text>x {part.quantity}</Text>
                 </View>
             </View>
         );
     };
 
     const renderServices = service => {
-        let parts = service.parts ?? [];
+        let parts = [
+            {
+                id: 0,
+                name: 'Tiền công',
+                price: service.price,
+                quantity: 1,
+                imageUrls: [],
+            },
+            ...(service.parts ?? []),
+        ];
 
+        const totalPrice =
+            service.price +
+            service.parts.reduce((accumulated, part) => {
+                return accumulated + part.price * part.quantity;
+            }, 0);
         return (
             <View style={{ padding: 8 }}>
                 <View
@@ -101,7 +116,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             fontSize: 15,
                             fontWeight: 'bold',
                         }}>
-                        {formatMoney(service.price)}
+                        {formatMoney(totalPrice)}
                     </Text>
                 </View>
 
@@ -179,7 +194,7 @@ const ReviewScreen = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ padding: 16 }}>
+            <View style={{ padding: 8 }}>
                 <View>
                     <Text style={{ fontWeight: 'bold' }}>{detail.provider.name}</Text>
                 </View>
