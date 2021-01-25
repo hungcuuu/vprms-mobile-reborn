@@ -65,7 +65,7 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                         type: 'font-awesome',
                         color: 'green',
                     }}
-                    source={{ uri: user.imgUrl }}
+                    source={{ uri: user.imgUrl[0] }}
                     activeOpacity={0.7}
                     containerStyle={{
                         flex: 2,
@@ -81,18 +81,6 @@ const ProfileScreen = ({ navigation }, { onLogout, ...rest }) => {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>Name: </Text>
                     <Text>{user?.fullName}</Text>
-                </View>
-
-                <Card.Divider />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text>Address: </Text>
-                    <Text></Text>
-                </View>
-
-                <Card.Divider />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text>DOB: </Text>
-                    <Text></Text>
                 </View>
 
                 <Card.Divider />

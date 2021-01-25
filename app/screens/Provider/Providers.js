@@ -170,10 +170,7 @@ const Providers = ({ navigation }) => {
                 <Picker
                     mode="dropdown"
                     selectedValue={sortBy[0]}
-                    style={{
-                        // height: 50,
-                        width: '30%',
-                    }}
+                    style={{ height: 50, width: '30%' }}
                     accessibilityLabel="Sort By"
                     onValueChange={(itemValue, itemIndex) => {
                         if (itemValue === 'ratings') {

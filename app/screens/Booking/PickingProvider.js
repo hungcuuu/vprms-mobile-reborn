@@ -234,7 +234,7 @@ const PickingProvider = ({ navigation, route }) => {
 
             <View>
                 <FlatList
-                    data={searchProviders}
+                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item: provider }) => renderProviders(provider)}
                     // showsVerticalScrollIndicator={false}
