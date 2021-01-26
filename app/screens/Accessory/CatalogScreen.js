@@ -404,9 +404,10 @@ const CatalogScreen = ({ navigation }) => {
         navigation.setOptions({
             headerRight: () => (
                 <Ionicons
+                    style={{ marginRight: 10 }}
                     name="camera"
                     color="white"
-                    size={50}
+                    size={35}
                     onPress={() => setIsVisible(true)}
                 />
             ),

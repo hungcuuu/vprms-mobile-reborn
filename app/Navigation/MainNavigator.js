@@ -215,7 +215,7 @@ const AccessoryNavigator = ({ navigation }) => (
                 headerLeft: () => (
                     <Ionicons
                         name="menu-outline"
-                        style={{ fontSize: 30 }}
+                        style={{ fontSize: 35, marginLeft: 10 }}
                         onPress={() => navigation.toggleDrawer()}
                     />
                 ),
