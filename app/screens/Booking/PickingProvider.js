@@ -104,7 +104,9 @@ const PickingProvider = ({ navigation, route }) => {
                             reviews={false}
                             showRating={false}
                         />
-                        <Text>{provider.ratings > -1 ? provider.ratings : 'none'}</Text>
+                        <Text>
+                            {provider.ratings > -1 ? provider.ratings.toFixed(1) : 'none'}
+                        </Text>
                     </View>
                 </View>
             </TouchableOpacity>

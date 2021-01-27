@@ -13,14 +13,19 @@ import axios from '../../axios';
 import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
-    console.log('time', detail.bookingTime);
-    // console.log('now', moment.now().toLocaleString());
-    console.log('now', moment.unix(detail.bookingTime).toNow(true));
+
+    console.log(detail.services);
 
     const totalServicePrice = calculateServicePrice(
         detail.services.filter(ser => ser.isActive),
     );
-    const totalPackagePrice = calculatePackagePrice(detail.packages);
+
+    const totalPackagePrice = calculatePackagePrice(
+        detail.packages.map(({ services, ...rest }) => ({
+            services: services.filter(service => service.isActive),
+            ...rest,
+        })),
+    );
 
     const getStatusTagColor = status => {
         switch (status) {
@@ -151,16 +156,19 @@ const BookingDetail = ({ navigation, route }) => {
         );
     };
     const renderPackages = packages => {
-        const totalPrice = packages.services.reduce(
-            (accumulated, service) =>
+        const totalPrice = packages.services.reduce((accumulated, service) => {
+            if (!service.isActive) {
+                return accumulated;
+            }
+            return (
                 accumulated +
                 service.servicePrice +
                 service.parts.reduce(
                     (accumulated, part) => accumulated + part.price * part.quantity,
                     0,
-                ),
-            0,
-        );
+                )
+            );
+        }, 0);
         return (
             // ${formatMoney(service.price)}
             <>
@@ -296,14 +304,17 @@ const BookingDetail = ({ navigation, route }) => {
                             <Text>Technician:</Text>
                             <Text>{` ${detail.technician?.fullName ?? 'none'}`}</Text>
                         </View>
-                        <Text
-                            style={{
-                                color: 'green',
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                            }}>
-                            Services:
-                        </Text>
+                        {detail.services.filter(service => !service.isIncurred).length >
+                            0 && (
+                            <Text
+                                style={{
+                                    color: 'green',
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                }}>
+                                Services:
+                            </Text>
+                        )}
                     </>
                 }
                 ListFooterComponent={
