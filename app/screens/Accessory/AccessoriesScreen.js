@@ -110,7 +110,9 @@ const AccessoriesScreen = ({ navigation, route }) => {
                             showRating={false}
                         />
                         <Text style={{ fontSize: 16 }}>
-                            {itemData.item.ratings > -1 ? itemData.item.ratings : 'none'}{' '}
+                            {itemData.item.ratings > -1
+                                ? itemData.item.ratings.toFixed(1)
+                                : 'none'}{' '}
                         </Text>
 
                         <Text style={{ fontSize: 16 }}>
