@@ -3,18 +3,43 @@ import { Image } from 'react-native';
 import { FlatList, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import { calculateReviewPrice, formatMoney } from '../../utils';
+import { formatMoney } from '../../utils';
 
 const ReviewScreen = ({ navigation, route }) => {
     let detail = route.params.detail ?? [];
     let serviceList = route.params.serviceList ?? [];
     let packageList = route.params.packageList ?? [];
 
-    const totalPrice = calculateReviewPrice(serviceList, packageList);
+    const packagePrice = packageList.reduce((accumulated, packageItem) => {
+        return (
+            accumulated +
+            packageItem.packagedServices.reduce((accumulated, service) => {
+                return (
+                    accumulated +
+                    service.price +
+                    service.parts.reduce((accumulated, part) => {
+                        return accumulated + part.price * part.quantity;
+                    }, 0)
+                );
+            }, 0)
+        );
+    }, 0);
+
+    const servicePrice = serviceList.reduce((accumulated, service) => {
+        return (
+            accumulated +
+            service.price +
+            service.parts.reduce((accumulated, part) => {
+                return accumulated + part.price * part.quantity;
+            }, 0)
+        );
+    }, 0);
+
+    const totalPrice = servicePrice + packagePrice;
 
     const renderParts = part => {
         return (
-            <View style={{ flexDirection: 'row', height: 80 }}>
+            <View style={{ flexDirection: 'row', height: 80, marginVertical: 8 }}>
                 <View style={{ width: '25%' }}>
                     <Image
                         resizeMethod="resize"
@@ -34,7 +59,7 @@ const ReviewScreen = ({ navigation, route }) => {
                         flex: 1,
                         justifyContent: 'space-between',
                     }}>
-                    <Text style={{ flexWrap: 'wrap' }}>{part.name}</Text>
+                    <Text>{part.name}</Text>
                     <Text>{formatMoney(part.price)}</Text>
                 </View>
                 <View
@@ -42,16 +67,31 @@ const ReviewScreen = ({ navigation, route }) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        marginLeft: 8,
                     }}>
-                    <Text>{part.quantity}</Text>
+                    <Text>x {part.quantity}</Text>
                 </View>
             </View>
         );
     };
 
     const renderServices = service => {
-        let parts = service.parts ?? [];
+        let parts = [
+            {
+                id: 0,
+                name: 'Tiền công',
+                price: service.price,
+                quantity: 1,
+                imageUrls: [],
+            },
+            ...(service.parts ?? []),
+        ];
 
+        const totalPrice =
+            service.price +
+            service.parts.reduce((accumulated, part) => {
+                return accumulated + part.price * part.quantity;
+            }, 0);
         return (
             <View style={{ padding: 8 }}>
                 <View
@@ -76,7 +116,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             fontSize: 15,
                             fontWeight: 'bold',
                         }}>
-                        {formatMoney(service.price)}
+                        {formatMoney(totalPrice)}
                     </Text>
                 </View>
 
@@ -109,6 +149,15 @@ const ReviewScreen = ({ navigation, route }) => {
     };
 
     const renderPackages = item => {
+        const totalPrice = item.packagedServices.reduce((accumulated, service) => {
+            return (
+                accumulated +
+                service.price +
+                service.parts.reduce((accumulated, part) => {
+                    return accumulated + part.price * part.quantity;
+                }, 0)
+            );
+        }, 0);
         return (
             <View>
                 <View
@@ -131,7 +180,7 @@ const ReviewScreen = ({ navigation, route }) => {
                             color: 'red',
                             fontWeight: 'bold',
                         }}>
-                        {formatMoney(item.totalPrice)}
+                        {formatMoney(totalPrice)}
                     </Text>
                 </View>
                 <FlatList
@@ -145,7 +194,7 @@ const ReviewScreen = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ padding: 16 }}>
+            <View style={{ padding: 8 }}>
                 <View>
                     <Text style={{ fontWeight: 'bold' }}>{detail.provider.name}</Text>
                 </View>
@@ -187,17 +236,9 @@ const ReviewScreen = ({ navigation, route }) => {
                         }}>
                         Services Price:
                     </Text>
-                    <Text>{formatMoney(totalPrice.services)}</Text>
+                    <Text>{formatMoney(servicePrice)}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text
-                        style={{
-                            fontWeight: 'bold',
-                        }}>
-                        Parts Price:
-                    </Text>
-                    <Text>{formatMoney(totalPrice.partsPrice)}</Text>
-                </View>
+
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
                         style={{
@@ -206,7 +247,7 @@ const ReviewScreen = ({ navigation, route }) => {
                         }}>
                         Packages Price
                     </Text>
-                    <Text>{formatMoney(totalPrice.packagePrice)}</Text>
+                    <Text>{formatMoney(packagePrice)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text
@@ -217,7 +258,7 @@ const ReviewScreen = ({ navigation, route }) => {
                         Total Price:
                     </Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'blue' }}>
-                        {formatMoney(totalPrice.total)}
+                        {formatMoney(totalPrice)}
                     </Text>
                 </View>
             </View>

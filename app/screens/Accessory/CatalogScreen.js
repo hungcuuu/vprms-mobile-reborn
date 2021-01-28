@@ -274,7 +274,9 @@ const CatalogScreen = ({ navigation }) => {
                                     title="Create New Vehicle"
                                     onPress={() => {
                                         setIsVisible(false);
-                                        navigation.navigate('CreateVehicle');
+                                        vehicles.length < 4
+                                            ? navigation.navigate('CreateVehicle')
+                                            : Alert.alert('You must have only 4 cars');
                                     }}
                                 />
                             </>
@@ -402,9 +404,10 @@ const CatalogScreen = ({ navigation }) => {
         navigation.setOptions({
             headerRight: () => (
                 <Ionicons
+                    style={{ marginRight: 10 }}
                     name="camera"
                     color="white"
-                    size={50}
+                    size={35}
                     onPress={() => setIsVisible(true)}
                 />
             ),

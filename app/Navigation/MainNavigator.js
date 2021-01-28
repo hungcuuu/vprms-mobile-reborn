@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -33,11 +33,8 @@ import BookingDetail from '../screens/Order/BookingDetail';
 import Feedback from '../screens/Order/Feedback';
 import { useDispatch } from 'react-redux';
 
-import messaging from '@react-native-firebase/messaging';
-
 import * as actions from '../store/actions';
 import ProfileScreen from '../screens/ProfileScreen';
-import { Alert } from 'react-native';
 
 const AuthStackNavigator = createStackNavigator();
 
@@ -218,7 +215,7 @@ const AccessoryNavigator = ({ navigation }) => (
                 headerLeft: () => (
                     <Ionicons
                         name="menu-outline"
-                        style={{ fontSize: 30 }}
+                        style={{ fontSize: 35, marginLeft: 10 }}
                         onPress={() => navigation.toggleDrawer()}
                     />
                 ),

@@ -5,13 +5,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
+import { Alert } from 'react-native';
 const VehiclesScreen = ({ navigation, route }) => {
     const dispatch = useDispatch();
     const provider = route.params?.provider ?? [];
 
     const path = route.params?.path ?? '';
     const vehicles = useSelector(state => state.vehicles.vehicles ?? []);
-    console.log(vehicles);
+    console.log('Length', vehicles.length);
     const renderVehicleItem = itemData => (
         <View style={{}}>
             <View style={{ flex: 1 }}>
@@ -66,7 +67,11 @@ const VehiclesScreen = ({ navigation, route }) => {
             />
             <Button
                 title="ADD VEHICLE"
-                onPress={() => navigation.navigate('CreateVehicle')}
+                onPress={() =>
+                    vehicles.length < 4
+                        ? navigation.navigate('CreateVehicle')
+                        : Alert.alert('You must have only 4 cars')
+                }
             />
             {/* <Button title="Booking" onPress={() => navigation.navigate('Booking')} /> */}
         </View>

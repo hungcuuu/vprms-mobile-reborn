@@ -14,7 +14,9 @@ const ScheduleScreen = ({ navigation, route }) => {
     const detail = route.params.detail ?? [];
     const serviceList = route.params.serviceList ?? [];
     const packageList = route.params.packageList ?? [];
-
+    const note = route.params.note ?? '';
+    console.log('note', note);
+    console.log('detail', detail.provider.id);
     const [currentDay, setCurrentDay] = useState(new Date().toISOString().split('T')[0]);
     const [timeList, setTimeList] = useState([]);
     const [currentEpoch, setCurrentEpoch] = useState(null);
@@ -26,28 +28,25 @@ const ScheduleScreen = ({ navigation, route }) => {
             let serviceIds = serviceList.map(x => x.id);
             let packageIds = packageList.map(x => x.id);
 
-            try {
-                axios
-                    .post('requests', {
-                        parts: {},
-                        serviceIds: serviceIds,
-                        bookingTime: currentEpoch,
-                        providerId: detail.provider.id,
-                        vehicleId: vehicles.id,
-                        packageIds: packageIds,
-                        note: '',
-                    })
-                    .then(rs => {
-                        Alert.alert('success');
-                        console.log('booking', rs.data);
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Order' }],
-                        });
+            axios
+                .post('requests', {
+                    parts: {},
+                    serviceIds: serviceIds,
+                    bookingTime: currentEpoch,
+                    providerId: detail.provider.id,
+                    vehicleId: vehicles.id,
+                    packageIds: packageIds,
+                    note: note,
+                })
+                .then(rs => {
+                    Alert.alert('success');
+                    console.log('booking', rs.data);
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Order' }],
                     });
-            } catch (error) {
-                Alert.alert('Fail');
-            }
+                })
+                .catch(err => Alert.alert(err.response.data.message));
         }
     };
     const getTimeTable = (id, epoch) => {

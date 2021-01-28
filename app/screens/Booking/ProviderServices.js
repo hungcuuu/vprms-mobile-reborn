@@ -191,27 +191,24 @@ const ProviderServices = ({ navigation, route }) => {
     };
 
     const renderServices = ser => {
-        const styles = StyleSheet.create({
-            services: {
-                margin: 8,
-            },
-        });
-        return (
-            <View>
-                <Text style={{ color: 'red' }}>
-                    {ser.typeDetail.typeName} {ser.typeDetail.sectionName}
-                </Text>
-                {ser.serviceDetails ? null : <Text>None</Text>}
-                <FlatList
-                    // contentContainerStyle={{ margin: 100 }}
-                    style={{ marginHorizontal: 8 }}
-                    data={ser.serviceDetails}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({ item: detail }) => renderDetail(detail)}
-                    // scrollEnabled={false}
-                />
-            </View>
-        );
+        if (ser.serviceDetails.length) {
+            return (
+                <View>
+                    <Text style={{ color: 'red' }}>
+                        {ser.typeDetail.typeName} {ser.typeDetail.sectionName}
+                    </Text>
+                    {ser.serviceDetails ? null : <Text>None</Text>}
+                    <FlatList
+                        // contentContainerStyle={{ margin: 100 }}
+                        style={{ marginHorizontal: 8 }}
+                        data={ser.serviceDetails}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item: detail }) => renderDetail(detail)}
+                        // scrollEnabled={false}
+                    />
+                </View>
+            );
+        }
     };
 
     const renderPackageDetail = detail => {

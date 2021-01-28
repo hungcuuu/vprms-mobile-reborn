@@ -91,7 +91,9 @@ const Providers = ({ navigation }) => {
                             reviews={false}
                             showRating={false}
                         />
-                        <Text>{provider.ratings > -1 ? provider.ratings : 'none'}</Text>
+                        <Text>
+                            {provider.ratings > -1 ? provider.ratings.toFixed(1) : 'none'}
+                        </Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -154,26 +156,27 @@ const Providers = ({ navigation }) => {
         return unsubscribe;
     }, [navigation, user.id]);
     return (
-        <View>
-            <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1 }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}>
                 <SearchBar
                     value={searchText}
                     placeholder="Search Here..."
                     lightTheme
-                    round
                     onChangeText={text => searchHandler(text)}
                     autoCorrect={false}
                     blurOnSubmit={false}
                     clearButtonMode="always"
-                    containerStyle={{ width: '70%', flex: 1 }}
+                    containerStyle={{ backgroundColor: 'transparent', width: '70%' }}
                 />
                 <Picker
                     mode="dropdown"
                     selectedValue={sortBy[0]}
-                    style={{
-                        // height: 50,
-                        width: '30%',
-                    }}
+                    style={{ flex: 1 }}
                     accessibilityLabel="Sort By"
                     onValueChange={(itemValue, itemIndex) => {
                         if (itemValue === 'ratings') {

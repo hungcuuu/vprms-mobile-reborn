@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import * as Location from 'expo-location';
 import { Card } from 'react-native-elements';
+import { formatMoney, moneyFormat } from '../../utils';
 
 const AccessoryTypeScreen = ({ navigation, route }) => {
     const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
@@ -63,7 +64,7 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                         // maxWidth: 100,
                     }}>
                     {' '}
-                    Price : 100{' '}
+                    Price : {formatMoney(part.part.price)}
                 </Text>
             </View>
         </TouchableOpacity>

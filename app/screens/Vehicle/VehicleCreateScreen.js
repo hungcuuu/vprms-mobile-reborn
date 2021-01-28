@@ -10,6 +10,7 @@ import axios from '../../axios';
 
 const VehicleCreateScreen = ({ navigation }) => {
     const user = useSelector(state => state.auth.user ?? {});
+
     // const errorVehicle = useSelector(state => state.vehicles.error ?? 'a');
     // console.log('errorr', errorVehicle);
     const dispatch = useDispatch();

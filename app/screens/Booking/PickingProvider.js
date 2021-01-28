@@ -16,7 +16,8 @@ const PickingProvider = ({ navigation, route }) => {
     const selectedServicesType = route.params?.selectedServicesType ?? [];
     const selectedMilestone = route.params?.selectedMilestone ?? {};
     const selectedSections = route.params?.selectedSections ?? [];
-
+    const noteParam = route.params?.note ?? '';
+    console.log(selectedServicesType);
     // console.log('serviceType', selectedServicesType);
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
@@ -54,9 +55,16 @@ const PickingProvider = ({ navigation, route }) => {
                     //         : 'white',
                     borderRadius: 24,
                 }}
-                onPress={() =>
-                    navigation.navigate('ProviderServices', { provider: provider })
-                }>
+                onPress={() => {
+                    if (noteParam) {
+                        navigation.navigate('Schedule', {
+                            detail: { provider },
+                            note: noteParam,
+                        });
+                    } else {
+                        navigation.navigate('ProviderServices', { provider: provider });
+                    }
+                }}>
                 <View
                     style={{
                         height: 100,
@@ -96,16 +104,39 @@ const PickingProvider = ({ navigation, route }) => {
                             reviews={false}
                             showRating={false}
                         />
-                        <Text>{provider.ratings > -1 ? provider.ratings : 'none'}</Text>
+                        <Text>
+                            {provider.ratings > -1 ? provider.ratings.toFixed(1) : 'none'}
+                        </Text>
                     </View>
                 </View>
             </TouchableOpacity>
         );
     };
+    // useEffect(() => {
+    //     if (noteParam.length > 0) {
+    //         console.log('2');
+
+    //         async () => {
+    //             let location = await Location.getCurrentPositionAsync();
+
+    //             console.log('2');
+    //             axios
+    //                 .post('providers/', {
+    //                     latitude: location.coords.latitude,
+    //                     longitude: location.coords.longitude,
+    //                 })
+    //                 .then(rs => {
+    //                     setProviders(rs.data);
+    //                     setSearchProviders(rs.data);
+    //                 });
+    //         };
+    //     }
+    // }, [noteParam]);
     useEffect(() => {
         (async () => {
             let location = await Location.getCurrentPositionAsync({});
             if (selectedServicesType.length > 0) {
+                console.log('1');
                 let serviceTypes = selectedServicesType.map(ser => ser.id) ?? [];
                 axios
                     .post('providers/type-details', {
@@ -120,28 +151,24 @@ const PickingProvider = ({ navigation, route }) => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
                     });
-            }
-
-            if (!_.isEmpty(selectedMilestone)) {
+            } else if (!_.isEmpty(selectedMilestone)) {
                 let milestone = selectedMilestone?.id ?? '';
+                console.log('3');
                 axios
                     .post(
                         `maintenance-packages/milestones/${milestone}/models/${vehicles.model.id}`,
                         {
-                            currentPos: {
-                                latitude: location.coords.latitude,
-                                longitude: location.coords.longitude,
-                            },
+                            latitude: location.coords.latitude,
+                            longitude: location.coords.longitude,
                         },
                     )
                     .then(rs => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
                     });
-            }
-            if (selectedSections.length > 0) {
+            } else if (selectedSections.length > 0) {
                 let sectionIds = selectedSections.map(sec => sec.sectionId) ?? [];
-
+                console.log('4');
                 axios
                     .post(`maintenance-packages/models/${vehicles.model.id}`, {
                         currentLocation: {
@@ -154,18 +181,41 @@ const PickingProvider = ({ navigation, route }) => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
                     });
+            } else {
+                console.log('2');
+
+                console.log('2');
+                axios
+                    .post('providers/', {
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                    })
+                    .then(rs => {
+                        setProviders(rs.data);
+                        setSearchProviders(rs.data);
+                    });
             }
         })();
-    }, [selectedMilestone, selectedSections, selectedServicesType, vehicles.model.id]);
+    }, [
+        noteParam,
+        selectedMilestone,
+        selectedSections,
+        selectedServicesType,
+        vehicles.model.id,
+    ]);
     return (
         <View>
-            <View style={{ flexDirection: 'row' }}>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}>
                 <SearchBar
                     value={searchText}
                     placeholder="Search Here..."
                     lightTheme
-                    round
-                    containerStyle={{ width: '70%', flex: 1 }}
+                    containerStyle={{ backgroundColor: 'transparent', width: '70%' }}
                     onChangeText={text => searchHandler(text)}
                     autoCorrect={false}
                     blurOnSubmit={false}
@@ -174,7 +224,7 @@ const PickingProvider = ({ navigation, route }) => {
                 <Picker
                     mode="dropdown"
                     selectedValue={sortBy[0]}
-                    style={{ height: 50, width: '30%' }}
+                    style={{ flex: 1 }}
                     accessibilityLabel="Sort By"
                     onValueChange={(itemValue, itemIndex) => {
                         if (itemValue === 'ratings') {
@@ -190,7 +240,7 @@ const PickingProvider = ({ navigation, route }) => {
 
             <View>
                 <FlatList
-                    data={searchProviders}
+                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item: provider }) => renderProviders(provider)}
                     // showsVerticalScrollIndicator={false}

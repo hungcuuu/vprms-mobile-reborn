@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Location from 'expo-location';
+import _ from 'lodash';
 import { AirbnbRating } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import axios from '../../axios';
@@ -8,7 +9,6 @@ import { formatMoney } from '../../utils';
 import { Picker } from '@react-native-community/picker';
 
 const AccessoriesScreen = ({ navigation, route }) => {
-    console.log('Render ');
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
 
     const accessoryType = route.params.typeId ?? '';
@@ -16,6 +16,7 @@ const AccessoriesScreen = ({ navigation, route }) => {
 
     const [garageList, setGarageList] = useState([]);
     const [sortBy, setSortBy] = useState('price');
+
     const getAllAccessories = async (types, modelId, sortBy) => {
         const location = await Location.getCurrentPositionAsync({});
         axios
@@ -29,7 +30,6 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 // sortBy: 'price',
             })
             .then(rs => {
-                console.log(rs.data);
                 setGarageList(rs.data);
             });
     };
@@ -57,23 +57,15 @@ const AccessoriesScreen = ({ navigation, route }) => {
                     </View>
                     <View
                         style={{
-                            // borderWidth: 1,
-                            // flex: 1,
                             marginRight: 8,
-                            // alignSelf: 'flex-end',
-                            // alignContent: 'flex-end',
                             height: 80,
                             width: 80,
-                            // borderRadius: 16,
-                            // borderWidth: 1,
                         }}>
                         <Image
                             resizeMethod="resize"
                             resizeMode="contain"
                             source={{
                                 uri: part.imageUrls[0],
-                                // height: '100%',
-                                // width: '100%',
                             }}
                             style={{ width: '100%', height: '100%' }}
                         />
@@ -97,7 +89,6 @@ const AccessoriesScreen = ({ navigation, route }) => {
                             textAlign: 'center',
                             fontSize: 16,
                             fontWeight: 'bold',
-                            // maxWidth: 100,
                         }}>
                         {''}
                         {itemData.item.name} {'  '}{' '}
@@ -142,59 +133,39 @@ const AccessoriesScreen = ({ navigation, route }) => {
             getAllAccessories(accessoryType, vehicles.model.id, 'price');
         }
     }, [detect, accessoryType, vehicles.model.id]);
+
     return (
         <View style={styles.container}>
             <View
                 style={{
-                    // height: 50,
-                    // width: '30%',
-                    // flex: 1,
                     borderWidth: 1,
                     marginHorizontal: 8,
                     borderRadius: 8,
                 }}>
                 <Picker
                     mode="dropdown"
-                    selectedValue={sortBy}
+                    selectedValue={sortBy[0]}
                     accessibilityLabel="Sort By"
-                    onValueChange={itemValue => {
-                        getAllAccessories(accessoryType, vehicles.model.id, itemValue);
-                        setSortBy(itemValue);
+                    onValueChange={(itemValue, itemIndex) => {
+                        if (itemValue === 'ratings') {
+                            setSortBy([itemValue, 'desc']);
+                        } else {
+                            setSortBy([itemValue, 'asc']);
+                        }
                     }}>
                     <Picker.Item label={'Best Price'} value={'price'} />
-
-                    <Picker.Item label={'Rating'} value={'rating'} />
+                    <Picker.Item label={'Rating'} value={'ratings'} />
                     <Picker.Item label={'Distance'} value={'distance'} />
                 </Picker>
             </View>
 
             <View style={styles.itemsContainer}>
-                {/* {garageList.length > 0 ? ( */}
                 <FlatList
-                    nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
-                    data={garageList}
+                    data={_.orderBy(garageList, sortBy[0], sortBy[1])}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={renderGarageList}
                 />
-                {/* ) : ( */}
-                {/* <View
-                        style={{
-                            margin: 30,
-                            flex: 1,
-                            alignSelf: 'center',
-                            alignContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                        <Text
-                            style={{
-                                textAlign: 'center',
-                                fontSize: 18,
-                            }}>
-                            No result found
-                        </Text>
-                    </View>
-                )} */}
             </View>
         </View>
     );
@@ -206,40 +177,22 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        paddingVertical: 8,
-        // paddingHorizontal: 16,
-        // borderWidth: 1,
-
-        // flexDirection: '',
-        // flexWrap: 'nowrap',
+    },
+    itemsContainer: {
+        flex: 1,
+        marginHorizontal: 8,
     },
     items: {
-        // borderWidth: 1,
         borderBottomWidth: 1,
         borderTopWidth: 1,
         flex: 1,
-        // width: Dimensions.get('screen').width * 0.4,
-        // height: 500,
-        // margin: 10,
-        marginVertical: 10,
+        marginVertical: 8,
         width: '100%',
-        padding: 16,
-        // alignItems: 'center',
+        padding: 8,
+        backgroundColor: '#ccc',
     },
-    itemsContainer: {
-        // flex: 1,
-
-        marginTop: 20,
-        flexDirection: 'row',
-        // justifyContent: 'flex-start',
-        flexWrap: 'wrap',
-        alignContent: 'center',
-        alignItems: 'center',
-    },
-
     separator: {
-        marginVertical: 10,
-        marginBottom: 5,
+        marginVertical: 8,
         height: 1,
         width: '100%',
         backgroundColor: 'black',

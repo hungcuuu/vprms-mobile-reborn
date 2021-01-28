@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Dimensions } from 'react-native';
+import { Text } from 'react-native';
+import { Modal } from 'react-native';
 import { Alert } from 'react-native';
 import { View } from 'react-native';
-import { Button, CheckBox } from 'react-native-elements';
+import { Button, CheckBox, Input } from 'react-native-elements';
 import axios from '../../axios';
 
 const ServiceType = ({ navigation, route }) => {
     const [typeList, setTypeList] = useState([]);
     const [selectedType, setSelectedType] = useState([]);
-
+    const [isVisible, setIsVisible] = useState(false);
     const [selectedMaintenance, setSelectedMaintenance] = useState('');
     const [isMaintenanceChecked, setIsMaintenanceChecked] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [note, setNote] = useState('');
     const onSelectTypeChecked = type => {
         setSelectedMaintenance('');
         setIsMaintenanceChecked(false);
@@ -38,6 +42,67 @@ const ServiceType = ({ navigation, route }) => {
         setSelectedType([]);
         setIsMaintenanceChecked(true);
     };
+    const addNoteHandler = () => {
+        if (note.length > 16) {
+            setIsVisible(false);
+
+            navigation.navigate('PickingProvider', {
+                note: note,
+                selectedServicesType: [],
+                selectedMilestone: {},
+                selectedSections: [],
+            });
+        } else {
+            setErrorMessage('Note must has at least 16 character');
+        }
+    };
+    const renderModalNote = (
+        <Modal visible={isVisible} animationType="slide" transparent>
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                }}>
+                <View
+                    style={{
+                        width: '80%',
+                        height: '70%',
+                        backgroundColor: '#ccc',
+                        // borderWidth: 1,
+                        borderRadius: 10,
+                    }}>
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            margin: 8,
+                            textAlign: 'center',
+                        }}>
+                        Describe your current situation
+                    </Text>
+                    <Input
+                        placeholder="Text here (Max characters is 256)"
+                        maxLength={256}
+                        onChangeText={value => {
+                            setNote(value);
+                        }}
+                        numberOfLines={10}
+                        errorMessage={errorMessage}
+                    />
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                        }}>
+                        <Button title="Cancel" onPress={() => setIsVisible(false)} />
+                        <Button title="Next" onPress={() => addNoteHandler()} />
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    );
     useEffect(() => {
         axios.get('service-types').then(rs => setTypeList(rs.data));
     }, []);
@@ -109,7 +174,7 @@ const ServiceType = ({ navigation, route }) => {
                                         marginLeft: 45,
                                     }}
                                     // center
-                                    title="MileStones"
+                                    title="Theo số km"
                                     checkedIcon="dot-circle-o"
                                     uncheckedIcon="circle-o"
                                     checked={selectedMaintenance === 'milestone'}
@@ -121,7 +186,7 @@ const ServiceType = ({ navigation, route }) => {
                                         marginLeft: 45,
                                     }}
                                     // center
-                                    title="Sections"
+                                    title="Theo khu vực xe"
                                     checkedIcon="dot-circle-o"
                                     uncheckedIcon="circle-o"
                                     checked={selectedMaintenance === 'section'}
@@ -129,10 +194,22 @@ const ServiceType = ({ navigation, route }) => {
                                 />
                             </View>
                             {/* ) : null} */}
+                            <View>
+                                <CheckBox
+                                    containerStyle={{ backgroundColor: 'transparent' }}
+                                    title={'Kiểm tra chung'}
+                                    checkedIcon="dot-circle-o"
+                                    uncheckedIcon="circle-o"
+                                    checked={false}
+                                    onPress={() => setIsVisible(true)}
+                                />
+                                {/* {isMaintenanceChecked ? ( */}
+                            </View>
                         </View>
                     </>
                 }
             />
+            {renderModalNote}
             <Button
                 title="Next"
                 onPress={() =>

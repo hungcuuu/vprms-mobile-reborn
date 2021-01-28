@@ -13,10 +13,19 @@ import axios from '../../axios';
 import { useCallback } from 'react';
 const BookingDetail = ({ navigation, route }) => {
     const detail = route.params?.detail ?? {};
+
+    console.log(detail.services);
+
     const totalServicePrice = calculateServicePrice(
         detail.services.filter(ser => ser.isActive),
     );
-    const totalPackagePrice = calculatePackagePrice(detail.packages);
+
+    const totalPackagePrice = calculatePackagePrice(
+        detail.packages.map(({ services, ...rest }) => ({
+            services: services.filter(service => service.isActive),
+            ...rest,
+        })),
+    );
 
     const getStatusTagColor = status => {
         switch (status) {
@@ -99,9 +108,14 @@ const BookingDetail = ({ navigation, route }) => {
                         padding: 8,
                     }}>
                     <View
-                        style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        style={{
+                            width: '100%',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}>
                         <Text
                             style={{
+                                width: '60%',
                                 color: 'black',
                                 fontSize: 14,
                                 fontWeight: 'bold',
@@ -123,14 +137,14 @@ const BookingDetail = ({ navigation, route }) => {
                     <FlatList
                         // listKey={`${moment.unix.toString()}`}
                         data={[
-                            ...(service.parts ?? []),
                             {
                                 partId: 0,
-                                partName: 'Wages',
+                                partName: 'Tiền công',
                                 quantity: 1,
                                 imageUrls: [],
                                 price: service.servicePrice,
                             },
+                            ...(service.parts ?? []),
                         ]}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item: part }) => renderParts(part)}
@@ -142,16 +156,19 @@ const BookingDetail = ({ navigation, route }) => {
         );
     };
     const renderPackages = packages => {
-        const totalPrice = packages.services.reduce(
-            (accumulated, service) =>
+        const totalPrice = packages.services.reduce((accumulated, service) => {
+            if (!service.isActive) {
+                return accumulated;
+            }
+            return (
                 accumulated +
                 service.servicePrice +
                 service.parts.reduce(
                     (accumulated, part) => accumulated + part.price * part.quantity,
                     0,
-                ),
-            0,
-        );
+                )
+            );
+        }, 0);
         return (
             // ${formatMoney(service.price)}
             <>
@@ -211,7 +228,9 @@ const BookingDetail = ({ navigation, route }) => {
         [cancelBooking],
     );
     useEffect(() => {
-        detail.status === 'ACCEPTED'
+        let a = moment.unix(detail.bookingTime).toNow(true);
+        let b = +a.substr(0, a.indexOf(' '));
+        detail.status === 'ACCEPTED' && b >= 4
             ? navigation.setOptions({
                   headerRight: () => (
                       <Button
@@ -222,7 +241,7 @@ const BookingDetail = ({ navigation, route }) => {
                   ),
               })
             : null;
-    }, [detail.id, detail.status, navigation, onCancel]);
+    }, [detail.bookingTime, detail.id, detail.status, navigation, onCancel]);
     useEffect(() => {
         navigation.setOptions({ headerTitle: `request #${detail.id}` });
     }, [detail, detail.id, navigation]);
@@ -283,16 +302,19 @@ const BookingDetail = ({ navigation, route }) => {
                         <Card.Divider />
                         <View style={styles.rowInfo}>
                             <Text>Technician:</Text>
-                            <Text>{` ${detail.technician?.fullname ?? 'none'}`}</Text>
+                            <Text>{` ${detail.technician?.fullName ?? 'none'}`}</Text>
                         </View>
-                        <Text
-                            style={{
-                                color: 'green',
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                            }}>
-                            Services:
-                        </Text>
+                        {detail.services.filter(service => !service.isIncurred).length >
+                            0 && (
+                            <Text
+                                style={{
+                                    color: 'green',
+                                    fontSize: 18,
+                                    fontWeight: 'bold',
+                                }}>
+                                Services:
+                            </Text>
+                        )}
                     </>
                 }
                 ListFooterComponent={
@@ -301,9 +323,6 @@ const BookingDetail = ({ navigation, route }) => {
                             data={detail.packages ?? []}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item: packages }) => renderPackages(packages)}
-                            initialNumToRender={3}
-                            showsVerticalScrollIndicator={false}
-                            nestedScrollEnabled
                             ListHeaderComponent={
                                 <>
                                     {detail.packages.length > 0 ? (
@@ -346,9 +365,6 @@ const BookingDetail = ({ navigation, route }) => {
                                         renderItem={({ item: ser }) =>
                                             renderServices(ser)
                                         }
-                                        initialNumToRender={3}
-                                        showsVerticalScrollIndicator={false}
-                                        nestedScrollEnabled
                                     />
                                 </>
                             }
@@ -358,27 +374,37 @@ const BookingDetail = ({ navigation, route }) => {
                                 marginVertical: 8,
                                 borderTopWidth: 1,
                             }}>
-                            <Text
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-end',
-                                }}>{`Service Price: ${formatMoney(
-                                totalServicePrice.total,
-                            )}`}</Text>
-                            <Text
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text style={{ fontWeight: 'bold' }}>Services:</Text>
+                                <Text>{formatMoney(totalServicePrice.total)}</Text>
+                            </View>
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-end',
-                                }}>{`Package Price: ${formatMoney(
-                                totalPackagePrice.total,
-                            )}`}</Text>
-                            <Text
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text style={{ fontWeight: 'bold' }}>Packages:</Text>
+                                <Text>{formatMoney(totalPackagePrice.total)}</Text>
+                            </View>
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-end',
-                                }}>{`Total: ${formatMoney(
-                                totalServicePrice.total + totalPackagePrice.total,
-                            )} `}</Text>
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    justifyContent: 'space-between',
+                                }}>
+                                <Text style={{ fontWeight: 'bold' }}>Total Price:</Text>
+                                <Text>
+                                    {formatMoney(
+                                        totalServicePrice.total + totalPackagePrice.total,
+                                    )}
+                                </Text>
+                            </View>
                         </View>
                     </>
                 }
