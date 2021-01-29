@@ -165,14 +165,20 @@ const AccessoriesScreen = ({ navigation, route }) => {
                 </Picker>
             </View>
 
-            <View style={styles.itemsContainer}>
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={_.orderBy(garageList, sortBy[0], sortBy[1])}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={renderGarageList}
-                />
-            </View>
+            {garageList.length > 0 ? (
+                <View style={styles.itemsContainer}>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={_.orderBy(garageList, sortBy[0], sortBy[1])}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderGarageList}
+                    />
+                </View>
+            ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20 }}>No items found!</Text>
+                </View>
+            )}
         </View>
     );
 };
