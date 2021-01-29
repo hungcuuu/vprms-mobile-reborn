@@ -162,32 +162,32 @@ const OrderHistory = ({ navigation, route }) => {
     }, [user.id]);
     return (
         <View style={styles.container}>
-            <FlatList
-                refreshControl={
-                    <RefreshControl
-                        colors={['#9Bd35A', '#689F38']}
-                        onRefresh={onRefresh}
-                        refreshing={refreshing}
-                    />
-                }
-                data={
-                    OrderStatus === 'inProgress'
-                        ? historyList.filter(
-                              x => x.status !== 'FINISHED' && x.status !== 'CANCELED',
-                          )
-                        : historyList.filter(
-                              x => x.status === 'FINISHED' || x.status === 'CANCELED',
-                          )
-                }
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item: history }) => renderHistory(history)}
-            />
-            {/* <Button
-                onPress={() => {
-                    props.navigation.navigate('BookingScreen');
-                }}
-                title="Book Request"
-            /> */}
+            {historyList.length > 0 ? (
+                <FlatList
+                    refreshControl={
+                        <RefreshControl
+                            colors={['#9Bd35A', '#689F38']}
+                            onRefresh={onRefresh}
+                            refreshing={refreshing}
+                        />
+                    }
+                    data={
+                        OrderStatus === 'inProgress'
+                            ? historyList.filter(
+                                  x => x.status !== 'FINISHED' && x.status !== 'CANCELED',
+                              )
+                            : historyList.filter(
+                                  x => x.status === 'FINISHED' || x.status === 'CANCELED',
+                              )
+                    }
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={({ item: history }) => renderHistory(history)}
+                />
+            ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20 }}>No items found!</Text>
+                </View>
+            )}
         </View>
     );
 };

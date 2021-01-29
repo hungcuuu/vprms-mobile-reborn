@@ -60,11 +60,18 @@ const VehiclesScreen = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             {/* <Text>Vehicle Screen</Text> */}
-            <FlatList
-                data={vehicles}
-                keyExtractor={(item, index) => item.id.toString()}
-                renderItem={renderVehicleItem}
-            />
+            {vehicles.length > 0 ? (
+                <FlatList
+                    data={vehicles}
+                    keyExtractor={(item, index) => item.id.toString()}
+                    renderItem={renderVehicleItem}
+                />
+            ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20 }}>No items found!</Text>
+                </View>
+            )}
+
             <Button
                 title="ADD VEHICLE"
                 onPress={() =>

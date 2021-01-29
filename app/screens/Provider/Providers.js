@@ -10,6 +10,7 @@ import _ from 'lodash';
 
 import messaging from '@react-native-firebase/messaging';
 import { Alert } from 'react-native';
+import { Dimensions } from 'react-native';
 
 const Providers = ({ navigation }) => {
     // const vehicle = useSelector(state => state.vehicles.currentVehicle ?? []);
@@ -169,7 +170,7 @@ const Providers = ({ navigation }) => {
         return unsubscribe;
     }, [navigation, user.id]);
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ height: Dimensions.get('screen').height, width: '100%' }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -203,15 +204,21 @@ const Providers = ({ navigation }) => {
                 </Picker>
             </View>
 
-            <View>
-                <FlatList
-                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({ item: provider }) => renderProviders(provider)}
-                    showsVerticalScrollIndicator={false}
-                    // numColumns={2}
-                />
-            </View>
+            {searchProviders.length > 0 ? (
+                <View>
+                    <FlatList
+                        data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item: provider }) => renderProviders(provider)}
+                        showsVerticalScrollIndicator={false}
+                        // numColumns={2}
+                    />
+                </View>
+            ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20 }}>No items found!</Text>
+                </View>
+            )}
         </View>
     );
 };

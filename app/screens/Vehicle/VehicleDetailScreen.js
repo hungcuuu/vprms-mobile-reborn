@@ -94,23 +94,6 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         }
     };
 
-    // const deleteVehicle = id => {
-    //     Alert.alert('', 'Do u want to Delete this Vehicle?', [
-    //         {
-    //             text: 'Cancel',
-    //             style: 'cancel',
-    //         },
-    //         {
-    //             text: 'OK',
-    //             onPress: () => {
-    //                 dispatch(actions.deleteVehicle(id, () => navigation.pop()));
-    //             },
-    //         },
-    //     ]);
-    // };
-    // const seeMoreHandler = () => {
-    //     setRenderNum(renderNum + 1);
-    // };
     const openDatePicker = (maxDate, remideDate, id) => {
         setShow(true);
         setMaxDate(new Date(maxDate));
@@ -436,6 +419,7 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     }, [dispatch, navigation, vehicle.id, vehicle.model.name]);
     return (
         <View style={styles.container}>
+            {renderVehicleInfo}
             <FlatList
                 refreshControl={
                     <RefreshControl
@@ -446,30 +430,41 @@ const VehicleDetailScreen = ({ route, navigation }) => {
                 }
                 ListHeaderComponent={
                     <>
-                        {renderVehicleInfo}
                         <Text style={{ fontSize: 15, fontWeight: 'bold', padding: 8 }}>
                             History
                         </Text>
-                        <FlatList
-                            // ListHeaderComponent={renderVehicleInfo}
-                            data={historyList.slice(0, 3)}
-                            keyExtractor={item => item.id.toString()}
-                            renderItem={({ item: history }) => renderHistory(history)}
-                            scrollEnabled={false}
-                            // style={{ borderWidth: 1, borderColor: 'green' }}
-                            // ListFooterComponent={
-                            //     <>
-                            //         <Text
-                            //             onPress={() => seeMoreHandler()}
-                            //             style={{ textAlign: 'right' }}>
-                            //             See more
-                            //         </Text>
-                            //     </>
-                            // }
-                        />
+                        {historyList.length > 0 ? (
+                            <FlatList
+                                // ListHeaderComponent={renderVehicleInfo}
+                                data={historyList.slice(0, 3)}
+                                keyExtractor={item => item.id.toString()}
+                                renderItem={({ item: history }) => renderHistory(history)}
+                                scrollEnabled={false}
+                            />
+                        ) : (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                <Text style={{ fontSize: 20 }}>No items found!</Text>
+                            </View>
+                        )}
+
                         <Text style={{ fontSize: 15, fontWeight: 'bold', padding: 8 }}>
                             Part
                         </Text>
+                        {partList.length > 0 ? null : (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                <Text style={{ fontSize: 20 }}>No items found!</Text>
+                            </View>
+                        )}
                     </>
                 }
                 ListHeaderComponentStyle={{ marginVertical: 15 }}

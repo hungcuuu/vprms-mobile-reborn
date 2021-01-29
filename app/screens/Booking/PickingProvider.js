@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Dimensions } from 'react-native';
 import { Image } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { Text, View } from 'react-native';
@@ -24,7 +24,7 @@ const PickingProvider = ({ navigation, route }) => {
 
     const [providers, setProviders] = useState([]);
     const [searchProviders, setSearchProviders] = useState([]);
-    const [sortBy, setSortBy] = useState(['ratings', 'desc']);
+    const [sortBy, setSortBy] = useState(['distance', 'asc']);
 
     const [searchText, setSearchText] = useState('');
     const searchHandler = text => {
@@ -113,26 +113,7 @@ const PickingProvider = ({ navigation, route }) => {
             </TouchableOpacity>
         );
     };
-    // useEffect(() => {
-    //     if (noteParam.length > 0) {
-    //         console.log('2');
 
-    //         async () => {
-    //             let location = await Location.getCurrentPositionAsync();
-
-    //             console.log('2');
-    //             axios
-    //                 .post('providers/', {
-    //                     latitude: location.coords.latitude,
-    //                     longitude: location.coords.longitude,
-    //                 })
-    //                 .then(rs => {
-    //                     setProviders(rs.data);
-    //                     setSearchProviders(rs.data);
-    //                 });
-    //         };
-    //     }
-    // }, [noteParam]);
     useEffect(() => {
         (async () => {
             let location = await Location.getCurrentPositionAsync({});
@@ -207,9 +188,6 @@ const PickingProvider = ({ navigation, route }) => {
                         }
                     });
             } else {
-                console.log('2');
-
-                console.log('2');
                 axios
                     .post('providers/', {
                         latitude: location.coords.latitude,
@@ -237,7 +215,7 @@ const PickingProvider = ({ navigation, route }) => {
         vehicles.model.id,
     ]);
     return (
-        <View>
+        <View style={{ width: '100%', height: Dimensions.get('screen').height }}>
             <View
                 style={{
                     flexDirection: 'row',
@@ -270,16 +248,21 @@ const PickingProvider = ({ navigation, route }) => {
                     <Picker.Item label={'Distance'} value={'distance'} />
                 </Picker>
             </View>
-
-            <View>
-                <FlatList
-                    data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({ item: provider }) => renderProviders(provider)}
-                    // showsVerticalScrollIndicator={false}
-                    // numColumns={2}
-                />
-            </View>
+            {searchProviders.length > 0 ? (
+                <View>
+                    <FlatList
+                        data={_.orderBy(searchProviders, sortBy[0], sortBy[1])}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item: provider }) => renderProviders(provider)}
+                        // showsVerticalScrollIndicator={false}
+                        // numColumns={2}
+                    />
+                </View>
+            ) : (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20 }}>No items found!</Text>
+                </View>
+            )}
         </View>
     );
 };
