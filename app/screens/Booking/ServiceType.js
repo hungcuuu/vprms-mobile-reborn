@@ -83,8 +83,8 @@ const ServiceType = ({ navigation, route }) => {
                         Describe your current situation
                     </Text>
                     <Input
-                        placeholder="Text here (Max characters is 256)"
-                        maxLength={256}
+                        placeholder="Text here (Max characters is 255)"
+                        maxLength={255}
                         onChangeText={value => {
                             setNote(value);
                         }}
@@ -104,7 +104,14 @@ const ServiceType = ({ navigation, route }) => {
         </Modal>
     );
     useEffect(() => {
-        axios.get('service-types').then(rs => setTypeList(rs.data));
+        axios
+            .get('service-types')
+            .then(rs => setTypeList(rs.data))
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     }, []);
     return (
         <View

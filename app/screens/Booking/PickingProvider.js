@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import axios from '../../axios';
 import { normalizeString } from '../../utils';
 import { Picker } from '@react-native-community/picker';
+import { Alert } from 'react-native';
 
 const PickingProvider = ({ navigation, route }) => {
     const selectedServicesType = route.params?.selectedServicesType ?? [];
@@ -150,6 +151,14 @@ const PickingProvider = ({ navigation, route }) => {
                     .then(rs => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            Alert.alert(
+                                'Something went wrong!',
+                                error.response.data.message,
+                            );
+                        }
                     });
             } else if (!_.isEmpty(selectedMilestone)) {
                 let milestone = selectedMilestone?.id ?? '';
@@ -165,6 +174,14 @@ const PickingProvider = ({ navigation, route }) => {
                     .then(rs => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            Alert.alert(
+                                'Something went wrong!',
+                                error.response.data.message,
+                            );
+                        }
                     });
             } else if (selectedSections.length > 0) {
                 let sectionIds = selectedSections.map(sec => sec.sectionId) ?? [];
@@ -180,6 +197,14 @@ const PickingProvider = ({ navigation, route }) => {
                     .then(rs => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            Alert.alert(
+                                'Something went wrong!',
+                                error.response.data.message,
+                            );
+                        }
                     });
             } else {
                 console.log('2');
@@ -193,6 +218,14 @@ const PickingProvider = ({ navigation, route }) => {
                     .then(rs => {
                         setProviders(rs.data);
                         setSearchProviders(rs.data);
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            Alert.alert(
+                                'Something went wrong!',
+                                error.response.data.message,
+                            );
+                        }
                     });
             }
         })();

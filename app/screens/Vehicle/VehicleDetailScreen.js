@@ -39,14 +39,28 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     };
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        axios.get(`requests/vehicles/${vehicle.id}`).then(rs => {
-            setHistoryList(rs.data);
-            // console.log(rs.data);
-        });
-        axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
-            // console.log('data', rs.data);
-            setPartList(rs.data);
-        });
+        axios
+            .get(`requests/vehicles/${vehicle.id}`)
+            .then(rs => {
+                setHistoryList(rs.data);
+                // console.log(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
+        axios
+            .get(`accessories/vehicles/${vehicle.id}`)
+            .then(rs => {
+                // console.log('data', rs.data);
+                setPartList(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
         wait(1000).then(() => setRefreshing(false));
     }, [vehicle.id]);
     const cancelUpdateHandler = () => {
@@ -107,10 +121,17 @@ const VehicleDetailScreen = ({ route, navigation }) => {
         console.log(date);
         let newDate = moment(new Date(date)).unix();
         console.log(newDate);
-        axios.get(`accessories/reminders/${reminderId}/time/${newDate}`).then(() => {
-            setShow(false);
-            onRefresh();
-        });
+        axios
+            .get(`accessories/reminders/${reminderId}/time/${newDate}`)
+            .then(() => {
+                setShow(false);
+                onRefresh();
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     };
     const modalUpdate = () => {
         return (
@@ -361,13 +382,27 @@ const VehicleDetailScreen = ({ route, navigation }) => {
     );
 
     useEffect(() => {
-        axios.get(`requests/vehicles/${vehicle.id}`).then(rs => {
-            setHistoryList(rs.data);
-            // console.log(rs.data);
-        });
-        axios.get(`accessories/vehicles/${vehicle.id}`).then(rs => {
-            setPartList(rs.data);
-        });
+        axios
+            .get(`requests/vehicles/${vehicle.id}`)
+            .then(rs => {
+                setHistoryList(rs.data);
+                // console.log(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
+        axios
+            .get(`accessories/vehicles/${vehicle.id}`)
+            .then(rs => {
+                setPartList(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     }, [vehicle.id]);
 
     useEffect(() => {

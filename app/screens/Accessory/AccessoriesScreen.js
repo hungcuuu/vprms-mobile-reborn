@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { formatMoney } from '../../utils';
 import { Picker } from '@react-native-community/picker';
+import { Alert } from 'react-native';
 
 const AccessoriesScreen = ({ navigation, route }) => {
     const vehicles = useSelector(state => state.vehicles.currentVehicle ?? []);
@@ -31,6 +32,11 @@ const AccessoriesScreen = ({ navigation, route }) => {
             })
             .then(rs => {
                 setGarageList(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
             });
     };
 

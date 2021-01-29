@@ -13,6 +13,7 @@ import axios from '../../axios';
 import * as Location from 'expo-location';
 import { Card } from 'react-native-elements';
 import { formatMoney, moneyFormat } from '../../utils';
+import { Alert } from 'react-native';
 
 const AccessoryTypeScreen = ({ navigation, route }) => {
     const currentVehicle = useSelector(state => state.vehicles.currentVehicle ?? {});
@@ -117,6 +118,11 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                 .get(`service-type-details/categories/sections/${sectionId}`)
                 .then(rs => {
                     setCategories(rs.data);
+                })
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
                 });
             axios
                 .post(`parts/sections/${sectionId}/models/${currentVehicle.model.id}`, {
@@ -125,6 +131,11 @@ const AccessoryTypeScreen = ({ navigation, route }) => {
                 })
                 .then(rs => {
                     setPartList(rs.data);
+                })
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
                 });
         })();
         // console.log('vehicle', currentVehicle);

@@ -130,22 +130,11 @@ const AccessoryServicesScreen = ({ navigation, route }) => {
                 // console.log('data', rs.data);
                 setServices(rs.data);
                 console.log('data', rs.data);
-                // const partList = selections
-                //     .reduce(
-                //         (curr, part) => [
-                //             ...curr,
-                //             {
-                //                 part: part,
-                //                 category: part.categoryId,
-                //                 services: a[part.id],
-                //             },
-                //         ],
-                //         [],
-                //     )
-                //     .map((part) => ({ ...part, checked: 'none' }));
-                // console.log('part', partList);
-                // console.log('rs', rs.data);
-                // setPartList(partList);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
             });
     }, [detail.part.id, detail.provider.id, vehicles.model.id]);
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { TouchableOpacity } from 'react-native';
+import { Alert } from 'react-native';
 import { Image } from 'react-native';
 import { Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
@@ -180,13 +181,25 @@ const ServiceTypeDetail = ({ navigation, route }) => {
     );
     useEffect(() => {
         if (maintenanceType === 'milestone') {
-            axios.get('maintenance-packages/milestones').then(rs => {
-                setMilestoneList(rs.data);
-            });
+            axios
+                .get('maintenance-packages/milestones')
+                .then(rs => {
+                    setMilestoneList(rs.data);
+                })
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
+                });
         } else if (maintenanceType === 'section') {
             axios
                 .get('service-type-details/sections/plain')
-                .then(rs => setSectionList(rs.data));
+                .then(rs => setSectionList(rs.data))
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
+                });
         } else {
             let typeIdList = serviceType.map(type => type.id);
             axios
@@ -195,7 +208,12 @@ const ServiceTypeDetail = ({ navigation, route }) => {
                         'Content-Type': 'application/json; charset=UTF-8',
                     },
                 })
-                .then(rs => setSectionList(rs.data));
+                .then(rs => setSectionList(rs.data))
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
+                });
         }
     }, [maintenanceType, serviceType]);
 

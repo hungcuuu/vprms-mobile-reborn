@@ -54,7 +54,11 @@ const CatalogScreen = ({ navigation }) => {
                 },
             })
             .then(rs => setManufactureList(rs.data))
-            .catch(err => Alert.alert(err));
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     };
     const getVehicleTypeList = id => {
         return axios
@@ -67,7 +71,11 @@ const CatalogScreen = ({ navigation }) => {
             .then(rs => {
                 setVehicleTypeList(rs.data);
             })
-            .catch(er => Alert.alert(er));
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     };
     const changeVehicle = vehicle => {
         // console.log(vehicle);
@@ -127,6 +135,14 @@ const CatalogScreen = ({ navigation }) => {
                                     navigation.navigate('Accessories', {
                                         detect: rs.data,
                                     });
+                                })
+                                .catch(error => {
+                                    if (error.response) {
+                                        Alert.alert(
+                                            'Something went wrong!',
+                                            error.response.data.message,
+                                        );
+                                    }
                                 });
                         }
                     } catch (e) {
@@ -172,6 +188,14 @@ const CatalogScreen = ({ navigation }) => {
                                     navigation.navigate('Accessories', {
                                         detect: rs.data,
                                     });
+                                })
+                                .catch(error => {
+                                    if (error.response) {
+                                        Alert.alert(
+                                            'Something went wrong!',
+                                            error.response.data.message,
+                                        );
+                                    }
                                 });
                             //     .catch(err => Alert.alert(err));
                         }
@@ -446,7 +470,15 @@ const CatalogScreen = ({ navigation }) => {
                                         });
                                     },
                                     // console.log(rs.find(x => x.id === 6).services),
-                                );
+                                )
+                                .catch(error => {
+                                    if (error.response) {
+                                        Alert.alert(
+                                            'Something went wrong!',
+                                            error.response.data.message,
+                                        );
+                                    }
+                                });
                             // navigation.navigate('BookingDetail');sadsadasd
                         },
                     },

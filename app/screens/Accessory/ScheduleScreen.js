@@ -52,7 +52,12 @@ const ScheduleScreen = ({ navigation, route }) => {
     const getTimeTable = (id, epoch) => {
         axios
             .get('providers/' + id + '/bookings/' + epoch)
-            .then(rs => setTimeList(rs.data));
+            .then(rs => setTimeList(rs.data))
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     };
     const onDayPick = value => {
         getTimeTable(detail.provider.id, Math.floor(new Date(value).getTime() / 1000));

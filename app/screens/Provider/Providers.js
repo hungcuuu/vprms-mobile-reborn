@@ -115,6 +115,11 @@ const Providers = ({ navigation }) => {
                 .then(rs => {
                     setProviders(rs.data);
                     setSearchProviders(rs.data);
+                })
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
                 });
         })();
         // console.log('vehicle', currentVehicle);
@@ -145,7 +150,15 @@ const Providers = ({ navigation }) => {
                                         });
                                     },
                                     // console.log(rs.find(x => x.id === 6).services),
-                                );
+                                )
+                                .catch(error => {
+                                    if (error.response) {
+                                        Alert.alert(
+                                            'Something went wrong!',
+                                            error.response.data.message,
+                                        );
+                                    }
+                                });
                             // navigation.navigate('BookingDetail');sadsadasd
                         },
                     },

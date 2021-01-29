@@ -94,7 +94,11 @@ const VehicleCreateScreen = ({ navigation }) => {
             .then(rs => {
                 setManufactureList(rs.data);
             })
-            .catch(err => Alert.alert(err));
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     };
 
     const getVehicleTypeList = id => {
@@ -114,7 +118,11 @@ const VehicleCreateScreen = ({ navigation }) => {
                     modelId: rs.data.find(x => x)?.id,
                 }));
             })
-            .catch(er => Alert.alert(er));
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     };
 
     useEffect(() => {

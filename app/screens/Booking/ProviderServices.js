@@ -348,7 +348,12 @@ const ProviderServices = ({ navigation, route }) => {
         if (selectedService.length > 0) {
             axios
                 .get('services/providers/' + provider.id + '/models/' + modelId)
-                .then(rs => setServices(rs.data));
+                .then(rs => setServices(rs.data))
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
+                });
 
             setServiceList(selectedService);
         }
@@ -357,7 +362,14 @@ const ProviderServices = ({ navigation, route }) => {
     useEffect(() => {
         if (path === 'provider') {
             let url = `services/providers/${provider.id}/models/${modelId}`;
-            axios.get(url).then(rs => setServices(rs.data));
+            axios
+                .get(url)
+                .then(rs => setServices(rs.data))
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
+                });
             axios
                 .get(
                     'maintenance-packages/providers/' +
@@ -365,7 +377,12 @@ const ProviderServices = ({ navigation, route }) => {
                         '/models/' +
                         modelId,
                 )
-                .then(rs => setPackages(rs.data));
+                .then(rs => setPackages(rs.data))
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
+                    }
+                });
         }
     }, [path, provider.id, modelId]);
 

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import axios from '../../axios';
 import { STATUS, STATUS_TAG_COLORS } from '../../constants/index';
 import { RefreshControl } from 'react-native';
+import { Alert } from 'react-native';
 
 const OrderHistory = ({ navigation, route }) => {
     const OrderStatus = route.params?.OrderStatus ?? '';
@@ -22,9 +23,16 @@ const OrderHistory = ({ navigation, route }) => {
     };
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        axios.get(`requests/users/${user.id}`).then(rs => {
-            setHistoryList(rs.data);
-        });
+        axios
+            .get(`requests/users/${user.id}`)
+            .then(rs => {
+                setHistoryList(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
         wait(1000).then(() => setRefreshing(false));
     }, [user.id]);
     const getStatusTagColor = status => {
@@ -141,9 +149,16 @@ const OrderHistory = ({ navigation, route }) => {
 
     useEffect(() => {
         // console.log(user);
-        axios.get(`requests/users/${user.id}`).then(rs => {
-            setHistoryList(rs.data);
-        });
+        axios
+            .get(`requests/users/${user.id}`)
+            .then(rs => {
+                setHistoryList(rs.data);
+            })
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
+            });
     }, [user.id]);
     return (
         <View style={styles.container}>

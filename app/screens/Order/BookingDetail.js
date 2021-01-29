@@ -196,17 +196,24 @@ const BookingDetail = ({ navigation, route }) => {
     };
     const cancelBooking = useCallback(
         id => {
-            axios.delete('requests/' + id).then(res =>
-                // setCurrentBooking(res.data)
-                {
-                    if (res.status === 200) {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Order' }],
-                        });
+            axios
+                .delete('requests/' + id)
+                .then(res =>
+                    // setCurrentBooking(res.data)
+                    {
+                        if (res.status === 200) {
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Order' }],
+                            });
+                        }
+                    },
+                )
+                .catch(error => {
+                    if (error.response) {
+                        Alert.alert('Something went wrong!', error.response.data.message);
                     }
-                },
-            );
+                });
         },
         [navigation],
     );
