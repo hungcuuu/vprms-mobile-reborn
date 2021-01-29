@@ -55,9 +55,10 @@ const Feedback = ({ navigation, route }) => {
                     navigation.pop();
                 }
             })
-            .catch(err => {
-                Alert.alert('Something went wrong!');
-                console.log(err);
+            .catch(error => {
+                if (error.response) {
+                    Alert.alert('Something went wrong!', error.response.data.message);
+                }
             });
     };
     const pickImage = async () => {
