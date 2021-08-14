@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { AuthNavigator, SideDrawer } from './MainNavigator';
-import * as actions from '../store/actions';
+import * as actions from '../app/store/actions';
 
 const AppNavigator = props => {
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const AppNavigator = props => {
 
     return (
         <NavigationContainer>
-            {!userData ? <AuthNavigator /> : <SideDrawer />}
+            <AuthNavigator />
         </NavigationContainer>
     );
 };
